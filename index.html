@@ -306,7 +306,7 @@
   </div>
   <div style="display:flex;gap:8px;align-items:center">
     <a href="product_analytics.html" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:white;font-size:12px;padding:7px 16px;text-decoration:none;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🛍️ 상품 분석 →</a>
-    <div class="header-badge">마지막 업데이트: 2026.04.15 (3~4월 데이터)</div>
+    <div class="header-badge">마지막 업데이트: 2026.04.15 (1~4월 데이터)</div>
   </div>
 </div>
 
@@ -317,7 +317,7 @@
     <h3>데이터 업로드 안내</h3>
     <p style="font-size:13px;color:#475569;">아래 일정에 맞춰 엑셀 파일을 업로드해 주세요. <b>국내자사몰</b>과 <b>해외자사몰</b> 각각 내려받아 제공해 주시면 됩니다.</p>
     <div class="alert-schedule">
-      <div class="schedule-chip"><span class="chip-dot" style="background:#10b981"></span>현재 보유: 2026.03.01 ~ 04.15 ✓</div>
+      <div class="schedule-chip"><span class="chip-dot" style="background:#10b981"></span>현재 보유: 2026.01.01 ~ 04.15 ✓</div>
       <div class="schedule-chip urgent"><span class="chip-dot urgent"></span>다음 업로드 권장: 04.16 ~ 04.30 (월말 데이터)</div>
       <div class="schedule-chip"><span class="chip-dot"></span>그 다음: 05.01 ~ 05.15 (5월 상반기)</div>
     </div>
@@ -329,16 +329,16 @@
 <div class="filter-bar">
   <span class="filter-label">기간 설정</span>
   <div class="date-group">
-    <input type="date" class="date-input" id="startDate" value="2026-03-01">
+    <input type="date" class="date-input" id="startDate" value="2026-01-01">
     <span class="date-sep">~</span>
     <input type="date" class="date-input" id="endDate" value="2026-04-15">
   </div>
   <div class="quick-btns">
-    <button class="quick-btn active" onclick="setQuick('all',this)">전체 (3~4월)</button>
-    <button class="quick-btn" onclick="setQuick('mar',this)">3월 전체</button>
-    <button class="quick-btn" onclick="setQuick('apr',this)">4월 전체</button>
-    <button class="quick-btn" onclick="setQuick('week1',this)">4월 1주차</button>
-    <button class="quick-btn" onclick="setQuick('week2',this)">4월 2주차</button>
+    <button class="quick-btn active" onclick="setQuick('all',this)">전체 (1~4월)</button>
+    <button class="quick-btn" onclick="setQuick('jan',this)">1월</button>
+    <button class="quick-btn" onclick="setQuick('feb',this)">2월</button>
+    <button class="quick-btn" onclick="setQuick('mar',this)">3월</button>
+    <button class="quick-btn" onclick="setQuick('apr',this)">4월</button>
     <button class="quick-btn" onclick="setQuick('today',this)">4.15</button>
   </div>
   <span class="filter-label" style="margin-left:16px;">채널</span>
@@ -496,6 +496,65 @@
 <script>
 // ===== DATA =====
 const DOMESTIC = [
+  { date: '2026-01-01', orders: 17, revenue: 2553954 },
+  { date: '2026-01-02', orders: 31, revenue: 5131518 },
+  { date: '2026-01-03', orders: 17, revenue: 2371469 },
+  { date: '2026-01-04', orders: 17, revenue: 2552024 },
+  { date: '2026-01-05', orders: 23, revenue: 3788800 },
+  { date: '2026-01-06', orders: 33, revenue: 5143223 },
+  { date: '2026-01-07', orders: 30, revenue: 4630579 },
+  { date: '2026-01-08', orders: 20, revenue: 3192692 },
+  { date: '2026-01-09', orders: 42, revenue: 5946033 },
+  { date: '2026-01-10', orders: 51, revenue: 7032610 },
+  { date: '2026-01-11', orders: 49, revenue: 6399398 },
+  { date: '2026-01-12', orders: 47, revenue: 6705490 },
+  { date: '2026-01-13', orders: 44, revenue: 6464993 },
+  { date: '2026-01-14', orders: 37, revenue: 5965713 },
+  { date: '2026-01-15', orders: 52, revenue: 6783037 },
+  { date: '2026-01-16', orders: 43, revenue: 5299906 },
+  { date: '2026-01-17', orders: 40, revenue: 6450997 },
+  { date: '2026-01-18', orders: 34, revenue: 4753166 },
+  { date: '2026-01-19', orders: 52, revenue: 7514902 },
+  { date: '2026-01-20', orders: 39, revenue: 5443884 },
+  { date: '2026-01-21', orders: 42, revenue: 6124838 },
+  { date: '2026-01-22', orders: 45, revenue: 7209095 },
+  { date: '2026-01-23', orders: 24, revenue: 2812934 },
+  { date: '2026-01-24', orders: 27, revenue: 3322781 },
+  { date: '2026-01-25', orders: 29, revenue: 3308658 },
+  { date: '2026-01-26', orders: 21, revenue: 2402073 },
+  { date: '2026-01-27', orders: 25, revenue: 3124218 },
+  { date: '2026-01-28', orders: 24, revenue: 2982821 },
+  { date: '2026-01-29', orders: 27, revenue: 3444213 },
+  { date: '2026-01-30', orders: 25, revenue: 3194495 },
+  { date: '2026-01-31', orders: 19, revenue: 2320990 },
+  { date: '2026-02-01', orders: 30, revenue: 4054593 },
+  { date: '2026-02-02', orders: 30, revenue: 5394521 },
+  { date: '2026-02-03', orders: 26, revenue: 3302296 },
+  { date: '2026-02-04', orders: 30, revenue: 4178852 },
+  { date: '2026-02-05', orders: 35, revenue: 4641607 },
+  { date: '2026-02-06', orders: 28, revenue: 3896451 },
+  { date: '2026-02-07', orders: 28, revenue: 3519130 },
+  { date: '2026-02-08', orders: 30, revenue: 4108675 },
+  { date: '2026-02-09', orders: 15, revenue: 1810923 },
+  { date: '2026-02-10', orders: 34, revenue: 4517225 },
+  { date: '2026-02-11', orders: 33, revenue: 4480062 },
+  { date: '2026-02-12', orders: 28, revenue: 3531061 },
+  { date: '2026-02-13', orders: 17, revenue: 2117014 },
+  { date: '2026-02-14', orders: 19, revenue: 2260296 },
+  { date: '2026-02-15', orders: 21, revenue: 2983104 },
+  { date: '2026-02-16', orders: 22, revenue: 2701613 },
+  { date: '2026-02-17', orders: 26, revenue: 3277617 },
+  { date: '2026-02-18', orders: 27, revenue: 3326611 },
+  { date: '2026-02-19', orders: 29, revenue: 3601157 },
+  { date: '2026-02-20', orders: 29, revenue: 4689901 },
+  { date: '2026-02-21', orders: 13, revenue: 1772062 },
+  { date: '2026-02-22', orders: 32, revenue: 4607995 },
+  { date: '2026-02-23', orders: 26, revenue: 3592376 },
+  { date: '2026-02-24', orders: 31, revenue: 3978416 },
+  { date: '2026-02-25', orders: 29, revenue: 3502128 },
+  { date: '2026-02-26', orders: 27, revenue: 3296926 },
+  { date: '2026-02-27', orders: 23, revenue: 2842791 },
+  { date: '2026-02-28', orders: 21, revenue: 2636723 },
   { date: '2026-03-01', orders: 22, revenue: 2826550 },
   { date: '2026-03-02', orders: 24, revenue: 2990274 },
   { date: '2026-03-03', orders: 18, revenue: 2114944 },
@@ -545,6 +604,65 @@ const DOMESTIC = [
 ];
 
 const OVERSEAS = [
+  { date: '2026-01-01', orders: 33, revenue_usd: 6162.06, revenue_krw: 8934983 },
+  { date: '2026-01-02', orders: 19, revenue_usd: 3016.4, revenue_krw: 4373776 },
+  { date: '2026-01-03', orders: 32, revenue_usd: 5689.4, revenue_krw: 8249625 },
+  { date: '2026-01-04', orders: 26, revenue_usd: 4987.43, revenue_krw: 7231768 },
+  { date: '2026-01-05', orders: 20, revenue_usd: 3168.5, revenue_krw: 4594322 },
+  { date: '2026-01-06', orders: 18, revenue_usd: 2978.85, revenue_krw: 4319329 },
+  { date: '2026-01-07', orders: 18, revenue_usd: 3221.4, revenue_krw: 4671027 },
+  { date: '2026-01-08', orders: 16, revenue_usd: 2867.7, revenue_krw: 4158162 },
+  { date: '2026-01-09', orders: 34, revenue_usd: 5182.08, revenue_krw: 7514015 },
+  { date: '2026-01-10', orders: 32, revenue_usd: 5347.36, revenue_krw: 7753670 },
+  { date: '2026-01-11', orders: 29, revenue_usd: 4490.05, revenue_krw: 6510570 },
+  { date: '2026-01-12', orders: 18, revenue_usd: 3142.95, revenue_krw: 4557273 },
+  { date: '2026-01-13', orders: 21, revenue_usd: 3602.7, revenue_krw: 5223914 },
+  { date: '2026-01-14', orders: 25, revenue_usd: 3727.53, revenue_krw: 5404917 },
+  { date: '2026-01-15', orders: 22, revenue_usd: 3200.82, revenue_krw: 4641189 },
+  { date: '2026-01-16', orders: 33, revenue_usd: 5234.8, revenue_krw: 7590458 },
+  { date: '2026-01-17', orders: 27, revenue_usd: 4229.15, revenue_krw: 6132266 },
+  { date: '2026-01-18', orders: 28, revenue_usd: 4675.35, revenue_krw: 6779255 },
+  { date: '2026-01-19', orders: 26, revenue_usd: 4160.58, revenue_krw: 6032839 },
+  { date: '2026-01-20', orders: 22, revenue_usd: 3353.2, revenue_krw: 4862139 },
+  { date: '2026-01-21', orders: 31, revenue_usd: 5089.0, revenue_krw: 7379047 },
+  { date: '2026-01-22', orders: 38, revenue_usd: 6636.16, revenue_krw: 9622429 },
+  { date: '2026-01-23', orders: 33, revenue_usd: 6082.85, revenue_krw: 8820127 },
+  { date: '2026-01-24', orders: 27, revenue_usd: 4657.05, revenue_krw: 6752717 },
+  { date: '2026-01-25', orders: 13, revenue_usd: 2514.2, revenue_krw: 3645587 },
+  { date: '2026-01-26', orders: 14, revenue_usd: 2111.5, revenue_krw: 3061673 },
+  { date: '2026-01-27', orders: 30, revenue_usd: 5038.65, revenue_krw: 7306032 },
+  { date: '2026-01-28', orders: 29, revenue_usd: 4991.25, revenue_krw: 7237308 },
+  { date: '2026-01-29', orders: 22, revenue_usd: 3608.05, revenue_krw: 5231667 },
+  { date: '2026-01-30', orders: 19, revenue_usd: 3293.9, revenue_krw: 4776149 },
+  { date: '2026-01-31', orders: 22, revenue_usd: 3948.85, revenue_krw: 5725829 },
+  { date: '2026-02-01', orders: 18, revenue_usd: 2949.05, revenue_krw: 4276119 },
+  { date: '2026-02-02', orders: 26, revenue_usd: 3932.45, revenue_krw: 5702044 },
+  { date: '2026-02-03', orders: 23, revenue_usd: 3693.66, revenue_krw: 5355798 },
+  { date: '2026-02-04', orders: 17, revenue_usd: 2757.4, revenue_krw: 3998226 },
+  { date: '2026-02-05', orders: 25, revenue_usd: 4218.8, revenue_krw: 6117256 },
+  { date: '2026-02-06', orders: 22, revenue_usd: 3696.51, revenue_krw: 5359937 },
+  { date: '2026-02-07', orders: 25, revenue_usd: 4417.57, revenue_krw: 6405473 },
+  { date: '2026-02-08', orders: 21, revenue_usd: 3717.35, revenue_krw: 5390151 },
+  { date: '2026-02-09', orders: 29, revenue_usd: 4847.65, revenue_krw: 7029088 },
+  { date: '2026-02-10', orders: 23, revenue_usd: 3628.5, revenue_krw: 5261317 },
+  { date: '2026-02-11', orders: 15, revenue_usd: 2433.99, revenue_krw: 3529284 },
+  { date: '2026-02-12', orders: 23, revenue_usd: 3794.55, revenue_krw: 5502092 },
+  { date: '2026-02-13', orders: 17, revenue_usd: 2744.65, revenue_krw: 3979742 },
+  { date: '2026-02-14', orders: 21, revenue_usd: 3483.35, revenue_krw: 5050855 },
+  { date: '2026-02-15', orders: 3, revenue_usd: 438.6, revenue_krw: 635970 },
+  { date: '2026-02-16', orders: 13, revenue_usd: 2153.2, revenue_krw: 3122138 },
+  { date: '2026-02-17', orders: 9, revenue_usd: 1534.9, revenue_krw: 2225604 },
+  { date: '2026-02-18', orders: 10, revenue_usd: 1523.4, revenue_krw: 2208930 },
+  { date: '2026-02-19', orders: 11, revenue_usd: 1889.6, revenue_krw: 2739919 },
+  { date: '2026-02-20', orders: 12, revenue_usd: 2072.7, revenue_krw: 3005414 },
+  { date: '2026-02-21', orders: 12, revenue_usd: 1876.49, revenue_krw: 2720909 },
+  { date: '2026-02-22', orders: 16, revenue_usd: 2717.11, revenue_krw: 3939807 },
+  { date: '2026-02-23', orders: 15, revenue_usd: 2404.74, revenue_krw: 3486872 },
+  { date: '2026-02-24', orders: 10, revenue_usd: 1863.0, revenue_krw: 2701349 },
+  { date: '2026-02-25', orders: 8, revenue_usd: 1446.8, revenue_krw: 2097860 },
+  { date: '2026-02-26', orders: 21, revenue_usd: 3702.48, revenue_krw: 5368594 },
+  { date: '2026-02-27', orders: 14, revenue_usd: 2425.65, revenue_krw: 3517192 },
+  { date: '2026-02-28', orders: 10, revenue_usd: 1631.95, revenue_krw: 2366326 },
   { date: '2026-03-01', orders: 13, revenue_usd: 2320.5, revenue_krw: 3202290 },
   { date: '2026-03-02', orders: 15, revenue_usd: 2572.75, revenue_krw: 3550395 },
   { date: '2026-03-03', orders: 14, revenue_usd: 2359.8, revenue_krw: 3256524 },
@@ -630,11 +748,11 @@ function setQuick(mode, btn) {
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const map = {
-    all:   ['2026-03-01','2026-04-15'],
+    all:   ['2026-01-01','2026-04-15'],
+    jan:   ['2026-01-01','2026-01-31'],
+    feb:   ['2026-02-01','2026-02-28'],
     mar:   ['2026-03-01','2026-03-31'],
     apr:   ['2026-04-01','2026-04-15'],
-    week1: ['2026-04-01','2026-04-07'],
-    week2: ['2026-04-08','2026-04-14'],
     today: ['2026-04-15','2026-04-15'],
   };
   document.getElementById('startDate').value = map[mode][0];
