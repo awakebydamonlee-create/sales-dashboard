@@ -379,7 +379,7 @@
 <div class="charts-row">
   <div class="chart-card">
     <div class="chart-title">일별 매출 추이</div>
-    <div class="chart-sub" id="chart-range-label">2026.04.01 ~ 2026.04.15 / 원화 기준 (해외 1USD = 1,380원 환산)</div>
+    <div class="chart-sub" id="chart-range-label">2026.04.01 ~ 2026.04.15 / 원화 기준 (해외 1USD = 1,450원 환산)</div>
     <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
   </div>
   <div class="chart-card">
@@ -438,7 +438,7 @@
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
     <div>
       <div style="font-size:15px;font-weight:700;color:#1a1a2e">📋 국내 + 해외 합산 일별 매출</div>
-      <div style="font-size:12px;color:#94a3b8;margin-top:2px">해외는 $1 = ₩1,380 환산 기준</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:2px">해외는 $1 = ₩1,450 환산 기준</div>
     </div>
     <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;background:#dcfce7;color:#15803d">합산</span>
   </div>
@@ -667,7 +667,7 @@ function applyFilter() {
 
   // KPIs
   document.getElementById('kpi-total').textContent = fmtShort(totalKRW) + '원';
-  document.getElementById('kpi-total-sub').textContent = '원화 환산 기준 (해외 $1 = ₩1,380)';
+  document.getElementById('kpi-total-sub').textContent = '원화 환산 기준 (해외 $1 = ₩1,450)';
   document.getElementById('kpi-domestic').textContent = fmtShort(domRevTotal) + '원';
   document.getElementById('kpi-domestic-sub').textContent = domOrderTotal + '건 · 평균 ' + fmtShort(domOrderTotal > 0 ? domRevTotal / domOrderTotal : 0) + '원';
   document.getElementById('kpi-overseas').textContent = fmtUSD(ovsRevUSD);
@@ -678,7 +678,7 @@ function applyFilter() {
   // Chart range label
   const sl = start.replace('2026-', '').replace('-', '.') ;
   const el = end.replace('2026-', '').replace('-', '.');
-  document.getElementById('chart-range-label').textContent = `2026.${sl} ~ 2026.${el} / 원화 기준 (해외 1USD = 1,380원 환산)`;
+  document.getElementById('chart-range-label').textContent = `2026.${sl} ~ 2026.${el} / 원화 기준 (해외 1USD = 1,450원 환산)`;
 
   // Line Chart
   const allDates = [...new Set([...dom.map(r=>r.date), ...ovs.map(r=>r.date)])].sort();
