@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>매출 트래킹 대시보드</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif;
+    background: #f0f2f7;
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    color: white;
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .header-left h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .header-left p { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .header-badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: linear-gradient(90deg, #e8f4fd, #f0f8ff);
+    border-left: 4px solid #3b82f6;
+    margin: 20px 40px 0;
+    border-radius: 0 10px 10px 0;
+    padding: 14px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.1);
+  }
+  .alert-icon { font-size: 20px; margin-top: 1px; }
+  .alert-content h3 { font-size: 14px; font-weight: 700; color: #1d4ed8; margin-bottom: 6px; }
+  .alert-schedule { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+  .schedule-chip {
+    background: white;
+    border: 1px solid #bfdbfe;
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: #1e40af;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .schedule-chip.urgent { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+  .chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #3b82f6; }
+  .chip-dot.urgent { background: #f59e0b; }
+  .alert-close {
+    margin-left: auto;
+    cursor: pointer;
+    color: #94a3b8;
+    font-size: 18px;
+    padding: 0 4px;
+    transition: color 0.2s;
+  }
+  .alert-close:hover { color: #475569; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    background: white;
+    margin: 20px 40px 0;
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .filter-label { font-size: 13px; font-weight: 600; color: #64748b; white-space: nowrap; }
+  .date-group { display: flex; align-items: center; gap: 8px; }
+  .date-input {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #1a1a2e;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .date-input:focus { border-color: #3b82f6; }
+  .date-sep { color: #94a3b8; font-size: 13px; }
+  .quick-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .quick-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .quick-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+  .quick-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+  .apply-btn {
+    background: #1a1a2e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+    margin-left: auto;
+  }
+  .apply-btn:hover { background: #0f3460; }
+  .export-btn { background: #10b981; color: white; border: none; border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .export-btn:hover { background: #059669; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,.3); }
+  .store-toggle { display: flex; gap: 6px; margin-left: 8px; }
+  .store-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .store-btn.domestic { color: #0891b2; }
+  .store-btn.overseas { color: #7c3aed; }
+  .store-btn.active.domestic { background: #0891b2; color: white; border-color: #0891b2; }
+  .store-btn.active.overseas { background: #7c3aed; color: white; border-color: #7c3aed; }
+  .store-btn.active.both { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+
+  /* KPI CARDS */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 20px 40px 0;
+  }
+  .kpi-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-top: 3px solid transparent;
+    transition: transform 0.2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); }
+  .kpi-card.total { border-top-color: #1a1a2e; }
+  .kpi-card.domestic { border-top-color: #0891b2; }
+  .kpi-card.overseas { border-top-color: #7c3aed; }
+  .kpi-card.orders { border-top-color: #10b981; }
+  .kpi-label { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi-value { font-size: 26px; font-weight: 700; margin: 8px 0 4px; letter-spacing: -1px; }
+  .kpi-card.total .kpi-value { color: #1a1a2e; }
+  .kpi-card.domestic .kpi-value { color: #0891b2; }
+  .kpi-card.overseas .kpi-value { color: #7c3aed; }
+  .kpi-card.orders .kpi-value { color: #10b981; }
+  .kpi-sub { font-size: 12px; color: #94a3b8; }
+  .kpi-sub span { color: #10b981; font-weight: 600; }
+  .kpi-sub span.neg { color: #ef4444; }
+
+  /* CHARTS ROW */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin: 20px 40px 0;
+  }
+  .chart-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .chart-title { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+  .chart-sub { font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
+  .chart-wrap { position: relative; height: 240px; }
+
+  /* BOTTOM ROW */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 40px 28px;
+  }
+  .table-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .table-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .store-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.3px;
+  }
+  .store-badge.domestic { background: #e0f2fe; color: #0369a1; }
+  .store-badge.overseas { background: #ede9fe; color: #6d28d9; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left;
+    padding: 8px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1.5px solid #f1f5f9;
+  }
+  thead th:not(:first-child) { text-align: right; }
+  tbody td { padding: 10px 10px; border-bottom: 1px solid #f8fafc; }
+  tbody td:not(:first-child) { text-align: right; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
+  .td-date { font-weight: 600; color: #475569; }
+  .td-orders { color: #64748b; }
+  .td-revenue { font-weight: 700; color: #1a1a2e; }
+  .td-bar-wrap { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+  .td-bar { height: 4px; border-radius: 2px; min-width: 4px; }
+  .td-bar.domestic { background: #0891b2; }
+  .td-bar.overseas { background: #7c3aed; }
+
+  /* UPLOAD GUIDE */
+  .upload-guide {
+    background: white;
+    margin: 0 40px 28px;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .upload-guide-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .upload-guide-header h3 { font-size: 15px; font-weight: 700; }
+  .upload-guide-header .icon { font-size: 18px; }
+  .schedule-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .schedule-item {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+  }
+  .schedule-item.current { border-color: #10b981; background: #f0fdf4; }
+  .schedule-item.next { border-color: #f59e0b; background: #fffbeb; }
+  .schedule-item.future { border-color: #e2e8f0; background: #f8fafc; }
+  .sched-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #94a3b8; margin-bottom: 6px; }
+  .sched-period { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+  .sched-note { font-size: 12px; color: #64748b; }
+  .sched-status {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .sched-status.done { background: #dcfce7; color: #15803d; }
+  .sched-status.pending { background: #fef3c7; color: #92400e; }
+  .sched-status.future { background: #f1f5f9; color: #64748b; }
+
+  .no-data { text-align: center; padding: 40px; color: #94a3b8; font-size: 14px; }
+
+  @media (max-width: 1100px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .bottom-row { grid-template-columns: 1fr; }
+    .schedule-grid { grid-template-columns: 1fr; }
+    .filter-bar { padding: 16px; }
+    .kpi-grid, .charts-row, .bottom-row, .filter-bar, .alert-banner, .upload-guide { margin-left: 16px; margin-right: 16px; }
+    .header { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>📊 매출 트래킹 대시보드</h1>
+    <p>국내자사몰 + 해외자사몰 통합 데이터</p>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <a href="product_analytics.html" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:white;font-size:12px;padding:7px 16px;text-decoration:none;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🛍️ 상품 분석 →</a>
+    <div class="header-badge">마지막 업데이트: 2026.04.15 (3~4월 데이터)</div>
+  </div>
+</div>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner" id="alertBanner">
+  <div class="alert-icon">🔔</div>
+  <div class="alert-content">
+    <h3>데이터 업로드 안내</h3>
+    <p style="font-size:13px;color:#475569;">아래 일정에 맞춰 엑셀 파일을 업로드해 주세요. <b>국내자사몰</b>과 <b>해외자사몰</b> 각각 내려받아 제공해 주시면 됩니다.</p>
+    <div class="alert-schedule">
+      <div class="schedule-chip"><span class="chip-dot" style="background:#10b981"></span>현재 보유: 2026.03.01 ~ 04.15 ✓</div>
+      <div class="schedule-chip urgent"><span class="chip-dot urgent"></span>다음 업로드 권장: 04.16 ~ 04.30 (월말 데이터)</div>
+      <div class="schedule-chip"><span class="chip-dot"></span>그 다음: 05.01 ~ 05.15 (5월 상반기)</div>
+    </div>
+  </div>
+  <span class="alert-close" onclick="document.getElementById('alertBanner').style.display='none'">✕</span>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">기간 설정</span>
+  <div class="date-group">
+    <input type="date" class="date-input" id="startDate" value="2026-03-01">
+    <span class="date-sep">~</span>
+    <input type="date" class="date-input" id="endDate" value="2026-04-15">
+  </div>
+  <div class="quick-btns">
+    <button class="quick-btn active" onclick="setQuick('all',this)">전체 (3~4월)</button>
+    <button class="quick-btn" onclick="setQuick('mar',this)">3월 전체</button>
+    <button class="quick-btn" onclick="setQuick('apr',this)">4월 전체</button>
+    <button class="quick-btn" onclick="setQuick('week1',this)">4월 1주차</button>
+    <button class="quick-btn" onclick="setQuick('week2',this)">4월 2주차</button>
+    <button class="quick-btn" onclick="setQuick('today',this)">4.15</button>
+  </div>
+  <span class="filter-label" style="margin-left:16px;">채널</span>
+  <div class="store-toggle">
+    <button class="store-btn both active" id="btn-both" onclick="setStore('both')">전체</button>
+    <button class="store-btn domestic" id="btn-domestic" onclick="setStore('domestic')">국내</button>
+    <button class="store-btn overseas" id="btn-overseas" onclick="setStore('overseas')">해외</button>
+  </div>
+  <button class="apply-btn" onclick="applyFilter()">조회</button>
+  <button class="export-btn" onclick="exportToExcel()">📥 엑셀 다운로드</button>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid">
+  <div class="kpi-card total">
+    <div class="kpi-label">통합 총매출</div>
+    <div class="kpi-value" id="kpi-total">-</div>
+    <div class="kpi-sub" id="kpi-total-sub">-</div>
+  </div>
+  <div class="kpi-card domestic">
+    <div class="kpi-label">국내자사몰 매출</div>
+    <div class="kpi-value" id="kpi-domestic">-</div>
+    <div class="kpi-sub" id="kpi-domestic-sub">-</div>
+  </div>
+  <div class="kpi-card overseas">
+    <div class="kpi-label">해외자사몰 매출 (USD)</div>
+    <div class="kpi-value" id="kpi-overseas">-</div>
+    <div class="kpi-sub" id="kpi-overseas-sub">-</div>
+  </div>
+  <div class="kpi-card orders">
+    <div class="kpi-label">총 주문 건수</div>
+    <div class="kpi-value" id="kpi-orders">-</div>
+    <div class="kpi-sub" id="kpi-orders-sub">-</div>
+  </div>
+</div>
+
+<!-- CHARTS ROW -->
+<div class="charts-row">
+  <div class="chart-card">
+    <div class="chart-title">일별 매출 추이</div>
+    <div class="chart-sub" id="chart-range-label">2026.04.01 ~ 2026.04.15 / 원화 기준 (해외 1USD = 1,380원 환산)</div>
+    <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">채널별 매출 비중</div>
+    <div class="chart-sub">기간 내 원화 환산 기준</div>
+    <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+  </div>
+</div>
+
+<!-- DAILY TABLES -->
+<div class="bottom-row">
+  <div class="table-card">
+    <div class="table-header">
+      <div>
+        <div class="chart-title">국내자사몰 일별 현황</div>
+        <div class="chart-sub" style="margin-top:2px">유효 주문 (결제완료·배송·반품)</div>
+      </div>
+      <span class="store-badge domestic">국내</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>날짜</th>
+          <th>주문 수</th>
+          <th>매출 (KRW)</th>
+          <th>점유율</th>
+        </tr>
+      </thead>
+      <tbody id="domestic-table"></tbody>
+    </table>
+  </div>
+  <div class="table-card">
+    <div class="table-header">
+      <div>
+        <div class="chart-title">해외자사몰 일별 현황</div>
+        <div class="chart-sub" style="margin-top:2px">USD 기준 (₩ 환산 포함)</div>
+      </div>
+      <span class="store-badge overseas">해외</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>날짜</th>
+          <th>주문 수</th>
+          <th>매출 (USD)</th>
+          <th>환산 (KRW)</th>
+        </tr>
+      </thead>
+      <tbody id="overseas-table"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- UPLOAD SCHEDULE GUIDE -->
+<div class="upload-guide">
+  <div class="upload-guide-header">
+    <span class="icon">📅</span>
+    <h3>데이터 업로드 스케줄 가이드</h3>
+  </div>
+  <div class="schedule-grid">
+    <div class="schedule-item current">
+      <div class="sched-label">현재 데이터</div>
+      <div class="sched-period">2026년 4월 1일 ~ 15일</div>
+      <div class="sched-note">국내 570건 · 해외 260건 업로드 완료</div>
+      <span class="sched-status done">✓ 완료</span>
+    </div>
+    <div class="schedule-item next">
+      <div class="sched-label">다음 업로드 (권장)</div>
+      <div class="sched-period">2026년 4월 16일 ~ 30일</div>
+      <div class="sched-note">4월 30일 이후 → 국내·해외 각 파일 다운로드 후 제공</div>
+      <span class="sched-status pending">⏳ 대기</span>
+    </div>
+    <div class="schedule-item future">
+      <div class="sched-label">그 다음 업로드</div>
+      <div class="sched-period">2026년 5월 1일 ~ 15일</div>
+      <div class="sched-note">5월 15일 이후 업로드 예정</div>
+      <span class="sched-status future">예정</span>
+    </div>
+  </div>
+  <div style="margin-top:16px;padding:14px;background:#f8fafc;border-radius:10px;font-size:13px;color:#475569;line-height:1.6;">
+    💡 <b>업로드 방법:</b> 각 자사몰 관리자 > 주문 > 주문별 상세검색 > 기간 설정 후 엑셀 다운로드<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;국내몰과 해외몰 파일을 <b>각각 별도로</b> 내려받아 함께 제공해 주세요.
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const DOMESTIC = [
+  { date: '2026-03-01', orders: 22, revenue: 2826550 },
+  { date: '2026-03-02', orders: 24, revenue: 2990274 },
+  { date: '2026-03-03', orders: 18, revenue: 2114944 },
+  { date: '2026-03-04', orders: 44, revenue: 6313133 },
+  { date: '2026-03-05', orders: 40, revenue: 7861388 },
+  { date: '2026-03-06', orders: 49, revenue: 6046943 },
+  { date: '2026-03-07', orders: 30, revenue: 4107138 },
+  { date: '2026-03-08', orders: 36, revenue: 3794359 },
+  { date: '2026-03-09', orders: 30, revenue: 4236771 },
+  { date: '2026-03-10', orders: 38, revenue: 5220502 },
+  { date: '2026-03-11', orders: 32, revenue: 4635610 },
+  { date: '2026-03-12', orders: 43, revenue: 5131992 },
+  { date: '2026-03-13', orders: 28, revenue: 3280880 },
+  { date: '2026-03-14', orders: 29, revenue: 3583523 },
+  { date: '2026-03-15', orders: 29, revenue: 3666032 },
+  { date: '2026-03-16', orders: 40, revenue: 5016706 },
+  { date: '2026-03-17', orders: 38, revenue: 4761212 },
+  { date: '2026-03-18', orders: 27, revenue: 6075296 },
+  { date: '2026-03-19', orders: 22, revenue: 2580230 },
+  { date: '2026-03-20', orders: 17, revenue: 1688409 },
+  { date: '2026-03-21', orders: 18, revenue: 1772029 },
+  { date: '2026-03-22', orders: 28, revenue: 3163778 },
+  { date: '2026-03-23', orders: 24, revenue: 2590606 },
+  { date: '2026-03-24', orders: 16, revenue: 1818693 },
+  { date: '2026-03-25', orders: 28, revenue: 3034426 },
+  { date: '2026-03-26', orders: 25, revenue: 2552759 },
+  { date: '2026-03-27', orders: 14, revenue: 1841620 },
+  { date: '2026-03-28', orders: 17, revenue: 2097142 },
+  { date: '2026-03-29', orders: 26, revenue: 2965625 },
+  { date: '2026-03-30', orders: 25, revenue: 2785647 },
+  { date: '2026-03-31', orders: 18, revenue: 1474210 },
+  { date: '2026-04-01', orders: 30, revenue: 3913250 },
+  { date: '2026-04-02', orders: 22, revenue: 2479623 },
+  { date: '2026-04-03', orders: 30, revenue: 3518060 },
+  { date: '2026-04-04', orders: 27, revenue: 2793348 },
+  { date: '2026-04-05', orders: 36, revenue: 4150944 },
+  { date: '2026-04-06', orders: 36, revenue: 4048963 },
+  { date: '2026-04-07', orders: 40, revenue: 4422768 },
+  { date: '2026-04-08', orders: 46, revenue: 5469256 },
+  { date: '2026-04-09', orders: 33, revenue: 3720594 },
+  { date: '2026-04-10', orders: 34, revenue: 2859120 },
+  { date: '2026-04-11', orders: 36, revenue: 3728571 },
+  { date: '2026-04-12', orders: 39, revenue: 4298889 },
+  { date: '2026-04-13', orders: 36, revenue: 3592453 },
+  { date: '2026-04-14', orders: 45, revenue: 5054244 },
+  { date: '2026-04-15', orders: 30, revenue: 3058381 },
+];
+
+const OVERSEAS = [
+  { date: '2026-03-01', orders: 13, revenue_usd: 2320.5, revenue_krw: 3202290 },
+  { date: '2026-03-02', orders: 15, revenue_usd: 2572.75, revenue_krw: 3550395 },
+  { date: '2026-03-03', orders: 14, revenue_usd: 2359.8, revenue_krw: 3256524 },
+  { date: '2026-03-04', orders: 37, revenue_usd: 5712.07, revenue_krw: 7882656 },
+  { date: '2026-03-05', orders: 33, revenue_usd: 5461.56, revenue_krw: 7536952 },
+  { date: '2026-03-06', orders: 32, revenue_usd: 5226.65, revenue_krw: 7212776 },
+  { date: '2026-03-07', orders: 29, revenue_usd: 4477.78, revenue_krw: 6179336 },
+  { date: '2026-03-08', orders: 15, revenue_usd: 2193.38, revenue_krw: 3026864 },
+  { date: '2026-03-09', orders: 30, revenue_usd: 5105.16, revenue_krw: 7045120 },
+  { date: '2026-03-10', orders: 16, revenue_usd: 2482.42, revenue_krw: 3425739 },
+  { date: '2026-03-11', orders: 22, revenue_usd: 3693.23, revenue_krw: 5096657 },
+  { date: '2026-03-12', orders: 13, revenue_usd: 2004.97, revenue_krw: 2766858 },
+  { date: '2026-03-13', orders: 23, revenue_usd: 3568.06, revenue_krw: 4923922 },
+  { date: '2026-03-14', orders: 28, revenue_usd: 4752.29, revenue_krw: 6558160 },
+  { date: '2026-03-15', orders: 24, revenue_usd: 3563.42, revenue_krw: 4917519 },
+  { date: '2026-03-16', orders: 18, revenue_usd: 3280.63, revenue_krw: 4527269 },
+  { date: '2026-03-17', orders: 21, revenue_usd: 3549.89, revenue_krw: 4898848 },
+  { date: '2026-03-18', orders: 21, revenue_usd: 3313.83, revenue_krw: 4573085 },
+  { date: '2026-03-19', orders: 21, revenue_usd: 3503.64, revenue_krw: 4835023 },
+  { date: '2026-03-20', orders: 11, revenue_usd: 1865.32, revenue_krw: 2574141 },
+  { date: '2026-03-21', orders: 18, revenue_usd: 3263.35, revenue_krw: 4503423 },
+  { date: '2026-03-22', orders: 22, revenue_usd: 3862.2, revenue_krw: 5329836 },
+  { date: '2026-03-23', orders: 20, revenue_usd: 3021.37, revenue_krw: 4169490 },
+  { date: '2026-03-24', orders: 13, revenue_usd: 2036.24, revenue_krw: 2810011 },
+  { date: '2026-03-25', orders: 14, revenue_usd: 2135.73, revenue_krw: 2947307 },
+  { date: '2026-03-26', orders: 11, revenue_usd: 1549.84, revenue_krw: 2138779 },
+  { date: '2026-03-27', orders: 15, revenue_usd: 2340.3, revenue_krw: 3229613 },
+  { date: '2026-03-28', orders: 11, revenue_usd: 1651.55, revenue_krw: 2279139 },
+  { date: '2026-03-29', orders: 22, revenue_usd: 3429.05, revenue_krw: 4732089 },
+  { date: '2026-03-30', orders: 16, revenue_usd: 2691.51, revenue_krw: 3714283 },
+  { date: '2026-03-31', orders: 9, revenue_usd: 1516.05, revenue_krw: 2092149 },
+  { date: '2026-04-01', orders: 16, revenue_usd: 2692.74, revenue_krw: 3715981 },
+  { date: '2026-04-02', orders: 17, revenue_usd: 2528.1, revenue_krw: 3488778 },
+  { date: '2026-04-03', orders: 15, revenue_usd: 2536.76, revenue_krw: 3500728 },
+  { date: '2026-04-04', orders: 25, revenue_usd: 4120.96, revenue_krw: 5686924 },
+  { date: '2026-04-05', orders: 18, revenue_usd: 2564.24, revenue_krw: 3538651 },
+  { date: '2026-04-06', orders: 17, revenue_usd: 2520.96, revenue_krw: 3478924 },
+  { date: '2026-04-07', orders: 18, revenue_usd: 2955.32, revenue_krw: 4078341 },
+  { date: '2026-04-08', orders: 14, revenue_usd: 2117.49, revenue_krw: 2922136 },
+  { date: '2026-04-09', orders: 16, revenue_usd: 2409.29, revenue_krw: 3324820 },
+  { date: '2026-04-10', orders: 22, revenue_usd: 3451.48, revenue_krw: 4763042 },
+  { date: '2026-04-11', orders: 14, revenue_usd: 2608.15, revenue_krw: 3599247 },
+  { date: '2026-04-12', orders: 17, revenue_usd: 2107.06, revenue_krw: 2907742 },
+  { date: '2026-04-13', orders: 16, revenue_usd: 3068.26, revenue_krw: 4234198 },
+  { date: '2026-04-14', orders: 16, revenue_usd: 2586.84, revenue_krw: 3569839 },
+  { date: '2026-04-15', orders: 19, revenue_usd: 2910.29, revenue_krw: 4016200 },
+];
+
+let lineChart = null;
+let donutChart = null;
+let currentStore = 'both';
+
+// ===== UTILS =====
+function fmt(n) {
+  return Math.round(n).toLocaleString('ko-KR') + '원';
+}
+function fmtUSD(n) {
+  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+function fmtShort(n) {
+  if (n >= 100000000) return (n / 100000000).toFixed(1) + '억';
+  if (n >= 10000) return (n / 10000).toFixed(0) + '만';
+  return n.toLocaleString('ko-KR');
+}
+function dateInRange(d, start, end) {
+  return d >= start && d <= end;
+}
+function formatDateLabel(d) {
+  const parts = d.split('-');
+  return parts[1] + '/' + parts[2];
+}
+
+// ===== FILTER =====
+function getFilteredData() {
+  const s = document.getElementById('startDate').value;
+  const e = document.getElementById('endDate').value;
+  const dom = DOMESTIC.filter(r => dateInRange(r.date, s, e));
+  const ovs = OVERSEAS.filter(r => dateInRange(r.date, s, e));
+  return { dom, ovs, start: s, end: e };
+}
+
+function setQuick(mode, btn) {
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const map = {
+    all:   ['2026-03-01','2026-04-15'],
+    mar:   ['2026-03-01','2026-03-31'],
+    apr:   ['2026-04-01','2026-04-15'],
+    week1: ['2026-04-01','2026-04-07'],
+    week2: ['2026-04-08','2026-04-14'],
+    today: ['2026-04-15','2026-04-15'],
+  };
+  document.getElementById('startDate').value = map[mode][0];
+  document.getElementById('endDate').value   = map[mode][1];
+  applyFilter();
+}
+
+function setStore(store) {
+  currentStore = store;
+  document.querySelectorAll('.store-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + store).classList.add('active');
+  applyFilter();
+}
+
+// ===== RENDER =====
+function applyFilter() {
+  const { dom, ovs, start, end } = getFilteredData();
+
+  const domRevTotal = dom.reduce((a, r) => a + r.revenue, 0);
+  const domOrderTotal = dom.reduce((a, r) => a + r.orders, 0);
+  const ovsRevUSD = ovs.reduce((a, r) => a + r.revenue_usd, 0);
+  const ovsRevKRW = ovs.reduce((a, r) => a + r.revenue_krw, 0);
+  const ovsOrderTotal = ovs.reduce((a, r) => a + r.orders, 0);
+
+  let totalKRW = 0;
+  let totalOrders = 0;
+  if (currentStore === 'both') { totalKRW = domRevTotal + ovsRevKRW; totalOrders = domOrderTotal + ovsOrderTotal; }
+  else if (currentStore === 'domestic') { totalKRW = domRevTotal; totalOrders = domOrderTotal; }
+  else { totalKRW = ovsRevKRW; totalOrders = ovsOrderTotal; }
+
+  // KPIs
+  document.getElementById('kpi-total').textContent = fmtShort(totalKRW) + '원';
+  document.getElementById('kpi-total-sub').textContent = '원화 환산 기준 (해외 $1 = ₩1,380)';
+  document.getElementById('kpi-domestic').textContent = fmtShort(domRevTotal) + '원';
+  document.getElementById('kpi-domestic-sub').textContent = domOrderTotal + '건 · 평균 ' + fmtShort(domOrderTotal > 0 ? domRevTotal / domOrderTotal : 0) + '원';
+  document.getElementById('kpi-overseas').textContent = fmtUSD(ovsRevUSD);
+  document.getElementById('kpi-overseas-sub').textContent = ovsOrderTotal + '건 · ≈ ' + fmtShort(ovsRevKRW) + '원';
+  document.getElementById('kpi-orders').textContent = totalOrders.toLocaleString() + '건';
+  document.getElementById('kpi-orders-sub').textContent = '평균 ' + fmtShort(totalOrders > 0 ? totalKRW / totalOrders : 0) + '원/건';
+
+  // Chart range label
+  const sl = start.replace('2026-', '').replace('-', '.') ;
+  const el = end.replace('2026-', '').replace('-', '.');
+  document.getElementById('chart-range-label').textContent = `2026.${sl} ~ 2026.${el} / 원화 기준 (해외 1USD = 1,380원 환산)`;
+
+  // Line Chart
+  const labels = dom.map(r => formatDateLabel(r.date));
+  const domData = dom.map(r => r.revenue);
+  const ovsData = ovs.map(r => r.revenue_krw);
+  renderLineChart(labels, domData, ovsData);
+
+  // Donut
+  renderDonutChart(domRevTotal, ovsRevKRW);
+
+  // Tables
+  renderDomesticTable(dom, domRevTotal);
+  renderOverseasTable(ovs, ovsRevKRW);
+}
+
+function renderLineChart(labels, domData, ovsData) {
+  const ctx = document.getElementById('lineChart').getContext('2d');
+  if (lineChart) lineChart.destroy();
+
+  const datasets = [];
+  if (currentStore !== 'overseas') {
+    datasets.push({
+      label: '국내자사몰',
+      data: domData,
+      borderColor: '#0891b2',
+      backgroundColor: 'rgba(8,145,178,0.08)',
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: '#0891b2',
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      borderWidth: 2.5,
+    });
+  }
+  if (currentStore !== 'domestic') {
+    datasets.push({
+      label: '해외자사몰 (KRW환산)',
+      data: ovsData,
+      borderColor: '#7c3aed',
+      backgroundColor: 'rgba(124,58,237,0.06)',
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: '#7c3aed',
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      borderWidth: 2.5,
+    });
+  }
+
+  lineChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { usePointStyle: true, font: { size: 12 }, padding: 16 }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ' ' + ctx.dataset.label + ': ' + Math.round(ctx.parsed.y).toLocaleString('ko-KR') + '원';
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: {
+          grid: { color: '#f1f5f9' },
+          ticks: {
+            font: { size: 11 },
+            callback: v => (v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 10000 ? (v/10000).toFixed(0) + '만' : v)
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderDonutChart(domKRW, ovsKRW) {
+  const ctx = document.getElementById('donutChart').getContext('2d');
+  if (donutChart) donutChart.destroy();
+
+  let labels, data, colors;
+  if (currentStore === 'domestic') {
+    labels = ['국내자사몰'];
+    data = [domKRW];
+    colors = ['#0891b2'];
+  } else if (currentStore === 'overseas') {
+    labels = ['해외자사몰'];
+    data = [ovsKRW];
+    colors = ['#7c3aed'];
+  } else {
+    labels = ['국내자사몰', '해외자사몰'];
+    data = [domKRW, ovsKRW];
+    colors = ['#0891b2', '#7c3aed'];
+  }
+
+  const total = data.reduce((a, b) => a + b, 0);
+  donutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: 'white', hoverOffset: 8 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, font: { size: 12 }, padding: 14 }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const pct = ((ctx.parsed / total) * 100).toFixed(1);
+              return ' ' + ctx.label + ': ' + Math.round(ctx.parsed).toLocaleString() + '원 (' + pct + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderDomesticTable(dom, totalRev) {
+  const tbody = document.getElementById('domestic-table');
+  if (dom.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="no-data">데이터 없음</td></tr>'; return; }
+  const maxRev = Math.max(...dom.map(r => r.revenue));
+  tbody.innerHTML = dom.map(r => {
+    const pct = totalRev > 0 ? ((r.revenue / totalRev) * 100).toFixed(1) : 0;
+    const barW = totalRev > 0 ? Math.round((r.revenue / maxRev) * 60) : 0;
+    return `<tr>
+      <td class="td-date">${formatDateLabel(r.date)}</td>
+      <td class="td-orders">${r.orders}건</td>
+      <td class="td-revenue">${Math.round(r.revenue).toLocaleString('ko-KR')}원</td>
+      <td><div class="td-bar-wrap"><div class="td-bar domestic" style="width:${barW}px"></div><span style="font-size:11px;color:#64748b;white-space:nowrap">${pct}%</span></div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderOverseasTable(ovs, totalRevKRW) {
+  const tbody = document.getElementById('overseas-table');
+  if (ovs.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="no-data">데이터 없음</td></tr>'; return; }
+  tbody.innerHTML = ovs.map(r => {
+    return `<tr>
+      <td class="td-date">${formatDateLabel(r.date)}</td>
+      <td class="td-orders">${r.orders}건</td>
+      <td class="td-revenue">${fmtUSD(r.revenue_usd)}</td>
+      <td style="font-weight:600;color:#7c3aed;text-align:right">${Math.round(r.revenue_krw).toLocaleString('ko-KR')}원</td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== EXCEL EXPORT =====
+function exportToExcel() {
+  const s = document.getElementById('startDate').value;
+  const e = document.getElementById('endDate').value;
+  const sL = s.replace('2026-','').replace('-','.');
+  const eL = e.replace('2026-','').replace('-','.');
+  const chL = currentStore==='both'?'전체':currentStore==='domestic'?'국내':'해외';
+  const fileName = `매출현황_${sL}~${eL}_${chL}.xlsx`;
+
+  const wb = XLSX.utils.book_new();
+
+  // ── 시트 1: 일별 매출 현황 ──
+  const { dom, ovs } = getFilteredData();
+  const allDates = [...new Set([...dom.map(r=>r.date), ...ovs.map(r=>r.date)])].sort();
+  const domMap = Object.fromEntries(dom.map(r=>[r.date, r]));
+  const ovsMap = Object.fromEntries(ovs.map(r=>[r.date, r]));
+
+  const daily = [['날짜','국내 주문수','국내 매출 (KRW)','해외 주문수','해외 매출 (USD)','해외 매출 KRW환산','통합 매출 (KRW)']];
+  allDates.forEach(d => {
+    const dk = domMap[d]; const ok = ovsMap[d];
+    daily.push([
+      d,
+      dk ? dk.orders : 0,
+      dk ? dk.revenue : 0,
+      ok ? ok.orders : 0,
+      ok ? Math.round(ok.revenue_usd*100)/100 : 0,
+      ok ? ok.revenue_krw : 0,
+      (dk ? dk.revenue : 0) + (ok ? ok.revenue_krw : 0)
+    ]);
+  });
+  // 합계 행
+  const totDomOrders = dom.reduce((a,r)=>a+r.orders,0);
+  const totDomRev = dom.reduce((a,r)=>a+r.revenue,0);
+  const totOvsOrders = ovs.reduce((a,r)=>a+r.orders,0);
+  const totOvsUSD = ovs.reduce((a,r)=>a+r.revenue_usd,0);
+  const totOvsKRW = ovs.reduce((a,r)=>a+r.revenue_krw,0);
+  daily.push(['합계', totDomOrders, totDomRev, totOvsOrders, Math.round(totOvsUSD*100)/100, totOvsKRW, totDomRev+totOvsKRW]);
+
+  const ws1 = XLSX.utils.aoa_to_sheet(daily);
+  ws1['!cols'] = [{wch:12},{wch:10},{wch:18},{wch:10},{wch:14},{wch:18},{wch:18}];
+  XLSX.utils.book_append_sheet(wb, ws1, '일별 매출 현황');
+
+  // ── 시트 2: 국내 일별 ──
+  const domSheet = [['날짜','주문수','매출 (KRW)','평균 주문금액']];
+  dom.forEach(r => domSheet.push([r.date, r.orders, r.revenue, Math.round(r.revenue/r.orders)]));
+  const ws2 = XLSX.utils.aoa_to_sheet(domSheet);
+  ws2['!cols'] = [{wch:12},{wch:8},{wch:16},{wch:16}];
+  XLSX.utils.book_append_sheet(wb, ws2, '국내자사몰 일별');
+
+  // ── 시트 3: 해외 일별 ──
+  const ovsSheet = [['날짜','주문수','매출 (USD)','매출 KRW환산','평균 주문금액 USD']];
+  ovs.forEach(r => ovsSheet.push([r.date, r.orders, Math.round(r.revenue_usd*100)/100, r.revenue_krw, Math.round(r.revenue_usd/r.orders*100)/100]));
+  const ws3 = XLSX.utils.aoa_to_sheet(ovsSheet);
+  ws3['!cols'] = [{wch:12},{wch:8},{wch:14},{wch:16},{wch:18}];
+  XLSX.utils.book_append_sheet(wb, ws3, '해외자사몰 일별');
+
+  XLSX.writeFile(wb, fileName);
+}
+
+// ===== INIT =====
+applyFilter();
+</script>
+</body>
+</html>
