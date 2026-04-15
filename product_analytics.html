@@ -532,30 +532,83 @@ function renderCombos(data,elId,cnt){
 
 function renderCatChart(prods){
   dc('cat');
-  const cats={'Dimsum/Bao Bag':0,'Pillow Bag':0,'Backpack':0,'Tee/Tops':0,'Outer/Jacket':0,'Skirt/Dress':0,'기타':0};
+  const cats={'가방':0,'아우터웨어':0,'스웨트셔츠/니트':0,'셔츠/탑':0,'원피스':0,'스커트/팬츠':0,'액세서리/기타':0};
   prods.forEach(p=>{const n=p.name.toLowerCase(),q=p.total_qty;
-    if(n.includes('dimsum')||n.includes('bao bag'))cats['Dimsum/Bao Bag']+=q;
-    else if(n.includes('pillow bag'))cats['Pillow Bag']+=q;
-    else if(n.includes('backpack'))cats['Backpack']+=q;
-    else if(n.includes('tee')||n.includes('top')||n.includes('shirt')||n.includes('sleeveless'))cats['Tee/Tops']+=q;
-    else if(n.includes('jacket')||n.includes('jumper')||n.includes('hoodie')||n.includes('shouler'))cats['Outer/Jacket']+=q;
-    else if(n.includes('skirt')||n.includes('dress')||n.includes('shorts')||n.includes('pants'))cats['Skirt/Dress']+=q;
-    else cats['기타']+=q;
+    // 1. 가방 (최우선)
+    if(n.includes('dimsum bag')||n.includes('pillow bag')||n.includes('backpack')||
+       n.includes('dumpling bag')||n.includes('bao bag')){
+      cats['가방']+=q;
+    }
+    // 2. 스커트/팬츠 (knit skirt 같은 케이스 앞에 체크)
+    else if(n.includes('skirt')||n.includes('pants')||n.includes('shorts')){
+      cats['스커트/팬츠']+=q;
+    }
+    // 3. 원피스
+    else if(n.includes('dress')){
+      cats['원피스']+=q;
+    }
+    // 4. 아우터웨어: jacket, coat, jumper, dumble, varsity, puffer
+    else if(n.includes('jacket')||n.includes('coat')||n.includes('jumper')||
+            n.includes('dumble')||n.includes('varsity')||n.includes('puffer')){
+      cats['아우터웨어']+=q;
+    }
+    // 5. 스웨트셔츠/니트: hoodie, cardigan, sweatshirt, knit, shouler, jersey, fleece
+    else if(n.includes('hoodie')||n.includes('cardigan')||n.includes('sweatshirt')||
+            n.includes('knit')||n.includes('shouler')||n.includes('jersey')||
+            n.includes('fleece')||n.includes('college')||n.includes('velour')){
+      cats['스웨트셔츠/니트']+=q;
+    }
+    // 6. 셔츠/탑: tee, top, sleeveless, shirt, l/s
+    else if(n.includes('tee')||n.includes(' top')||n.includes('sleeveless')||
+            n.includes('shirt')||n.includes('l/s')){
+      cats['셔츠/탑']+=q;
+    }
+    // 7. 액세서리/기타
+    else{
+      cats['액세서리/기타']+=q;
+    }
   });
+  // 가방 세부 분류
+  const bagSub={'Dimsum Bag':0,'Pillow Bag':0,'Backpack':0,'Dumpling Bag':0,'Bao Bag':0};
+  prods.forEach(p=>{const n=p.name.toLowerCase(),q=p.total_qty;
+    if(n.includes('dimsum bag')) bagSub['Dimsum Bag']+=q;
+    else if(n.includes('pillow bag')) bagSub['Pillow Bag']+=q;
+    else if(n.includes('backpack')) bagSub['Backpack']+=q;
+    else if(n.includes('dumpling bag')) bagSub['Dumpling Bag']+=q;
+    else if(n.includes('bao bag')) bagSub['Bao Bag']+=q;
+  });
+
   const labels=Object.keys(cats).filter(k=>cats[k]>0);
   const data=labels.map(k=>cats[k]);
   const total=data.reduce((a,b)=>a+b,0);
-  const colors=['#0891b2','#7c3aed','#10b981','#f59e0b','#ef4444','#ec4899','#94a3b8'];
+  const colorMap={'가방':'#0891b2','아우터웨어':'#7c3aed','스웨트셔츠/니트':'#f59e0b','셔츠/탑':'#10b981','원피스':'#ec4899','스커트/팬츠':'#f97316','액세서리/기타':'#94a3b8'};
+  const colors=labels.map(l=>colorMap[l]||'#94a3b8');
   const ctx=document.getElementById('catChart').getContext('2d');
   charts.cat=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors.slice(0,labels.length),borderWidth:2,borderColor:'white',hoverOffset:5}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}개 (${((c.parsed/total)*100).toFixed(1)}%)`}}}}});
-  document.getElementById('catDetail').innerHTML=labels.map((l,i)=>`
-    <div style="display:flex;align-items:center;gap:5px;padding:4px 6px;background:#f8fafc;border-radius:6px">
-      <div style="width:7px;height:7px;border-radius:50%;background:${colors[i]};flex-shrink:0"></div>
-      <div style="font-size:10px;font-weight:600;flex:1">${l}</div>
-      <div style="font-size:10px;font-weight:700">${data[i]}개</div>
-      <div style="font-size:10px;color:#94a3b8">${((data[i]/total)*100).toFixed(0)}%</div>
-    </div>`).join('');
+
+  // 가방 세부 + 기타 카테고리 합쳐서 표시
+  const bagSubColors={'Dimsum Bag':'#0891b2','Pillow Bag':'#0ea5e9','Backpack':'#38bdf8','Dumpling Bag':'#6366f1','Bao Bag':'#818cf8'};
+  const bagTotal=cats['가방 (Bag)'];
+  document.getElementById('catDetail').innerHTML=`
+    ${labels.map((l,i)=>`
+    <div style="display:flex;align-items:center;gap:5px;padding:5px 7px;background:#f8fafc;border-radius:7px;${l==='가방 (Bag)'?'border:1.5px solid #bfdbfe':''}">
+      <div style="width:8px;height:8px;border-radius:50%;background:${colors[i]};flex-shrink:0"></div>
+      <div style="font-size:10px;font-weight:700;flex:1">${l}</div>
+      <div style="font-size:11px;font-weight:700">${data[i]}개</div>
+      <div style="font-size:10px;color:#94a3b8;width:28px;text-align:right">${((data[i]/total)*100).toFixed(0)}%</div>
+    </div>`).join('')}
+    ${bagTotal>0?`<div style="margin-top:6px;padding:7px 8px;background:#eff6ff;border-radius:8px;border-left:3px solid #0891b2">
+      <div style="font-size:10px;font-weight:700;color:#1d4ed8;margin-bottom:5px">📦 가방 세부 분류 (${bagTotal}개)</div>
+      ${Object.entries(bagSub).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+        <div style="width:6px;height:6px;border-radius:50%;background:${bagSubColors[k]};flex-shrink:0"></div>
+        <div style="font-size:10px;flex:1;color:#374151">${k}</div>
+        <div style="font-size:10px;font-weight:700;color:#1d4ed8">${v}개</div>
+        <div style="font-size:9px;color:#94a3b8;width:28px;text-align:right">${((v/bagTotal)*100).toFixed(0)}%</div>
+      </div>`).join('')}
+    </div>`:''}
+  `;
 }
 
 function renderMultiChart(){
