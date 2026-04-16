@@ -285,8 +285,8 @@ function renderReport(name){
     </div>
   </div>
   <div class="two">
-    <div class="card"><div class="ct">🛒 함께 구매한 상품 TOP 8</div><div class="cs">${periodLabel} · 국내+해외 기준</div><div style="height:260px"><canvas id="rc4"></canvas></div></div>
-    <div class="card"><div class="ct">📊 매출 순위 비교</div><div class="cs">${periodLabel} 기준 · 전체 ${d.tp}개 제품 중</div><div style="height:260px"><canvas id="rc3"></canvas></div></div>
+    <div class="card"><div class="ct">🛒 함께 구매한 상품 TOP 8</div><div class="cs">${periodLabel} · 국내+해외 기준 · 마우스 오버 시 전체 이름</div><div style="height:320px"><canvas id="rc4"></canvas></div></div>
+    <div class="card"><div class="ct">📊 매출 순위 비교</div><div class="cs">${periodLabel} 기준 · 전체 ${d.tp}개 제품 중 · 마우스 오버 시 전체 이름</div><div style="height:320px"><canvas id="rc3"></canvas></div></div>
   </div>
   `;
 
@@ -346,8 +346,8 @@ function renderCopChart(cop){
       {label:'해외',data:cop.map(x=>x.ovs),backgroundColor:'rgba(124,58,237,.8)',borderRadius:3,stack:'s'},
     ]},
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-      plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+c.parsed.x+'일'}}},
-      scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'},stacked:true},y:{ticks:{font:{size:8.5},autoSkip:false},grid:{display:false},stacked:true,afterFit(ax){ax.width=200;}}}
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{title:t=>[cop[t[0].dataIndex].name],label:c=>' '+c.dataset.label+': '+c.parsed.x+'일'}}},
+      scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'},stacked:true},y:{ticks:{font:{size:8},autoSkip:false},grid:{display:false},stacked:true,afterFit(ax){ax.width=230;}}}
     }
   });
 }
@@ -366,7 +366,7 @@ function renderRankChart(name, d, periodLabel){
     data:{labels:topNames.map(n=>n===name?'▶ '+(n.length>24?n.slice(0,24)+'…':n):(n.length>26?n.slice(0,26)+'…':n)),datasets:[{label:'매출(만원)',data:revs,backgroundColor:topNames.map(n=>n===name?'#6366f1cc':'#e2e8f080'),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₩'+c.parsed.x.toLocaleString()+'만',title:t=>[topNames[t[0].dataIndex],'('+periodLabel+')']}}},
-      scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:9.5},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=190;}}}
+      scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:8},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=230;}}}
     }
   });
 }
