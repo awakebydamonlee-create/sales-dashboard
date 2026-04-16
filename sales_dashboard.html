@@ -285,14 +285,101 @@
 
   .no-data { text-align: center; padding: 40px; color: #94a3b8; font-size: 14px; }
 
+  /* ===== TOP TREND CHART ===== */
+  .top-trend-card {
+    background: white;
+    margin: 20px 40px 0;
+    border-radius: 14px;
+    padding: 26px 28px 22px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    border-top: 3px solid #10b981;
+  }
+  .top-trend-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .top-trend-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a2e;
+    letter-spacing: -0.3px;
+  }
+  .top-trend-sub {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  .trend-toggle-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .trend-toggle { display: flex; gap: 6px; }
+  .trend-btn {
+    padding: 7px 22px;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #64748b;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .trend-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+  .trend-btn:hover:not(.active) { border-color: #94a3b8; color: #1a1a2e; }
+  .trend-legend {
+    display: flex;
+    gap: 22px;
+    margin-bottom: 18px;
+    align-items: center;
+  }
+  .legend-item {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block;
+  }
+  .legend-item.domestic .legend-dot { background: #0891b2; }
+  .legend-item.overseas .legend-dot { background: #7c3aed; }
+  .legend-item.combined .legend-dot { background: #10b981; }
+  .legend-item.domestic { color: #0891b2; }
+  .legend-item.overseas { color: #7c3aed; }
+  .legend-item.combined { color: #10b981; }
+  .top-trend-chart-wrap { position: relative; height: 320px; }
+  .trend-summary-row {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid #f1f5f9;
+    margin-top: 16px;
+    padding-top: 14px;
+  }
+  .trend-summary-item {
+    flex: 1;
+    text-align: center;
+    padding: 0 12px;
+    border-right: 1px solid #f1f5f9;
+  }
+  .trend-summary-item:last-child { border-right: none; }
+  .trend-summary-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+  .trend-summary-value { font-size: 15px; font-weight: 700; }
+  .trend-summary-value.domestic { color: #0891b2; }
+  .trend-summary-value.overseas { color: #7c3aed; }
+  .trend-summary-value.combined { color: #10b981; }
+
   @media (max-width: 1100px) {
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .charts-row { grid-template-columns: 1fr; }
     .bottom-row { grid-template-columns: 1fr; }
     .schedule-grid { grid-template-columns: 1fr; }
     .filter-bar { padding: 16px; }
-    .kpi-grid, .charts-row, .bottom-row, .filter-bar, .alert-banner, .upload-guide { margin-left: 16px; margin-right: 16px; }
+    .kpi-grid, .charts-row, .bottom-row, .filter-bar, .alert-banner, .upload-guide, .top-trend-card { margin-left: 16px; margin-right: 16px; }
     .header { padding: 20px 16px; }
+    .top-trend-chart-wrap { height: 240px; }
   }
 </style>
 </head>
@@ -304,10 +391,11 @@
     <h1>매출</h1>
     <p>국내자사몰 + 해외자사몰 통합 데이터</p>
   </div>
-  <div style="display:flex;gap:8px;align-items:center">
-    <a href="insights.html" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;font-size:12px;padding:7px 14px;text-decoration:none" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🔍 인사이트</a>
-    <a href="product_analytics.html" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:white;font-size:12px;padding:7px 16px;text-decoration:none;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🛍️ 상품 분석 →</a>
-    <div class="header-badge">마지막 업데이트: 2026.04.15 (2025~2026 국내·해외)</div>
+  <div style="display:flex;gap:6px;align-items:center">
+    <span style="background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);border-radius:8px;color:white;font-size:12px;font-weight:700;padding:7px 16px;cursor:default">📊 매출</span>
+    <a href="product_analytics.html" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.8);font-size:12px;padding:7px 16px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🛍️ 상품</a>
+    <a href="insights.html" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.8);font-size:12px;padding:7px 16px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🔍 인사이트</a>
+    <div class="header-badge">마지막 업데이트: 2026.04.16</div>
   </div>
 </div>
 
@@ -332,7 +420,7 @@
   <div class="date-group">
     <input type="date" class="date-input" id="startDate" value="2025-01-01">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-04-15">
+    <input type="date" class="date-input" id="endDate" value="2026-04-16">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)">전체</button>
@@ -341,7 +429,7 @@
     <button class="quick-btn" onclick="setQuick('26apr',this)">2026 1~4월</button>
     <button class="quick-btn" onclick="setQuick('25apr',this)">2025 1~4월</button>
     <button class="quick-btn" onclick="setQuick('mar',this)">2026.3월</button>
-    <button class="quick-btn" onclick="setQuick('today',this)">2026.4.15</button>
+    <button class="quick-btn" onclick="setQuick('today',this)">최신(4.16</button>
   </div>
   <span class="filter-label" style="margin-left:16px;">채널</span>
   <div class="store-toggle">
@@ -353,11 +441,46 @@
   <button class="export-btn" onclick="exportToExcel()">📥 엑셀 다운로드</button>
 </div>
 
+<!-- TOP TREND CHART -->
+<div class="top-trend-card">
+  <div class="top-trend-header">
+    <div>
+      <div class="top-trend-title">📈 매출 추이</div>
+      <div class="top-trend-sub" id="trend-range-sub">전체 기간 · 원화 환산 기준 ($1 = ₩1,450)</div>
+    </div>
+    <div class="trend-toggle-wrap">
+      <div class="trend-toggle">
+        <button class="trend-btn active" id="trend-monthly-btn" onclick="setTrendMode('monthly',this)">월별</button>
+        <button class="trend-btn" id="trend-daily-btn" onclick="setTrendMode('daily',this)">일별</button>
+      </div>
+    </div>
+  </div>
+  <div class="trend-legend">
+    <span class="legend-item domestic"><span class="legend-dot"></span>국내자사몰</span>
+    <span class="legend-item overseas"><span class="legend-dot"></span>해외자사몰</span>
+    <span class="legend-item combined"><span class="legend-dot"></span>합산</span>
+  </div>
+  <div class="top-trend-chart-wrap"><canvas id="topTrendChart"></canvas></div>
+  <div class="trend-summary-row">
+    <div class="trend-summary-item">
+      <div class="trend-summary-label">국내 총매출</div>
+      <div class="trend-summary-value domestic" id="trend-dom-total">—</div>
+    </div>
+    <div class="trend-summary-item">
+      <div class="trend-summary-label">해외 총매출 (환산)</div>
+      <div class="trend-summary-value overseas" id="trend-ovs-total">—</div>
+    </div>
+    <div class="trend-summary-item">
+      <div class="trend-summary-label">합산 총매출</div>
+      <div class="trend-summary-value combined" id="trend-combined-total">—</div>
+    </div>
+    <div class="trend-summary-item">
+      <div class="trend-summary-label">기간 내 표시 단위</div>
+      <div class="trend-summary-value" style="color:#64748b;font-size:14px" id="trend-unit-label">월별</div>
+    </div>
+  </div>
+</div>
 
-
-<!-- YoY 비교 배너 -->
-<div style="margin:14px 40px 0;background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:14px;padding:16px 22px;box-shadow:0 4px 16px rgba(0,0,0,.2)">
-  <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase">🔄 YoY 비교 — 2025 vs 2026 동기 대비 (국내·해외)</div>
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px;text-align:center">
       <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px">1월</div>
       <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:2px">국내 <span style="font-weight:700;color:#10b981">+74%</span></div>
@@ -996,7 +1119,7 @@ const DOMESTIC = [
   { date: '2026-04-12', orders: 39, revenue: 4298889 },
   { date: '2026-04-13', orders: 36, revenue: 3592453 },
   { date: '2026-04-14', orders: 45, revenue: 5054244 },
-  { date: '2026-04-15', orders: 30, revenue: 3058381 },
+  { date: '2026-04-15', orders: 48, revenue: 4980112 },
 ];
 
 const OVERSEAS = [
@@ -1411,11 +1534,14 @@ const OVERSEAS = [
   { date: '2026-04-13', orders: 16, revenue_usd: 3068.26, revenue_krw: 4234198 },
   { date: '2026-04-14', orders: 16, revenue_usd: 2586.84, revenue_krw: 3569839 },
   { date: '2026-04-15', orders: 19, revenue_usd: 2910.29, revenue_krw: 4016200 },
+  { date: '2026-04-16', orders: 12, revenue_usd: 1811.0, revenue_krw: 2625948 },
 ];
 
 let lineChart = null;
 let donutChart = null;
+let topTrendChart = null;
 let currentStore = 'both';
+let trendMode = 'monthly';
 
 // ===== UTILS =====
 function fmt(n) {
@@ -1456,7 +1582,7 @@ function setQuick(mode, btn) {
     '26apr':['2026-01-01','2026-04-15'],
     '25apr':['2025-01-01','2025-04-30'],
     mar:   ['2026-03-01','2026-03-31'],
-    today: ['2026-04-15','2026-04-15'],
+    today: ['2026-04-16','2026-04-16'],
   };
   document.getElementById('startDate').value = map[mode][0];
   document.getElementById('endDate').value   = map[mode][1];
@@ -1468,6 +1594,199 @@ function setStore(store) {
   document.querySelectorAll('.store-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('btn-' + store).classList.add('active');
   applyFilter();
+}
+
+// ===== TOP TREND CHART =====
+function setTrendMode(mode, btn) {
+  trendMode = mode;
+  document.querySelectorAll('.trend-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('trend-unit-label').textContent = mode === 'monthly' ? '월별' : '일별';
+  renderTopTrendChart();
+}
+
+function getMonthlyAggregated(dom, ovs) {
+  const monthMap = {};
+  dom.forEach(r => {
+    const m = r.date.slice(0, 7);
+    if (!monthMap[m]) monthMap[m] = { dom: 0, ovs: 0 };
+    monthMap[m].dom += r.revenue;
+  });
+  ovs.forEach(r => {
+    const m = r.date.slice(0, 7);
+    if (!monthMap[m]) monthMap[m] = { dom: 0, ovs: 0 };
+    monthMap[m].ovs += r.revenue_krw;
+  });
+  const months = Object.keys(monthMap).sort();
+  return {
+    labels: months.map(m => {
+      const [y, mo] = m.split('-');
+      return y.slice(2) + '.' + mo + '월';
+    }),
+    dom: months.map(m => monthMap[m].dom),
+    ovs: months.map(m => monthMap[m].ovs),
+    total: months.map(m => monthMap[m].dom + monthMap[m].ovs),
+  };
+}
+
+function getDailyAggregated(dom, ovs) {
+  const allDates = [...new Set([...dom.map(r => r.date), ...ovs.map(r => r.date)])].sort();
+  const domMap = Object.fromEntries(dom.map(r => [r.date, r]));
+  const ovsMap = Object.fromEntries(ovs.map(r => [r.date, r]));
+  return {
+    labels: allDates.map(d => formatDateLabel(d)),
+    dom: allDates.map(d => domMap[d] ? domMap[d].revenue : 0),
+    ovs: allDates.map(d => ovsMap[d] ? ovsMap[d].revenue_krw : 0),
+    total: allDates.map(d => (domMap[d] ? domMap[d].revenue : 0) + (ovsMap[d] ? ovsMap[d].revenue_krw : 0)),
+  };
+}
+
+function renderTopTrendChart() {
+  const { dom, ovs, start, end } = getFilteredData();
+  const data = trendMode === 'monthly' ? getMonthlyAggregated(dom, ovs) : getDailyAggregated(dom, ovs);
+  const isMonthly = trendMode === 'monthly';
+
+  // Update subtitle
+  const startLbl = start.replace(/-/g, '.').replace(/^20/, "'");
+  const endLbl = end.replace(/-/g, '.').replace(/^20/, "'");
+  document.getElementById('trend-range-sub').textContent =
+    `${startLbl} ~ ${endLbl} · 원화 환산 기준 ($1 = ₩1,450)`;
+
+  // Update summary row
+  const domTotal = data.dom.reduce((a, b) => a + b, 0);
+  const ovsTotal = data.ovs.reduce((a, b) => a + b, 0);
+  const combinedTotal = domTotal + ovsTotal;
+  document.getElementById('trend-dom-total').textContent = fmtShort(domTotal) + '원';
+  document.getElementById('trend-ovs-total').textContent = fmtShort(ovsTotal) + '원';
+  document.getElementById('trend-combined-total').textContent = fmtShort(combinedTotal) + '원';
+
+  const ctx = document.getElementById('topTrendChart').getContext('2d');
+  if (topTrendChart) topTrendChart.destroy();
+
+  const commonLineOpts = { tension: 0.35, pointHoverRadius: 6, borderWidth: 2.5 };
+
+  const datasets = isMonthly ? [
+    {
+      label: '국내자사몰',
+      data: data.dom,
+      type: 'bar',
+      backgroundColor: 'rgba(8,145,178,0.75)',
+      borderColor: '#0891b2',
+      borderWidth: 0,
+      borderRadius: 5,
+      order: 2,
+    },
+    {
+      label: '해외자사몰 (환산)',
+      data: data.ovs,
+      type: 'bar',
+      backgroundColor: 'rgba(124,58,237,0.72)',
+      borderColor: '#7c3aed',
+      borderWidth: 0,
+      borderRadius: 5,
+      order: 2,
+    },
+    {
+      label: '합산 (국내+해외)',
+      data: data.total,
+      type: 'line',
+      borderColor: '#10b981',
+      backgroundColor: 'rgba(16,185,129,0)',
+      fill: false,
+      ...commonLineOpts,
+      pointRadius: 5,
+      pointBackgroundColor: '#10b981',
+      pointBorderColor: 'white',
+      pointBorderWidth: 2,
+      borderWidth: 3,
+      order: 1,
+    },
+  ] : [
+    {
+      label: '국내자사몰',
+      data: data.dom,
+      borderColor: '#0891b2',
+      backgroundColor: 'rgba(8,145,178,0.08)',
+      fill: true,
+      ...commonLineOpts,
+      pointRadius: 2,
+    },
+    {
+      label: '해외자사몰 (환산)',
+      data: data.ovs,
+      borderColor: '#7c3aed',
+      backgroundColor: 'rgba(124,58,237,0.06)',
+      fill: true,
+      ...commonLineOpts,
+      pointRadius: 2,
+    },
+    {
+      label: '합산 (국내+해외)',
+      data: data.total,
+      borderColor: '#10b981',
+      backgroundColor: 'rgba(16,185,129,0)',
+      fill: false,
+      ...commonLineOpts,
+      borderDash: [5, 3],
+      pointRadius: 1,
+    },
+  ];
+
+  topTrendChart = new Chart(ctx, {
+    type: isMonthly ? 'bar' : 'line',
+    data: { labels: data.labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: false, // 커스텀 legend 사용
+        },
+        tooltip: {
+          backgroundColor: 'rgba(26,26,46,0.92)',
+          titleColor: '#e2e8f0',
+          bodyColor: '#e2e8f0',
+          padding: 12,
+          callbacks: {
+            title: ctx => (isMonthly ? '' : '') + ctx[0].label,
+            label: function(ctx) {
+              const v = Math.round(ctx.parsed.y);
+              return '  ' + ctx.dataset.label + ': ' + v.toLocaleString('ko-KR') + '원';
+            },
+            afterBody: function(ctxArr) {
+              // 합산이 이미 포함되므로 별도 표기 없음
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { size: isMonthly ? 12 : 10 },
+            maxRotation: isMonthly ? 0 : 45,
+            color: '#64748b',
+          },
+        },
+        y: {
+          grid: { color: 'rgba(241,245,249,0.8)', drawBorder: false },
+          ticks: {
+            font: { size: 11 },
+            color: '#94a3b8',
+            callback: v => {
+              if (v >= 100000000) return (v / 100000000).toFixed(1) + '억';
+              if (v >= 10000000) return (v / 10000000).toFixed(0) + '천만';
+              if (v >= 1000000) return (v / 1000000).toFixed(0) + '백만';
+              if (v >= 10000) return (v / 10000).toFixed(0) + '만';
+              return v;
+            }
+          },
+          beginAtZero: true,
+        }
+      }
+    }
+  });
 }
 
 // ===== RENDER =====
@@ -1500,6 +1819,9 @@ function applyFilter() {
   const sl = start.replace('2026-', '').replace('-', '.') ;
   const el = end.replace('2026-', '').replace('-', '.');
   document.getElementById('chart-range-label').textContent = `2026.${sl} ~ 2026.${el} / 원화 기준 (해외 1USD = 1,450원 환산)`;
+
+  // Top Trend Chart (상단 통합 그래프)
+  renderTopTrendChart();
 
   // Line Chart
   const allDates = [...new Set([...dom.map(r=>r.date), ...ovs.map(r=>r.date)])].sort();

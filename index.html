@@ -307,7 +307,7 @@
   <div style="display:flex;gap:8px;align-items:center">
     <a href="insights.html" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;font-size:12px;padding:7px 14px;text-decoration:none" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🔍 인사이트</a>
     <a href="product_analytics.html" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:8px;color:white;font-size:12px;padding:7px 16px;text-decoration:none;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">🛍️ 상품 분석 →</a>
-    <div class="header-badge">마지막 업데이트: 2026.04.15 (2025~2026 국내·해외)</div>
+    <div class="header-badge">마지막 업데이트: 2026.04.16</div>
   </div>
 </div>
 
@@ -332,7 +332,7 @@
   <div class="date-group">
     <input type="date" class="date-input" id="startDate" value="2025-01-01">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-04-15">
+    <input type="date" class="date-input" id="endDate" value="2026-04-16">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)">전체</button>
@@ -341,7 +341,7 @@
     <button class="quick-btn" onclick="setQuick('26apr',this)">2026 1~4월</button>
     <button class="quick-btn" onclick="setQuick('25apr',this)">2025 1~4월</button>
     <button class="quick-btn" onclick="setQuick('mar',this)">2026.3월</button>
-    <button class="quick-btn" onclick="setQuick('today',this)">2026.4.15</button>
+    <button class="quick-btn" onclick="setQuick('today',this)">최신(4.16</button>
   </div>
   <span class="filter-label" style="margin-left:16px;">채널</span>
   <div class="store-toggle">
@@ -355,9 +355,6 @@
 
 
 
-<!-- YoY 비교 배너 -->
-<div style="margin:14px 40px 0;background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:14px;padding:16px 22px;box-shadow:0 4px 16px rgba(0,0,0,.2)">
-  <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase">🔄 YoY 비교 — 2025 vs 2026 동기 대비 (국내·해외)</div>
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"><div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px;text-align:center">
       <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:4px">1월</div>
       <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:2px">국내 <span style="font-weight:700;color:#10b981">+74%</span></div>
@@ -996,7 +993,7 @@ const DOMESTIC = [
   { date: '2026-04-12', orders: 39, revenue: 4298889 },
   { date: '2026-04-13', orders: 36, revenue: 3592453 },
   { date: '2026-04-14', orders: 45, revenue: 5054244 },
-  { date: '2026-04-15', orders: 30, revenue: 3058381 },
+  { date: '2026-04-15', orders: 48, revenue: 4980112 },
 ];
 
 const OVERSEAS = [
@@ -1411,6 +1408,7 @@ const OVERSEAS = [
   { date: '2026-04-13', orders: 16, revenue_usd: 3068.26, revenue_krw: 4234198 },
   { date: '2026-04-14', orders: 16, revenue_usd: 2586.84, revenue_krw: 3569839 },
   { date: '2026-04-15', orders: 19, revenue_usd: 2910.29, revenue_krw: 4016200 },
+  { date: '2026-04-16', orders: 12, revenue_usd: 1811.0, revenue_krw: 2625948 },
 ];
 
 let lineChart = null;
@@ -1456,7 +1454,7 @@ function setQuick(mode, btn) {
     '26apr':['2026-01-01','2026-04-15'],
     '25apr':['2025-01-01','2025-04-30'],
     mar:   ['2026-03-01','2026-03-31'],
-    today: ['2026-04-15','2026-04-15'],
+    today: ['2026-04-16','2026-04-16'],
   };
   document.getElementById('startDate').value = map[mode][0];
   document.getElementById('endDate').value   = map[mode][1];
