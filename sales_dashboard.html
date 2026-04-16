@@ -372,13 +372,15 @@
   .trend-summary-value.combined { color: #10b981; }
 
   @media (max-width: 1100px) {
+    .nav-btns{flex-wrap:wrap;gap:5px}
+    .nav-btns a, .nav-btns span{font-size:11px;padding:5px 11px}
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .charts-row { grid-template-columns: 1fr; }
     .bottom-row { grid-template-columns: 1fr; }
     .schedule-grid { grid-template-columns: 1fr; }
     .filter-bar { padding: 16px; }
     .kpi-grid, .charts-row, .bottom-row, .filter-bar, .alert-banner, .upload-guide, .top-trend-card { margin-left: 16px; margin-right: 16px; }
-    .header { padding: 20px 16px; }
+    .header { padding: 20px 16px; flex-direction:column; align-items:flex-start; gap:10px; }
     .top-trend-chart-wrap { height: 240px; }
   }
 </style>
@@ -391,7 +393,7 @@
     <h1>매출</h1>
     <p>국내자사몰 + 해외자사몰 통합 데이터</p>
   </div>
-  <div style="display:flex;gap:6px;align-items:center">
+  <div class="nav-btns" style="display:flex;gap:6px;align-items:center">
     <span style="background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.4);border-radius:8px;color:white;font-size:12px;font-weight:700;padding:7px 16px;cursor:default">📊 매출</span>
     <a href="product_analytics.html" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.8);font-size:12px;padding:7px 16px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🛍️ 상품</a>
     <a href="insights.html" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.8);font-size:12px;padding:7px 16px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🔍 인사이트</a>

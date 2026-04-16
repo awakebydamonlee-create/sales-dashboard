@@ -15,6 +15,11 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
 .nav-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:rgba(255,255,255,.8);font-size:12px;font-weight:500;padding:7px 16px;cursor:pointer;text-decoration:none;font-family:inherit;transition:background .2s}
 .nav-btn:hover{background:rgba(255,255,255,.2);color:white}
 .nav-btn.active{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.4);color:white;font-weight:700;cursor:default;pointer-events:none}
+@media(max-width:600px){
+  .nav-mobile-wrap{flex-direction:column;align-items:flex-start;gap:10px}
+  .nav-btns{flex-wrap:wrap;gap:5px}
+  .nav-btn{font-size:11px;padding:5px 11px}
+}
 
 /* FILTER */
 .filter-bar{background:white;margin:20px 40px 0;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,.06)}

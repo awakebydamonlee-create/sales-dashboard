@@ -13,6 +13,11 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
 .nav-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:rgba(255,255,255,.8);font-size:12px;font-weight:500;padding:7px 16px;text-decoration:none;transition:background .2s}
 .nav-btn:hover{background:rgba(255,255,255,.2);color:white}
 .nav-btn.active{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.4);color:white;font-weight:700;cursor:default;pointer-events:none}
+@media(max-width:600px){
+  .nav-mobile-wrap{flex-direction:column;align-items:flex-start;gap:10px}
+  .nav-btns{flex-wrap:wrap;gap:5px}
+  .nav-btn{font-size:11px;padding:5px 11px}
+}
 .fbar{background:white;margin:16px 40px 0;border-radius:14px;padding:13px 20px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,.06)}
 .fl{font-size:11px;font-weight:600;color:#64748b;white-space:nowrap}
 .qb{padding:5px 12px;border-radius:8px;border:1.5px solid #e2e8f0;background:white;font-size:11px;font-weight:600;color:#64748b;cursor:pointer;font-family:inherit;transition:all .2s}
@@ -62,9 +67,9 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
 </style>
 </head>
 <body>
-<div class="hdr">
+<div class="hdr nav-mobile-wrap">
   <div><h1>인사이트</h1><p class="hdr-sub" id="hsub">전체 · 2025~2026</p></div>
-  <div style="display:flex;gap:6px">
+  <div class="nav-btns" style="display:flex;gap:6px">
     <a href="sales_dashboard.html" class="nav-btn">📊 매출</a>
     <a href="product_analytics.html" class="nav-btn">🛍️ 상품</a>
     <span class="nav-btn active">🔍 인사이트</span>
