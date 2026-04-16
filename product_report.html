@@ -288,15 +288,25 @@ function renderCopChart(cop){
     }
   });
 }
+function getPeriodRev(n){
+  const p=PROD[n];
+  return p.mdr.slice(fromIdx,toIdx+1).reduce((a,b)=>a+b,0)+p.mor.slice(fromIdx,toIdx+1).reduce((a,b)=>a+b,0);
+}
 function renderRankChart(name,d){
   dc('rc3');
-  const topNames=Object.keys(PROD).sort((a,b)=>PROD[a].r-PROD[b].r).slice(0,15);
-  if(d.r>15)topNames[14]=name;
+  // Rank all products by period revenue, take top 15
+  const allByRev=Object.keys(PROD).map(n=>({n,rev:getPeriodRev(n)})).sort((a,b)=>b.rev-a.rev);
+  const topNames=allByRev.slice(0,15).map(x=>x.n);
+  const curRank=allByRev.findIndex(x=>x.n===name)+1;
+  if(curRank>15)topNames[14]=name;
+  const revs=topNames.map(n=>Math.round(getPeriodRev(n)/10000));
+  const isFiltered=!(fromIdx===0&&toIdx===15);
+  const periodLabel=isFiltered?(MONTHS[fromIdx]+' ~ '+MONTHS[toIdx]):'전체 기간';
   charts.rc3=new Chart(document.getElementById('rc3').getContext('2d'),{type:'bar',
     data:{labels:topNames.map(n=>n===name?'▶ '+n.slice(0,22):n.slice(0,22)),
-      datasets:[{label:'매출(만원)',data:topNames.map(n=>Math.round(PROD[n].tr/10000)),backgroundColor:topNames.map(n=>n===name?'#6366f1cc':'#e2e8f080'),borderRadius:4}]},
+      datasets:[{label:'매출(만원)',data:revs,backgroundColor:topNames.map(n=>n===name?'#6366f1cc':'#e2e8f080'),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₩'+c.parsed.x.toLocaleString()+'만'}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₩'+c.parsed.x.toLocaleString()+'만',title:t=>[t[0].label.replace('▶ ',''),'('+periodLabel+')']}}},
       scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:9.5},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=190;}}}
     }
   });
