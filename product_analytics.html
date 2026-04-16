@@ -200,7 +200,7 @@ table.rt tbody tr:hover{background:#fafbff}
     <div id="catDetail" style="display:flex;flex-direction:column;gap:4px;margin-top:10px"></div>
   </div>
   <div class="card">
-    <div class="ct">👜 가방 상품 판매 순위</div><div class="cs">Dimsum · Pillow · Backpack · Dumpling · Bao Bag 전체</div>
+    <div class="ct">🏆 전체 상품 판매 순위</div><div class="cs" id="bagChartSub">시즌 전체 기준 · 판매수량 TOP 15</div>
     <div class="cw" style="height:320px"><canvas id="bagChart"></canvas></div>
   </div>
 </div>
@@ -451,23 +451,26 @@ function renderClothSection(prods){
 
 function renderBagChart(prods){
   dc('bag');
-  const bags=prods.filter(p=>{const n=p.name.toLowerCase();
-    return n.includes('dimsum bag')||n.includes('pillow bag')||n.includes('backpack')||
-           n.includes('dumpling bag')||n.includes('bao bag');
-  }).sort((a,b)=>b.total_qty-a.total_qty).slice(0,15);
-  if(!bags.length) return;
+  const top=prods.slice().sort((a,b)=>b.total_qty-a.total_qty).slice(0,15);
+  if(!top.length) return;
+  // Update subtitle with current season
+  const sub=document.getElementById('bagChartSub');
+  if(sub) sub.textContent='판매수량 TOP 15 · '+top.length+'개 상품';
+  // Dynamic height
+  const h=Math.max(280, top.length*38+60);
+  document.getElementById('bagChart').parentElement.style.height=h+'px';
   const ctx=document.getElementById('bagChart').getContext('2d');
   charts.bag=new Chart(ctx,{type:'bar',
-    data:{labels:bags.map(p=>p.name),datasets:[
-      {label:'국내',data:bags.map(p=>p.dom_qty),backgroundColor:'rgba(8,145,178,.82)',borderRadius:4,stack:'s'},
-      {label:'해외',data:bags.map(p=>p.ovs_qty),backgroundColor:'rgba(124,58,237,.82)',borderRadius:4,stack:'s'},
+    data:{labels:top.map(p=>p.name),datasets:[
+      {label:'국내',data:top.map(p=>p.dom_qty),backgroundColor:'rgba(8,145,178,.82)',borderRadius:4,stack:'s'},
+      {label:'해외',data:top.map(p=>p.ovs_qty),backgroundColor:'rgba(124,58,237,.82)',borderRadius:4,stack:'s'},
     ]},
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
       plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}},
-        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x}개`,title:t=>t[0].label}}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x}개`,title:t=>[t[0].label]}}},
       scales:{
         x:{stacked:true,ticks:{font:{size:10}},grid:{color:'#f1f5f9'}},
-        y:{stacked:true,ticks:{font:{size:10},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=200;}}
+        y:{stacked:true,ticks:{font:{size:9},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=220;}}
       }
     }
   });
