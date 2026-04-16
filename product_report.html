@@ -341,13 +341,13 @@ function renderCopChart(cop){
     return;
   }
   charts.rc4=new Chart(document.getElementById('rc4').getContext('2d'),{type:'bar',
-    data:{labels:cop.map(x=>splitLabel(x.name,24)),datasets:[
+    data:{labels:cop.map(x=>x.name.length>26?x.name.slice(0,26)+'…':x.name),datasets:[
       {label:'국내',data:cop.map(x=>x.dom),backgroundColor:'rgba(8,145,178,.8)',borderRadius:3,stack:'s'},
       {label:'해외',data:cop.map(x=>x.ovs),backgroundColor:'rgba(124,58,237,.8)',borderRadius:3,stack:'s'},
     ]},
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
       plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+c.parsed.x+'일'}}},
-      scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'},stacked:true},y:{ticks:{font:{size:9.5},autoSkip:false},grid:{display:false},stacked:true,afterFit(ax){ax.width=200;}}}
+      scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'},stacked:true},y:{ticks:{font:{size:8.5},autoSkip:false},grid:{display:false},stacked:true,afterFit(ax){ax.width=200;}}}
     }
   });
 }
@@ -363,9 +363,9 @@ function renderRankChart(name, d, periodLabel){
   const bar=document.getElementById('rankBar');
   if(bar)bar.style.width=Math.round((d.tp-curRank+1)/d.tp*100)+'%';
   charts.rc3=new Chart(document.getElementById('rc3').getContext('2d'),{type:'bar',
-    data:{labels:topNames.map(n=>n===name?['▶ '+splitLabel(n,22)[0],...splitLabel(n,22).slice(1)]:splitLabel(n,22)),datasets:[{label:'매출(만원)',data:revs,backgroundColor:topNames.map(n=>n===name?'#6366f1cc':'#e2e8f080'),borderRadius:4}]},
+    data:{labels:topNames.map(n=>n===name?'▶ '+(n.length>24?n.slice(0,24)+'…':n):(n.length>26?n.slice(0,26)+'…':n)),datasets:[{label:'매출(만원)',data:revs,backgroundColor:topNames.map(n=>n===name?'#6366f1cc':'#e2e8f080'),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₩'+c.parsed.x.toLocaleString()+'만',title:t=>[t[0].label.replace('▶ ',''),'('+periodLabel+')']}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₩'+c.parsed.x.toLocaleString()+'만',title:t=>[topNames[t[0].dataIndex],'('+periodLabel+')']}}},
       scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:9.5},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=190;}}}
     }
   });
