@@ -17,6 +17,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
 .fl{font-size:11px;font-weight:600;color:#64748b;white-space:nowrap}
 .qb{padding:5px 12px;border-radius:8px;border:1.5px solid #e2e8f0;background:white;font-size:11px;font-weight:600;color:#64748b;cursor:pointer;font-family:inherit;transition:all .2s}
 .qb:hover,.qb.active{background:#0f3460;color:white;border-color:#0f3460}
+#dtFrom:focus,#dtTo:focus{border-color:#0f3460;box-shadow:0 0 0 2px rgba(15,52,96,.15)}
 .sep{color:#e2e8f0;font-size:16px}
 .kstrip{display:flex;gap:0;margin:14px 40px 0;background:white;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden}
 .ki{flex:1;padding:13px 15px;border-right:1px solid #f1f5f9;position:relative}
@@ -67,23 +68,20 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
     <a href="sales_dashboard.html" class="nav-btn">📊 매출</a>
     <a href="product_analytics.html" class="nav-btn">🛍️ 상품</a>
     <span class="nav-btn active">🔍 인사이트</span>
+    <a href="product_report.html" class="nav-btn">📋 리포트</a>
   </div>
 </div>
 <div class="fbar">
-  <span class="fl">기간</span>
-  <button class="qb active" onclick="sp('all',this)">전체</button>
-  <button class="qb" onclick="sp('2025',this)">2025년</button>
-  <button class="qb" onclick="sp('2026',this)">2026년</button>
-  <span class="sep">|</span><span class="fl">2026</span>
-  <button class="qb" onclick="sp('2026-01',this)">1월</button>
-  <button class="qb" onclick="sp('2026-02',this)">2월</button>
-  <button class="qb" onclick="sp('2026-03',this)">3월</button>
-  <button class="qb" onclick="sp('2026-04',this)">4월</button>
-  <span class="sep">|</span><span class="fl" style="color:#7c3aed">2025</span>
-  <button class="qb" style="border-color:#7c3aed;color:#7c3aed" onclick="sp('2025-01',this)">1월</button>
-  <button class="qb" style="border-color:#7c3aed;color:#7c3aed" onclick="sp('2025-06',this)">6월</button>
-  <button class="qb" style="border-color:#7c3aed;color:#7c3aed" onclick="sp('2025-09',this)">9월</button>
-  <button class="qb" style="border-color:#7c3aed;color:#7c3aed" onclick="sp('2025-12',this)">12월</button>
+  <span class="fl">빠른 선택</span>
+  <button class="qb active" id="qb-all" onclick="sp('all',this)">전체</button>
+  <button class="qb" id="qb-2025" onclick="sp('2025',this)">2025년</button>
+  <button class="qb" id="qb-2026" onclick="sp('2026',this)">2026년</button>
+  <span class="sep">|</span>
+  <span class="fl">기간 지정</span>
+  <input type="month" id="dtFrom" min="2025-01" max="2026-04" value="2025-01" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
+  <span style="font-size:12px;color:#94a3b8">~</span>
+  <input type="month" id="dtTo" min="2025-01" max="2026-04" value="2026-04" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
+  <button onclick="applyDateRange()" style="background:#0f3460;color:white;border:none;border-radius:8px;padding:5px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">적용</button>
   <span class="fl" style="color:#94a3b8" id="pcnt"></span>
 </div>
 <div class="kstrip">
@@ -188,13 +186,73 @@ const CCN={US:'🇺🇸 미국',AU:'🇦🇺 호주',JP:'🇯🇵 일본',GB:'�
 const CCC={US:'#0891b2',AU:'#7c3aed',JP:'#ef4444',GB:'#10b981',SG:'#f59e0b'};
 const SC=['#7c3aed','#0891b2','#ec4899','#f59e0b','#10b981'];
 const CH10=['#0891b2','#7c3aed','#10b981','#f59e0b','#ef4444','#ec4899','#f97316','#06b6d4','#8b5cf6','#84cc16'];
-let C={},cur='all',cc='US';
+let C={},cur='all',cc='US',customRange=null;
 function dc(k){if(C[k]){C[k].destroy();C[k]=null;}}
-function sp(p,btn){document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');cur=p;rp();}
+function sp(p,btn){document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');cur=p;customRange=null;rp();}
+function onDateChange(){document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));}
+function applyDateRange(){
+  const f=document.getElementById('dtFrom').value,t=document.getElementById('dtTo').value;
+  if(!f||!t||f>t){alert('시작월이 종료월보다 앞이어야 합니다.');return;}
+  document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));
+  customRange={from:f,to:t};cur=null;rp();
+}
+function getMergedData(from,to){
+  const months=Object.keys(INS).filter(k=>/^\d{4}-\d{2}$/.test(k)&&k>=from&&k<=to).sort();
+  if(months.length===0)return INS['all'];
+  if(months.length===1)return INS[months[0]];
+  // Merge monthly data
+  const merged={dom_cnt:0,ovs_cnt:0,heatmap:Array.from({length:7},()=>new Array(24).fill(0)),
+    repeat:{repeat_cnt:0,total:0,repeat_aov:0,new_aov:0,repeat_rate:0,top_retention:[]},
+    country_top:{},aov_dom:{mean:0,labels:null,buckets:null},aov_ovs:{mean:0,labels:null,buckets:null},
+    season_monthly:{},season_labels:[]};
+  let domRev=0,ovsRev=0,repRevSum=0,repCntSum=0,newRevSum=0,newCntSum=0;
+  const retMap={};
+  months.forEach(m=>{
+    const D=INS[m];
+    merged.dom_cnt+=D.dom_cnt;merged.ovs_cnt+=D.ovs_cnt;
+    // heatmap
+    D.heatmap.forEach((row,d)=>row.forEach((v,h)=>merged.heatmap[d][h]+=v));
+    // repeat
+    merged.repeat.repeat_cnt+=D.repeat.repeat_cnt;
+    merged.repeat.total+=D.repeat.total;
+    repRevSum+=D.repeat.repeat_aov*D.repeat.repeat_cnt;repCntSum+=D.repeat.repeat_cnt;
+    newRevSum+=D.repeat.new_aov*(D.repeat.total-D.repeat.repeat_cnt);newCntSum+=(D.repeat.total-D.repeat.repeat_cnt);
+    // top_retention merge
+    (D.repeat.top_retention||[]).forEach(item=>{retMap[item.name]=(retMap[item.name]||0)+item.cnt;});
+    // country_top merge
+    Object.keys(D.country_top||{}).forEach(cc=>{
+      if(!merged.country_top[cc])merged.country_top[cc]=[];
+      const pmap={};merged.country_top[cc].forEach(p=>{pmap[p.name]=p;});
+      D.country_top[cc].forEach(p=>{if(pmap[p.name])pmap[p.name].qty+=p.qty;else{pmap[p.name]={name:p.name,qty:p.qty};merged.country_top[cc].push(pmap[p.name]);}});
+      merged.country_top[cc].sort((a,b)=>b.qty-a.qty);
+    });
+    // aov
+    const md=INS.mom_data.find(x=>x.month===m)||{};
+    domRev+=(md.dom_rev||D.aov_dom.mean*D.dom_cnt);ovsRev+=(md.ovs_rev||D.aov_ovs.mean*D.ovs_cnt);
+    if(!merged.aov_dom.labels){merged.aov_dom.labels=D.aov_dom.labels;merged.aov_dom.buckets=[...D.aov_dom.buckets];}
+    else D.aov_dom.buckets.forEach((v,i)=>merged.aov_dom.buckets[i]+=v);
+    if(!merged.aov_ovs.labels){merged.aov_ovs.labels=D.aov_ovs.labels;merged.aov_ovs.buckets=[...D.aov_ovs.buckets];}
+    else D.aov_ovs.buckets.forEach((v,i)=>merged.aov_ovs.buckets[i]+=v);
+    // season
+    Object.keys(D.season_monthly||{}).forEach(s=>{
+      if(!merged.season_monthly[s])merged.season_monthly[s]=[];
+      const sm=D.season_monthly[s];sm.forEach((v,i)=>{if(merged.season_monthly[s][i]==null)merged.season_monthly[s][i]=0;merged.season_monthly[s][i]+=v;});
+      if(!merged.season_labels.includes(s))merged.season_labels.push(s);
+    });
+  });
+  merged.repeat.repeat_rate=merged.repeat.total>0?Math.round(merged.repeat.repeat_cnt/merged.repeat.total*100):0;
+  merged.repeat.repeat_aov=repCntSum>0?Math.round(repRevSum/repCntSum):0;
+  merged.repeat.new_aov=newCntSum>0?Math.round(newRevSum/newCntSum):0;
+  merged.repeat.top_retention=Object.entries(retMap).map(([name,cnt])=>({name,cnt})).sort((a,b)=>b.cnt-a.cnt).slice(0,10);
+  merged.aov_dom.mean=merged.dom_cnt>0?Math.round(domRev/merged.dom_cnt):0;
+  merged.aov_ovs.mean=merged.ovs_cnt>0?+(ovsRev/merged.ovs_cnt/1450).toFixed(0):0;
+  merged.label=from+' ~ '+to;
+  return merged;
+}
 function lb(p){return{all:'전체','2025':'2025년','2026':'2026년','2026-01':'2026 1월','2026-02':'2026 2월','2026-03':'2026 3월','2026-04':'2026 4월','2025-01':'2025 1월','2025-06':'2025 6월','2025-09':'2025 9월','2025-12':'2025 12월'}[p]||p;}
 function rp(){
-  const D=INS[cur]||INS['all'];
-  const l=lb(cur);
+  const D=customRange?getMergedData(customRange.from,customRange.to):(INS[cur]||INS['all']);
+  const l=customRange?(customRange.from+' ~ '+customRange.to):lb(cur);
   document.getElementById('hsub').textContent=l+' · 국내 '+D.dom_cnt.toLocaleString()+'건 · 해외 '+D.ovs_cnt.toLocaleString()+'건';
   document.getElementById('pcnt').textContent='국내 '+D.dom_cnt.toLocaleString()+'건 · 해외 '+D.ovs_cnt.toLocaleString()+'건';
   ['l2','l3','l4','l7'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='· '+l;});
