@@ -167,14 +167,23 @@ function onInput(){
   list.classList.remove('hidden');
 }
 function onKey(e){if(e.key==='Enter')doSearch();if(e.key==='Escape')document.getElementById('suggestList').classList.add('hidden');}
-function selectProduct(name){document.getElementById('searchInput').value=name;document.getElementById('suggestList').classList.add('hidden');renderReport(name);}
+function selectProduct(name){
+  document.getElementById('searchInput').value=name;
+  const sl=document.getElementById('suggestList');
+  sl.classList.add('hidden');sl.innerHTML='';
+  renderReport(name);
+  setTimeout(()=>document.getElementById('dateBar').scrollIntoView({behavior:'smooth',block:'start'}),120);
+}
 function doSearch(){
   document.getElementById('suggestList').classList.add('hidden');
   const q=document.getElementById('searchInput').value.trim();
   if(!q)return;
-  if(PROD[q]){renderReport(q);return;}
+  if(PROD[q]){renderReport(q);setTimeout(()=>document.getElementById('dateBar').scrollIntoView({behavior:'smooth',block:'start'}),120);return;}
   const match=PRODUCT_LIST.find(p=>p.toLowerCase().includes(q.toLowerCase()));
-  if(match){renderReport(match);document.getElementById('searchInput').value=match;}
+  if(match){
+    renderReport(match);document.getElementById('searchInput').value=match;
+    setTimeout(()=>document.getElementById('dateBar').scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }
   else alert('제품을 찾을 수 없습니다: '+q);
 }
 document.addEventListener('click',e=>{if(!e.target.closest('.search-pos'))document.getElementById('suggestList').classList.add('hidden');});
