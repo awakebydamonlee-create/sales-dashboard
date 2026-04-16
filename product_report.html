@@ -56,6 +56,14 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
 .empty{text-align:center;padding:60px 20px;color:#94a3b8}
 .rev-rank-bar{height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;margin-top:6px}
 .rev-rank-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+.hbar-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f8fafc}
+.hbar-row:last-child{border-bottom:none}
+.hbar-label{font-size:11px;color:#374151;width:200px;min-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;cursor:default}
+.hbar-label.active{font-weight:700;color:#6366f1}
+.hbar-wrap{flex:1;display:flex;gap:2px;height:18px}
+.hbar-seg{height:100%;border-radius:3px;min-width:2px;transition:opacity .2s}
+.hbar-seg:hover{opacity:.8}
+.hbar-val{font-size:10px;font-weight:700;color:#64748b;min-width:36px;text-align:right}
 @media(max-width:1000px){.two{grid-template-columns:1fr}.hdr,.report-wrap,.search-wrap,.date-bar{margin-left:16px;margin-right:16px}.hdr{padding:15px}}
 </style>
 </head>
@@ -285,8 +293,8 @@ function renderReport(name){
     </div>
   </div>
   <div class="two">
-    <div class="card"><div class="ct">🛒 함께 구매한 상품 TOP 8</div><div class="cs">${periodLabel} · 국내+해외 기준 · 마우스 오버 시 전체 이름</div><div id="rc4wrap"><canvas id="rc4"></canvas></div></div>
-    <div class="card"><div class="ct">📊 매출 순위 비교</div><div class="cs">${periodLabel} 기준 · 전체 ${d.tp}개 제품 중 · 마우스 오버 시 전체 이름</div><div id="rc3wrap"><canvas id="rc3"></canvas></div></div>
+    <div class="card"><div class="ct">🛒 함께 구매한 상품 TOP 8</div><div class="cs">${periodLabel} · 국내+해외 기준 · 마우스 오버 시 전체 이름</div><div id="rc4wrap"></div></div>
+    <div class="card"><div class="ct">📊 매출 순위 비교</div><div class="cs">${periodLabel} 기준 · 전체 ${d.tp}개 제품 중 · 마우스 오버 시 전체 이름</div><div id="rc3wrap"></div></div>
   </div>
   `;
 
@@ -334,45 +342,39 @@ function renderDonutChart(agg, domPct, ovsPct){
   });
 }
 function renderCopChart(cop){
-  dc('rc4');
-  if(!cop.length){
-    const el=document.getElementById('rc4');
-    if(el){el.parentElement.innerHTML+='<div style="color:#94a3b8;font-size:13px;padding:40px 0;text-align:center">해당 기간 데이터 없음</div>';el.remove();}
-    return;
-  }
-  const rc4h=Math.max(240, cop.length*42+60);
-  document.getElementById('rc4wrap').style.height=rc4h+'px';
-  charts.rc4=new Chart(document.getElementById('rc4').getContext('2d'),{type:'bar',
-    data:{labels:cop.map(x=>x.name.length>26?x.name.slice(0,26)+'…':x.name),datasets:[
-      {label:'국내',data:cop.map(x=>x.dom),backgroundColor:'rgba(8,145,178,.8)',borderRadius:3,stack:'s'},
-      {label:'해외',data:cop.map(x=>x.ovs),backgroundColor:'rgba(124,58,237,.8)',borderRadius:3,stack:'s'},
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-      plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{title:t=>[cop[t[0].dataIndex].name],label:c=>' '+c.dataset.label+': '+c.parsed.x+'일'}}},
-      scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'},stacked:true},y:{ticks:{font:{size:8},autoSkip:false},grid:{display:false},stacked:true,afterFit(ax){ax.width=230;}}}
-    }
-  });
+  const wrap=document.getElementById('rc4wrap');
+  wrap.style.height='auto';
+  if(!cop.length){wrap.innerHTML='<div style="color:#94a3b8;font-size:13px;padding:40px 0;text-align:center">해당 기간 데이터 없음</div>';return;}
+  const maxVal=Math.max(...cop.map(x=>x.total),1);
+  const legend='<div style="display:flex;gap:14px;margin-bottom:8px;font-size:11px"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:rgba(8,145,178,.8);display:inline-block"></span>국내</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:rgba(124,58,237,.8);display:inline-block"></span>해외</span></div>';
+  wrap.innerHTML=legend+cop.map((x,i)=>{
+    const dw=Math.round(x.dom/maxVal*100),ow=Math.round(x.ovs/maxVal*100);
+    return '<div class="hbar-row" title="'+x.name+'"><div class="hbar-label" title="'+x.name+'">'+x.name+'</div><div class="hbar-wrap"><div class="hbar-seg" style="width:'+dw+'%;background:rgba(8,145,178,.8)" title="국내: '+x.dom+'일"></div><div class="hbar-seg" style="width:'+ow+'%;background:rgba(124,58,237,.8)" title="해외: '+x.ovs+'일"></div></div><div class="hbar-val">'+x.total+'</div></div>';
+  }).join('');
 }
 function renderRankChart(name, d, periodLabel){
-  dc('rc3');
-  const allByRev=Object.keys(PROD).map(n=>{return {n,rev:getPeriodRev(n)};  }).sort((a,b)=>b.rev-a.rev);
+  const allByRev=Object.keys(PROD).map(n=>({n,rev:getPeriodRev(n)})).sort((a,b)=>b.rev-a.rev);
   const topNames=allByRev.slice(0,15).map(x=>x.n);
   const curRank=allByRev.findIndex(x=>x.n===name)+1;
   if(curRank>15)topNames[14]=name;
   const revs=topNames.map(n=>Math.round(getPeriodRev(n)/10000));
+  const maxRev=Math.max(...revs,1);
   const el=document.getElementById('rankNum');
   if(el){el.textContent=curRank+'위 / '+d.tp+'개';el.style.color='#f59e0b';}
   const bar=document.getElementById('rankBar');
   if(bar)bar.style.width=Math.round((d.tp-curRank+1)/d.tp*100)+'%';
-  const rc3h=Math.max(240, topNames.length*42+60);
-  document.getElementById('rc3wrap').style.height=rc3h+'px';
-  charts.rc3=new Chart(document.getElementById('rc3').getContext('2d'),{type:'bar',
-    data:{labels:topNames.map(n=>n===name?'▶ '+(n.length>24?n.slice(0,24)+'…':n):(n.length>26?n.slice(0,26)+'…':n)),datasets:[{label:'매출(만원)',data:revs,backgroundColor:topNames.map(n=>n===name?'#6366f1cc':'#e2e8f080'),borderRadius:4}]},
-    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₩'+c.parsed.x.toLocaleString()+'만',title:t=>[topNames[t[0].dataIndex],'('+periodLabel+')']}}},
-      scales:{x:{ticks:{font:{size:9}},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:8},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=230;}}}
-    }
-  });
+  const wrap=document.getElementById('rc3wrap');
+  wrap.style.height='auto';
+  wrap.innerHTML=topNames.map((n,i)=>{
+    const isCur=n===name;
+    const w=Math.round(revs[i]/maxRev*100);
+    const rk=allByRev.findIndex(x=>x.n===n)+1;
+    return '<div class="hbar-row">'+
+      '<div class="hbar-label'+(isCur?' active':'')+'" title="'+n+'">'+(isCur?'▶ ':rk+'. ')+n+'</div>'+
+      '<div class="hbar-wrap"><div class="hbar-seg" style="width:'+w+'%;background:'+(isCur?'#6366f1':'rgba(99,102,241,.3)')+'" title="'+n+': ₩'+revs[i].toLocaleString()+'만"></div></div>'+
+      '<div class="hbar-val">'+revs[i].toLocaleString()+'만</div>'+
+    '</div>';
+  }).join('');
 }
 (function(){
   const p=new URLSearchParams(window.location.search).get('product');
