@@ -409,7 +409,7 @@
     <h3>데이터 업로드 안내</h3>
     <p style="font-size:13px;color:#475569;">아래 일정에 맞춰 엑셀 파일을 업로드해 주세요. <b>국내자사몰</b>과 <b>해외자사몰</b> 각각 내려받아 제공해 주시면 됩니다.</p>
     <div class="alert-schedule">
-      <div class="schedule-chip"><span class="chip-dot" style="background:#10b981"></span>현재 보유: 2025.01.01 ~ 2026.04.15 ✓ (국내 2년치)</div>
+      <div class="schedule-chip"><span class="chip-dot" style="background:#10b981"></span>현재 보유: 2025.01.01 ~ 2026.04.16 ✓ (국내 2년치)</div>
       <div class="schedule-chip urgent"><span class="chip-dot urgent"></span>다음 업로드 권장: 04.16 ~ 04.30 (월말 데이터)</div>
       <div class="schedule-chip"><span class="chip-dot"></span>그 다음: 05.01 ~ 05.15 (5월 상반기)</div>
     </div>
@@ -432,7 +432,7 @@
     <button class="quick-btn" onclick="setQuick('26apr',this)">2026 1~4월</button>
     <button class="quick-btn" onclick="setQuick('25apr',this)">2025 1~4월</button>
     <button class="quick-btn" onclick="setQuick('mar',this)">2026.3월</button>
-    <button class="quick-btn" onclick="setQuick('today',this)">최신(4.16</button>
+    <button class="quick-btn" onclick="setQuick('today',this)">04.16</button>
   </div>
   <span class="filter-label" style="margin-left:16px;">채널</span>
   <div class="store-toggle">
@@ -1581,10 +1581,10 @@ function setQuick(mode, btn) {
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const map = {
-    all:   ['2025-01-01','2026-04-15'],
+    all:   ['2025-01-01','2026-04-16'],
     y2025: ['2025-01-01','2025-12-31'],
-    y2026: ['2026-01-01','2026-04-15'],
-    '26apr':['2026-01-01','2026-04-15'],
+    y2026: ['2026-01-01','2026-04-16'],
+    '26apr':['2026-01-01','2026-04-16'],
     '25apr':['2025-01-01','2025-04-30'],
     mar:   ['2026-03-01','2026-03-31'],
     today: ['2026-04-16','2026-04-16'],
