@@ -1,361 +1,234 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>인사이트</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<meta charset="UTF-8"><title>인사이트</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;background:#f0f2f7;color:#1a1a2e}
-.hdr{background:linear-gradient(135deg,#0f3460,#16213e,#1a1a2e);color:white;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(0,0,0,.3)}
-.hdr h1{font-size:20px;font-weight:700}
-.hdr-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
-.nav-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:rgba(255,255,255,.8);font-size:12px;font-weight:500;padding:7px 16px;text-decoration:none;transition:background .2s}
-.nav-btn:hover{background:rgba(255,255,255,.2);color:white}
-.nav-btn.active{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.4);color:white;font-weight:700;cursor:default;pointer-events:none}
-@media(max-width:600px){
-  .nav-mobile-wrap{flex-direction:column;align-items:flex-start;gap:10px}
-  .nav-btns{flex-wrap:wrap;gap:5px}
-  .nav-btn{font-size:11px;padding:5px 11px}
-}
-.fbar{background:white;margin:16px 40px 0;border-radius:14px;padding:13px 20px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.fl{font-size:11px;font-weight:600;color:#64748b;white-space:nowrap}
-.qb{padding:5px 12px;border-radius:8px;border:1.5px solid #e2e8f0;background:white;font-size:11px;font-weight:600;color:#64748b;cursor:pointer;font-family:inherit;transition:all .2s}
-.qb:hover,.qb.active{background:#0f3460;color:white;border-color:#0f3460}
-#dtFrom:focus,#dtTo:focus{border-color:#0f3460;box-shadow:0 0 0 2px rgba(15,52,96,.15)}
-.sep{color:#e2e8f0;font-size:16px}
-.kstrip{display:flex;gap:0;margin:14px 40px 0;background:white;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden}
-.ki{flex:1;padding:13px 15px;border-right:1px solid #f1f5f9;position:relative}
-.ki:last-child{border-right:none}
-.kl{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.kv{font-size:18px;font-weight:700;letter-spacing:-.5px}
-.ks{font-size:10px;color:#64748b;margin-top:2px}
-.bdg{position:absolute;top:9px;right:9px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px}
-.bu{background:#dcfce7;color:#15803d}.bi{background:#e0f2fe;color:#0369a1}
-.sec{margin:13px 40px 0}.sec:last-child{margin-bottom:28px}
-.st{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:9px;display:flex;align-items:center;gap:6px}
-.ss{font-size:11px;font-weight:400;color:#94a3b8}
-.card{background:white;border-radius:14px;padding:17px 19px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.ct{font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:2px}
-.cs{font-size:11px;color:#94a3b8;margin-bottom:11px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
-.cw{position:relative}
-.hmg{display:grid;grid-template-columns:28px repeat(24,1fr);gap:1.5px;min-width:540px}
-.hmc{height:25px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:rgba(255,255,255,.9)}
-.hml{font-size:10px;font-weight:600;color:#64748b;display:flex;align-items:center;justify-content:center;height:25px}
-.rt{width:100%;border-collapse:collapse;font-size:12px}
-.rt th{padding:7px 9px;text-align:left;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;border-bottom:2px solid #f1f5f9}
-.rt th.r{text-align:right}.rt td{padding:7px 9px;border-bottom:1px solid #f8fafc}
-.rt td.r{text-align:right}.rt tr:hover td{background:#f8fafc}
-.ctabs{display:flex;gap:6px;margin-bottom:11px;flex-wrap:wrap}
-.ctab{padding:4px 11px;border-radius:18px;border:1.5px solid #e2e8f0;background:white;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:#64748b;transition:all .2s}
-.ctab.active{background:#1a1a2e;color:white;border-color:#1a1a2e}
-.aovr{display:flex;align-items:center;gap:7px;margin-bottom:4px}
-.aovl{font-size:11px;color:#475569;width:65px;flex-shrink:0;text-align:right}
-.aovb{flex:1;height:19px;background:#f1f5f9;border-radius:4px;overflow:hidden}
-.aovf{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:5px}
-.aovt{font-size:10px;font-weight:700;color:white;white-space:nowrap}
-.aovc{font-size:11px;font-weight:600;color:#475569;width:44px;text-align:right;flex-shrink:0}
-.ib{background:linear-gradient(135deg,#f8fafc,#eff6ff);border:1.5px solid #bfdbfe;border-radius:10px;padding:10px 13px;font-size:11px;color:#1e40af;line-height:1.75;margin-top:9px}
-.ib strong{color:#1d4ed8}
-.ibw{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#f59e0b;color:#92400e}
-.ibw strong{color:#b45309}
-.scard{background:white;border-radius:12px;padding:13px;box-shadow:0 2px 10px rgba(0,0,0,.05);border-left:3px solid transparent;transition:transform .15s}
-.scard:hover{transform:translateY(-2px)}
-@media(max-width:1100px){.two,.three{grid-template-columns:1fr}.sec,.kstrip,.fbar{margin-left:16px;margin-right:16px}.hdr{padding:15px}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;background:#f4f6f9;color:#1a202c}
+.nav{background:#0f1823;color:#fff;padding:18px 28px;display:flex;justify-content:space-between;align-items:center}
+.nav h1{font-size:20px;font-weight:700}
+.nav .sub{font-size:12px;color:#94a3b8;margin-top:4px}
+.nav .tabs{display:flex;gap:8px}
+.nav .tabs a{background:#1e293b;color:#e2e8f0;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:13px}
+.nav .tabs a.active{background:#f59e0b;color:#fff}
+.container{max-width:1400px;margin:0 auto;padding:24px}
+.panel{background:#fff;padding:18px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.05);margin-bottom:16px}
+.panel h3{font-size:14px;font-weight:600;margin-bottom:14px;color:#0f172a;display:flex;align-items:center;gap:6px}
+.panel h3 .hint{font-size:11px;color:#94a3b8;font-weight:400;margin-left:8px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.metric{background:#fff;padding:16px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.05);text-align:center}
+.metric .l{font-size:11px;color:#64748b;margin-bottom:6px;font-weight:500}
+.metric .v{font-size:22px;font-weight:700}
+.metric .s{font-size:11px;color:#94a3b8;margin-top:4px}
+.m1 .v{color:#0891b2} .m2 .v{color:#8b5cf6} .m3 .v{color:#10b981} .m4 .v{color:#f59e0b}
+.chart-wrap{position:relative;height:280px}
+.chart-wrap.sm{height:220px}
+.chart-wrap.lg{height:420px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:right;padding:8px 10px;border-bottom:1px solid #f1f5f9}
+th{background:#f8fafc;color:#64748b;font-weight:600;font-size:11px;text-transform:uppercase}
+th:first-child,td:first-child{text-align:left}
+tbody tr:hover{background:#f8fafc}
+.flag{display:inline-block;width:22px;text-align:center;margin-right:4px}
+.callout{background:#fef3c7;border-left:4px solid #f59e0b;padding:12px 14px;border-radius:6px;margin-bottom:16px;font-size:13px;color:#78350f}
+.footer{text-align:center;color:#94a3b8;font-size:12px;padding:20px}
 </style>
 </head>
 <body>
-<div class="hdr nav-mobile-wrap">
-  <div><h1>인사이트</h1><p class="hdr-sub" id="hsub">전체 · 2025~2026</p></div>
-  <div class="nav-btns" style="display:flex;gap:6px">
-    <a href="sales_dashboard.html" class="nav-btn">📊 매출</a>
-    <a href="product_analytics.html" class="nav-btn">🛍️ 상품</a>
-    <span class="nav-btn active">🔍 인사이트</span>
-    <a href="product_report.html" class="nav-btn">📋 리포트</a>
-  </div>
+<div class="nav">
+ <div>
+  <h1>🔎 인사이트</h1>
+  <div class="sub">고객·지역·행동 분석 · 2025-01-01 ~ 2026-04-22</div>
+ </div>
+ <div class="tabs">
+  <a href="sales_dashboard.html">📊 매출</a>
+  <a href="product_report.html">📦 상품리포트</a>
+  <a href="product_analytics.html">🛍️ 상품</a>
+  <a href="insights.html" class="active">🔎 인사이트</a>
+ </div>
 </div>
-<div class="fbar">
-  <span class="fl">빠른 선택</span>
-  <button class="qb active" id="qb-all" onclick="sp('all',this)">전체</button>
-  <button class="qb" id="qb-2025" onclick="sp('2025',this)">2025년</button>
-  <button class="qb" id="qb-2026" onclick="sp('2026',this)">2026년</button>
-  <span class="sep">|</span>
-  <span class="fl">기간 지정</span>
-  <input type="date" id="dtFrom" min="2025-01-01" max="2026-04-21" value="2025-01-01" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
-  <span style="font-size:12px;color:#94a3b8">~</span>
-  <input type="date" id="dtTo" min="2025-01-01" max="2026-04-21" value="2026-04-21" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
-  <button onclick="applyDateRange()" style="background:#0f3460;color:white;border:none;border-radius:8px;padding:5px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">적용</button>
-  <span class="fl" style="color:#94a3b8" id="pcnt"></span>
+
+<div class="container">
+
+ <div class="row3">
+  <div class="metric m1"><div class="l">국내 평균주문금액 (AOV)</div><div class="v" id="aov-dom">-</div><div class="s">주문당 평균 결제액</div></div>
+  <div class="metric m2"><div class="l">해외 평균주문금액 (AOV)</div><div class="v" id="aov-os">-</div><div class="s">원화환산</div></div>
+  <div class="metric m3"><div class="l">재구매율 (국내)</div><div class="v" id="rpr">-</div><div class="s" id="rpr-sub">-</div></div>
+ </div>
+
+ <div class="row2">
+  <div class="panel">
+   <h3>🌍 해외 국가별 매출 TOP 15 <span class="hint">배송지 주소 기준</span></h3>
+   <div class="chart-wrap lg"><canvas id="countryChart"></canvas></div>
+  </div>
+  <div class="panel">
+   <h3>📋 국가별 상세</h3>
+   <div style="max-height:420px;overflow-y:auto">
+    <table>
+     <thead><tr><th>#</th><th>국가</th><th>주문</th><th>매출(USD)</th><th>매출(KRW)</th><th>비중</th></tr></thead>
+     <tbody id="country-tbody"></tbody>
+    </table>
+   </div>
+  </div>
+ </div>
+
+ <div class="row2">
+  <div class="panel">
+   <h3>📅 요일별 매출 <span class="hint">국내+해외</span></h3>
+   <div class="chart-wrap"><canvas id="weekdayChart"></canvas></div>
+  </div>
+  <div class="panel">
+   <h3>🏷️ 카테고리별 매출 기여도</h3>
+   <div class="chart-wrap"><canvas id="catChart"></canvas></div>
+  </div>
+ </div>
+
+ <div class="row2">
+  <div class="panel">
+   <h3>💎 매출 TOP 15 상품</h3>
+   <table>
+    <thead><tr><th>#</th><th>상품명</th><th>카테고리</th><th>수량</th><th>매출</th></tr></thead>
+    <tbody id="top-prod-tbody"></tbody>
+   </table>
+  </div>
+  <div class="panel">
+   <h3>🔥 최고 매출일 TOP 5</h3>
+   <table>
+    <thead><tr><th>#</th><th>날짜</th><th>매출</th><th>주문건수</th></tr></thead>
+    <tbody id="top-day-tbody"></tbody>
+   </table>
+
+   <h3 style="margin-top:16px">👥 고객 구성 (국내)</h3>
+   <div class="chart-wrap sm"><canvas id="loyaltyChart"></canvas></div>
+  </div>
+ </div>
+
+ <div class="panel">
+  <h3>📈 월별 매출 추이</h3>
+  <div class="chart-wrap lg"><canvas id="monthlyChart"></canvas></div>
+ </div>
+
+ <div class="footer">📅 업데이트 2026-04-21 · 16개월 · 321개 상품</div>
 </div>
-<div class="kstrip">
-  <div class="ki"><div class="kl">재구매율</div><div class="kv" style="color:#7c3aed" id="k1">-</div><div class="ks" id="k1s">-</div><span class="bdg bi">국내</span></div>
-  <div class="ki"><div class="kl">재구매 AOV</div><div class="kv" style="color:#10b981" id="k2">-</div><div class="ks" id="k2s">-</div><span class="bdg bu" id="k2b">-</span></div>
-  <div class="ki"><div class="kl">국내 평균 주문금액</div><div class="kv" style="color:#0891b2" id="k3">-</div><div class="ks" id="k3s">-</div></div>
-  <div class="ki"><div class="kl">해외 평균 주문금액</div><div class="kv" style="color:#f97316" id="k4">-</div><div class="ks">USD</div></div>
-  <div class="ki"><div class="kl">주문 피크</div><div class="kv" style="color:#f59e0b" id="k5">-</div><div class="ks" id="k5s">KST</div></div>
-</div>
-<!-- ① MoM -->
-<div class="sec"><div class="st">📈 ① 월별 매출 추이 & MoM <span class="ss">(전체 기간)</span></div>
-<div class="two">
-  <div class="card"><div class="ct">월별 매출</div><div class="cs">국내·해외 / 4월은 1~16일</div><div class="cw" style="height:220px"><canvas id="c1"></canvas></div></div>
-  <div class="card"><div class="ct">MoM 성장률</div><div class="cs">전월 대비</div><div class="cw" style="height:220px"><canvas id="c2"></canvas></div>
-    <div class="ibw ib">💡 <strong>2월 급감</strong>은 FW 시즌 종료. <strong>3월 반등</strong>. 2025→2026 성장 추세.</div></div>
-</div></div>
-<!-- ② 재구매 -->
-<div class="sec"><div class="st">🔄 ② 재구매 고객 분석 <span class="ss" id="l2"></span></div>
-<div class="three">
-  <div class="card"><div class="ct">신규 vs 재구매</div><div class="cs" id="cs2">-</div>
-    <div class="cw" style="height:170px"><canvas id="c3"></canvas></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px">
-      <div style="background:#faf5ff;border-radius:10px;padding:9px;text-align:center"><div style="font-size:9px;font-weight:700;color:#7c3aed">재구매</div><div style="font-size:16px;font-weight:700;color:#6d28d9" id="r1">-</div><div style="font-size:9px;color:#64748b" id="r1s">-</div></div>
-      <div style="background:#f0f9ff;border-radius:10px;padding:9px;text-align:center"><div style="font-size:9px;font-weight:700;color:#0891b2">신규</div><div style="font-size:16px;font-weight:700;color:#0369a1" id="r2">-</div><div style="font-size:9px;color:#64748b" id="r2s">-</div></div>
-    </div>
-  </div>
-  <div class="card" style="grid-column:span 2"><div class="ct">재구매 유도 상품 TOP 10</div><div class="cs">재구매 고객의 첫 구매 상품</div>
-    <table class="rt" id="rt"></table>
-    <div class="ib">💡 재구매 AOV가 신규보다 <span id="adiff">-</span> 높음. Mori Dimsum Bag → 재구매 핵심 상품.</div>
-  </div>
-</div></div>
-<!-- ③ 히트맵 -->
-<div class="sec"><div class="st">⏰ ③ 주문 시간대 히트맵 <span class="ss" id="l3"></span></div>
-<div class="card"><div class="ct">요일 × 시간대 집중도</div><div class="cs">국내 KST · 진할수록 주문 多</div>
-  <div style="overflow-x:auto"><div class="hmg" id="hmg"></div>
-    <div style="display:grid;grid-template-columns:28px repeat(24,1fr);gap:1.5px;min-width:540px;margin-top:1px" id="hmh"></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:6px;margin-top:7px;font-size:10px;color:#64748b">
-    <span>적음</span><div style="display:flex;gap:2px">
-      <div style="width:13px;height:9px;background:#f1f5f9;border-radius:2px"></div><div style="width:13px;height:9px;background:#bfdbfe;border-radius:2px"></div>
-      <div style="width:13px;height:9px;background:#60a5fa;border-radius:2px"></div><div style="width:13px;height:9px;background:#2563eb;border-radius:2px"></div>
-      <div style="width:13px;height:9px;background:#1e3a8a;border-radius:2px"></div>
-    </div><span>많음</span><span style="margin-left:10px" id="pnote">-</span>
-  </div>
-  <div class="ib">💡 <strong>화요일 밤</strong>이 최고 피크. SNS 최적 = <strong>화요일 저녁 7~9시</strong>. 미국(EST) = 화요일 오전 6~8시.</div>
-</div></div>
-<!-- ④ 국가×상품 -->
-<div class="sec"><div class="st">🌍 ④ 해외 국가 × 상품 교차 <span class="ss" id="l4"></span></div>
-<div class="card"><div class="ct">국가별 인기 상품 TOP 8</div><div class="cs">탭 클릭으로 전환</div>
-  <div class="ctabs" id="cctabs"></div>
-  <div class="cw" style="height:260px"><canvas id="c4"></canvas></div>
-  <div class="ib" id="cnote">-</div>
-</div></div>
-<!-- ⑤ 국가 분석 -->
-<div class="sec"><div class="st">📊 ⑤ 해외 주문 국가 분석 <span class="ss">2026년 · 55개국</span></div>
-<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:13px" id="cccards"></div>
-<div class="two" style="margin-bottom:13px">
-  <div class="card"><div class="ct">국가별 주문 TOP 20</div><div class="cw" style="height:370px"><canvas id="c5"></canvas></div></div>
-  <div class="card"><div class="ct">국가 비중</div><div class="cw" style="height:230px"><canvas id="c6"></canvas></div>
-    <div id="ccleg" style="display:flex;flex-direction:column;gap:3px;margin-top:7px"></div>
-  </div>
-</div>
-<div class="two">
-  <div class="card"><div class="ct">월별 TOP 5 국가 추이</div><div class="cw" style="height:220px"><canvas id="c7"></canvas></div></div>
-  <div class="card"><div class="ct">전체 국가 테이블</div>
-    <div style="overflow-y:auto;max-height:240px">
-      <table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead style="position:sticky;top:0;background:white"><tr style="border-bottom:2px solid #f1f5f9">
-          <th style="padding:6px 9px;font-size:10px;font-weight:700;color:#94a3b8">#</th>
-          <th style="padding:6px 9px;text-align:left;font-size:10px;font-weight:700;color:#94a3b8">국가</th>
-          <th style="padding:6px 9px;text-align:right;font-size:10px;font-weight:700;color:#94a3b8">주문</th>
-          <th style="padding:6px 9px;text-align:right;font-size:10px;font-weight:700;color:#94a3b8">USD</th>
-        </tr></thead>
-        <tbody id="cctbl"></tbody>
-      </table>
-    </div>
-  </div>
-</div></div>
-<!-- ⑥ 시즌 수명 -->
-<div class="sec"><div class="st">⏳ ⑥ 시즌 수명 곡선 <span class="ss">(전체)</span></div>
-<div class="card"><div class="ct">주요 시즌 월별 판매추이</div><div class="cw" style="height:250px"><canvas id="c8"></canvas></div>
-  <div class="ibw ib">💡 <strong>25_FW_가방_1차</strong> 봄까지 지속. <strong>25_FW_02</strong> 1월 피크 후 급감 → 2월부터 프로모션.</div>
-</div></div>
-<!-- ⑦ AOV -->
-<div class="sec"><div class="st">💰 ⑦ AOV 분포 <span class="ss" id="l7"></span></div>
-<div class="two">
-  <div class="card"><div class="ct">국내 주문금액 분포</div><div class="cs" id="adc">-</div>
-    <div id="avbars"></div>
-    <div class="ib" style="margin-top:9px">💡 <strong>10-15만원 구간 55%+</strong>. 무료배송 15만원 = 업셀링 극대화.</div>
-  </div>
-  <div class="card"><div class="ct">해외 주문금액 (USD)</div><div class="cs" id="aoc">-</div>
-    <div class="cw" style="height:210px"><canvas id="c9"></canvas></div>
-    <div class="ib">💡 해외 평균 <span id="omean">-</span>. 번들 오퍼($200+) 효과적.</div>
-  </div>
-</div></div>
+
 <script>
-const INS={"mom_data":[{"month":"2025-01","dom_rev":82988555,"dom_ord":770,"ovs_rev":5756490,"ovs_ord":30,"dom_mom":null,"ovs_mom":null},{"month":"2025-02","dom_rev":80183589,"dom_ord":779,"ovs_rev":13230878,"ovs_ord":65,"dom_mom":-3.4,"ovs_mom":129.8},{"month":"2025-03","dom_rev":76139663,"dom_ord":675,"ovs_rev":7573346,"ovs_ord":35,"dom_mom":-5.0,"ovs_mom":-42.8},{"month":"2025-04","dom_rev":63631795,"dom_ord":592,"ovs_rev":7330077,"ovs_ord":31,"dom_mom":-16.4,"ovs_mom":-3.2},{"month":"2025-05","dom_rev":97660465,"dom_ord":1090,"ovs_rev":11851976,"ovs_ord":57,"dom_mom":53.5,"ovs_mom":61.7},{"month":"2025-06","dom_rev":67821648,"dom_ord":866,"ovs_rev":9213613,"ovs_ord":53,"dom_mom":-30.6,"ovs_mom":-22.3},{"month":"2025-07","dom_rev":61379125,"dom_ord":777,"ovs_rev":32504131,"ovs_ord":159,"dom_mom":-9.5,"ovs_mom":252.8},{"month":"2025-08","dom_rev":79424142,"dom_ord":1036,"ovs_rev":37288236,"ovs_ord":220,"dom_mom":29.4,"ovs_mom":14.7},{"month":"2025-09","dom_rev":93698136,"dom_ord":834,"ovs_rev":76747162,"ovs_ord":280,"dom_mom":18.0,"ovs_mom":105.8},{"month":"2025-10","dom_rev":111935791,"dom_ord":981,"ovs_rev":121398756,"ovs_ord":497,"dom_mom":19.5,"ovs_mom":58.2},{"month":"2025-11","dom_rev":107976208,"dom_ord":879,"ovs_rev":209563882,"ovs_ord":896,"dom_mom":-3.5,"ovs_mom":72.6},{"month":"2025-12","dom_rev":91354736,"dom_ord":668,"ovs_rev":310309656,"ovs_ord":1289,"dom_mom":-15.4,"ovs_mom":48.1},{"month":"2026-01","dom_rev":144371504,"dom_ord":1026,"ovs_rev":189094062,"ovs_ord":777,"dom_mom":58.0,"ovs_mom":-39.1},{"month":"2026-02","dom_rev":98622126,"dom_ord":739,"ovs_rev":113094266,"ovs_ord":469,"dom_mom":-31.7,"ovs_mom":-40.2},{"month":"2026-03","dom_rev":112028427,"dom_ord":875,"ovs_rev":135936253,"ovs_ord":607,"dom_mom":13.6,"ovs_mom":20.2},{"month":"2026-04","dom_rev":80164269,"dom_ord":730,"ovs_rev":82851178,"ovs_ord":379,"dom_mom":-28.4,"ovs_mom":-39.1}],"all":{"label":"전체 (2025~2026)","dom_cnt":13317,"ovs_cnt":5844,"heatmap":[[105,70,43,31,13,8,12,28,47,69,74,108,91,109,103,110,101,104,88,87,107,128,149,124],[106,69,37,22,17,13,14,27,60,55,90,116,93,112,111,104,83,87,73,113,102,124,134,152],[102,71,45,35,17,16,16,36,63,75,100,121,124,101,104,94,107,95,111,80,115,113,143,139],[106,67,47,18,15,14,30,34,59,79,90,95,110,101,100,101,77,107,80,102,87,106,128,137],[90,68,39,30,17,7,11,29,59,75,100,94,88,92,86,93,98,73,83,87,91,101,122,112],[84,66,40,22,16,12,19,26,47,58,80,96,83,84,98,90,98,87,86,93,113,119,125,98],[79,68,33,25,16,8,20,22,39,56,86,73,88,86,91,84,131,91,101,109,113,150,165,152]],"repeat":{"total":11331,"repeat_cnt":880,"repeat_rate":7.8,"repeat_aov":133406,"new_aov":102573,"top_retention":[{"name":"Mori Dimsum Bag Brown","cnt":111},{"name":"Check Hoodie Jacket Blue","cnt":72},{"name":"Washed Leopard Dimsum Bag Pink","cnt":68},{"name":"Leopard Dimsum Bag Charcoal","cnt":27},{"name":"Dot Cozy Dumpling Bag Gray","cnt":27},{"name":"Fleece Hockey Jersey Navy","cnt":27},{"name":"Suede Bao Bag Brown","cnt":26},{"name":"Shooting Star Angel Dress White","cnt":25},{"name":"Wool Leopard Pillow Bag Beige","cnt":19},{"name":"Lace Inner Shorts White","cnt":19}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":1345},{"name":"Washed Leopard Dimsum Bag Pink","qty":398},{"name":"Leopard Dimsum Bag Charcoal","qty":301},{"name":"Patchwork Buttons Pillow Bag Navy","qty":238},{"name":"Mini Mori Dimsum Bag Brown","qty":213},{"name":"Mori Dimsum Bag Black","qty":160},{"name":"Mini Mori Dimsum Bag Black","qty":158},{"name":"Dot Cozy Dumpling Bag Gray","qty":157}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":179},{"name":"Washed Leopard Dimsum Bag Pink","qty":39},{"name":"Leopard Dimsum Bag Charcoal","qty":34},{"name":"Patchwork Buttons Pillow Bag Navy","qty":29},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":26},{"name":"Mori Dimsum Bag Black","qty":19},{"name":"Mini Mori Dimsum Bag Brown","qty":16},{"name":"Mini Mori Dimsum Bag Black","qty":11}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":18},{"name":"Wool Check Hoodie Jacket Navy","qty":8},{"name":"Double Velvet Ties Shirt Navy","qty":6},{"name":"Stripe Lace Tie Shirt Blue","qty":6},{"name":"Leopard Dimsum Bag Charcoal","qty":5},{"name":"Dot Cozy Dumpling Bag Gray","qty":5},{"name":"Shooting Star Angel Dress White","qty":5},{"name":"Lace Inner Shorts White","qty":5}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":88},{"name":"Mori Dimsum Bag Black","qty":15},{"name":"Washed Leopard Dimsum Bag Pink","qty":14},{"name":"Leopard Dimsum Bag Charcoal","qty":11},{"name":"Mini Mori Dimsum Bag Black","qty":9},{"name":"Mini Mori Dimsum Bag Brown","qty":9},{"name":"Patchwork Buttons Pillow Bag Navy","qty":6},{"name":"Star Dimsum Bag Charcoal","qty":4}],"SG":[{"name":"Mori Dimsum Bag Brown","qty":54},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":13},{"name":"Washed Leopard Dimsum Bag Pink","qty":12},{"name":"Mini Mori Dimsum Bag Brown","qty":12},{"name":"Patchwork Buttons Pillow Bag Navy","qty":10},{"name":"Leopard Dimsum Bag Charcoal","qty":9},{"name":"Dot Cozy Dumpling Bag Gray","qty":6},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":4}]},"aov_dom":{"buckets":[72,668,2558,1575,1265,5162,1041,511,196,53,6],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":108821},"aov_ovs":{"buckets":[21,320,2245,2080,729,186,108,36],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":162.32},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025":{"label":"2025년","dom_cnt":9947,"ovs_cnt":3612,"heatmap":[[78,56,37,22,11,6,11,27,33,51,58,83,69,83,70,89,66,75,74,64,83,101,118,93],[84,57,26,19,14,11,14,19,48,41,68,78,67,87,87,78,58,62,59,83,75,96,103,109],[85,52,34,25,14,13,13,24,47,60,77,90,88,76,76,69,81,71,81,58,96,80,112,112],[81,49,29,12,13,9,26,29,45,65,73,69,83,76,74,79,57,79,61,81,60,75,101,99],[64,46,31,25,13,3,10,26,44,59,82,78,64,67,66,68,77,51,60,58,67,76,89,87],[68,50,33,20,12,8,13,19,38,51,66,74,62,65,73,66,80,65,71,70,81,87,97,79],[55,56,27,21,10,5,13,20,34,45,68,50,61,66,70,59,99,58,76,85,90,110,129,121]],"repeat":{"total":9018,"repeat_cnt":584,"repeat_rate":6.5,"repeat_aov":119746,"new_aov":98768,"top_retention":[{"name":"Check Hoodie Jacket Blue","cnt":58},{"name":"Mori Dimsum Bag Brown","cnt":46},{"name":"Fleece Hockey Jersey Navy","cnt":26},{"name":"Suede Bao Bag Brown","cnt":23},{"name":"Washed Leopard Dimsum Bag Pink","cnt":21},{"name":"Dot Cozy Dumpling Bag Gray","cnt":19},{"name":"Shooting Star Angel Dress White","cnt":19},{"name":"Lace Inner Shorts White","cnt":18},{"name":"Heart Puffer Jacket Check Blue","cnt":16},{"name":"Wool Check Hoodie Jacket Navy","cnt":14}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":995},{"name":"Washed Leopard Dimsum Bag Pink","qty":247},{"name":"Leopard Dimsum Bag Charcoal","qty":188},{"name":"Dot Cozy Dumpling Bag Gray","qty":151},{"name":"Star Dimsum Tote Bag Charcoal","qty":118},{"name":"Washed Leopard Dimsum Bag Purple (b2640)","qty":100},{"name":"Dot Cozy Dumpling Bag Brown","qty":93},{"name":"Mini Mori Dimsum Bag Brown","qty":89}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":83},{"name":"Washed Leopard Dimsum Bag Pink","qty":12},{"name":"Mini Mori Dimsum Bag Brown","qty":9},{"name":"Leopard Dimsum Bag Charcoal","qty":9},{"name":"Star Dimsum Bag Charcoal","qty":8},{"name":"Dot Cozy Dumpling Bag Navy","qty":6},{"name":"Dot Cozy Dumpling Bag Gray","qty":6},{"name":"Washed Leopard Dumpling Bag Pink","qty":5}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":8},{"name":"Wool Check Hoodie Jacket Navy","qty":8},{"name":"Double Velvet Ties Shirt Navy","qty":6},{"name":"Stripe Lace Tie Shirt Blue","qty":6},{"name":"Dot Cozy Dumpling Bag Gray","qty":5},{"name":"Shooting Star Angel Dress White","qty":5},{"name":"Lace Inner Shorts White","qty":5},{"name":"Ribbon Logo Slim Tee Navy","qty":4}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":61},{"name":"Leopard Dimsum Bag Charcoal","qty":8},{"name":"Washed Leopard Dimsum Bag Pink","qty":7},{"name":"Mini Mori Dimsum Bag Brown","qty":5},{"name":"Mini Mori Dimsum Bag Black","qty":4},{"name":"Mori Dimsum Bag Black","qty":3},{"name":"Star Dimsum Tote Bag Charcoal","qty":3},{"name":"Dot Cozy Dumpling Bag Brown","qty":2}],"SG":[{"name":"Mori Dimsum Bag Brown","qty":35},{"name":"Leopard Dimsum Bag Charcoal","qty":6},{"name":"Dot Cozy Dumpling Bag Gray","qty":5},{"name":"Washed Leopard Dimsum Bag Pink","qty":5},{"name":"Washed Leopard Dimsum Bag Purple (b2640)","qty":4},{"name":"Mini Mori Dimsum Bag Brown","qty":2},{"name":"Dot Cozy Bao Bag Gray","qty":2},{"name":"Star Dimsum Tote Bag Charcoal","qty":2}]},"aov_dom":{"buckets":[66,596,2391,1233,1008,3398,712,390,123,29,1],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":101959},"aov_ovs":{"buckets":[20,298,1451,1188,447,104,77,27],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":160.91},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2026":{"label":"2026년","dom_cnt":3370,"ovs_cnt":2232,"heatmap":[[29,18,6,9,2,2,1,1,15,19,16,26,23,30,37,22,38,30,16,24,24,28,32,32],[22,13,11,4,3,2,0,8,13,15,22,40,28,25,25,30,28,28,14,30,30,31,33,44],[17,19,11,10,3,3,3,12,16,15,23,31,36,25,28,25,26,24,30,22,19,33,31,27],[25,18,18,6,2,5,4,5,14,14,17,26,27,25,26,22,20,28,19,21,27,31,27,38],[26,22,8,5,4,4,1,3,15,16,18,16,24,25,20,25,21,22,23,29,24,25,33,25],[16,16,7,2,4,4,6,7,9,7,14,22,21,19,25,24,18,22,15,23,32,32,28,19],[24,12,6,4,6,3,7,2,5,11,18,23,27,20,21,25,32,33,25,24,23,40,36,31]],"repeat":{"total":2565,"repeat_cnt":189,"repeat_rate":7.4,"repeat_aov":164375,"new_aov":119217,"top_retention":[{"name":"Mori Dimsum Bag Brown","cnt":53},{"name":"Washed Leopard Dimsum Bag Pink","cnt":47},{"name":"Mini Mori Dimsum Bag Brown","cnt":17},{"name":"Patchwork Buttons Pillow Bag Navy","cnt":11},{"name":"Mori Dimsum Bag Black","cnt":10},{"name":"Mini Washed Leopard Dimsum Bag Pink","cnt":8},{"name":"Leopard Dimsum Bag Charcoal","cnt":8},{"name":"Mini Washed Leopard Dimsum Bag Purple","cnt":5},{"name":"Mini Mori Dimsum Bag Black","cnt":5},{"name":"Washed Leopard Pillow Bag Pink","cnt":5}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":350},{"name":"Patchwork Buttons Pillow Bag Navy","qty":162},{"name":"Washed Leopard Dimsum Bag Pink","qty":151},{"name":"Mini Mori Dimsum Bag Brown","qty":124},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":121},{"name":"Leopard Dimsum Bag Charcoal","qty":113},{"name":"Mori Dimsum Bag Black","qty":113},{"name":"Mini Mori Dimsum Bag Black","qty":87}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":96},{"name":"Washed Leopard Dimsum Bag Pink","qty":27},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":26},{"name":"Patchwork Buttons Pillow Bag Navy","qty":26},{"name":"Leopard Dimsum Bag Charcoal","qty":25},{"name":"Mori Dimsum Bag Black","qty":15},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":9},{"name":"Mini Mori Dimsum Bag Black","qty":8}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":10},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":4},{"name":"Leopard Dimsum Bag Charcoal","qty":4},{"name":"Patchwork Buttons Pillow Bag Navy","qty":3},{"name":"Leopard Dimsum Bag Beige","qty":2},{"name":"Glaze Pearl Gray Dimsum Bag","qty":1},{"name":"Mori Dimsum Bag Black","qty":1},{"name":"Washed Leopard Dimsum Bag Pink","qty":1}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":27},{"name":"Mori Dimsum Bag Black","qty":12},{"name":"Washed Leopard Dimsum Bag Pink","qty":7},{"name":"Patchwork Buttons Pillow Bag Navy","qty":6},{"name":"Mini Mori Dimsum Bag Black","qty":5},{"name":"Mini Mori Dimsum Bag Brown","qty":4},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":3},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":3}],"SG":[{"name":"Mori Dimsum Bag Brown","qty":19},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":13},{"name":"Mini Mori Dimsum Bag Brown","qty":10},{"name":"Patchwork Buttons Pillow Bag Navy","qty":9},{"name":"Washed Leopard Dimsum Bag Pink","qty":7},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":4},{"name":"Mori Dimsum Bag Black","qty":4},{"name":"Leopard Dimsum Bag Charcoal","qty":3}]},"aov_dom":{"buckets":[6,72,167,342,257,1764,329,121,73,24,5],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":130421},"aov_ovs":{"buckets":[1,22,794,892,282,82,31,9],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":164.74},"season_monthly":{"25_FW_가방_1차":[806,592,1009,374],"25_FW_02":[1058,363,236,144],"25_FW_01":[84,33,49,20],"26 SS 01":[0,0,0,83],"26 발렌타인":[0,306,344,244]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-01":{"label":"2025년 1월","dom_cnt":770,"ovs_cnt":30,"heatmap":[[3,5,3,1,1,0,1,1,2,6,5,6,3,3,8,3,6,5,1,7,6,5,7,6],[6,9,3,0,0,0,0,1,2,6,4,7,4,3,8,7,6,5,5,6,1,5,6,8],[10,1,2,4,2,1,1,0,4,6,4,7,6,6,7,8,4,6,7,7,11,15,11,9],[7,7,4,2,0,0,1,4,2,6,6,3,11,6,4,9,7,9,4,9,6,9,16,9],[6,2,2,5,2,0,2,3,3,6,5,10,4,5,5,5,4,3,5,10,6,4,6,5],[8,2,0,1,1,0,0,0,2,1,3,5,2,4,4,2,9,3,0,3,6,12,3,7],[4,3,5,0,2,0,0,1,4,4,4,3,8,4,6,8,6,2,6,6,6,9,10,7]],"repeat":{"total":759,"repeat_cnt":11,"repeat_rate":1.4,"repeat_aov":120818,"new_aov":107393,"top_retention":[{"name":"Fleece Hockey Jersey Navy","cnt":5},{"name":"Heart Puffer Jacket Check Blue","cnt":2},{"name":"Suede Bao Bag Brown","cnt":2},{"name":"Check Beach Shorts Skyblue","cnt":1},{"name":"Earflap Beanie Light Blue","cnt":1},{"name":"Check Hoodie Jacket Blue","cnt":1},{"name":"Leather Bao Bag Black","cnt":1},{"name":"Wool Check Hoodie Jacket Navy","cnt":1}]},"country_top":{"US":[{"name":"Heart Puffer Jacket Check Blue","qty":4},{"name":"Hockey Jersey Navy","qty":3},{"name":"Wool Check Hoodie Jacket Navy","qty":1},{"name":"Stripe Hoodie Cardigan Ivory","qty":1},{"name":"Loose Fit Top Ivory","qty":1},{"name":"Suede Bao Bag Brown","qty":1},{"name":"PPL Cap Black","qty":1}],"AU":[],"JP":[{"name":"Wool Check Hoodie Jacket Navy","qty":4},{"name":"Hockey Jersey Navy","qty":2},{"name":"Side Tie Dress Oatmeal","qty":2},{"name":"Wool Check Duffle Coat Navy","qty":1},{"name":"Heart Puffer Jacket Matte Black","qty":1},{"name":"Loose Fit Top Charcoal","qty":1},{"name":"Double Velvet Ties Shirt Butter","qty":1},{"name":"Loose Fit Top Ivory","qty":1}],"GB":[],"SG":[]},"aov_dom":{"buckets":[1,26,166,157,85,170,117,37,10,1,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":107777},"aov_ovs":{"buckets":[4,1,19,3,2,1,0,0],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":132.33},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-02":{"label":"2025년 2월","dom_cnt":779,"ovs_cnt":65,"heatmap":[[11,3,4,1,0,0,1,3,3,4,3,8,6,5,8,5,8,6,1,5,6,11,8,7],[7,2,3,1,0,0,0,0,8,1,5,6,6,5,6,2,4,2,1,4,7,9,5,4],[6,3,1,1,1,2,0,3,6,6,6,10,10,5,2,8,4,7,4,7,10,6,7,8],[7,4,1,1,0,0,4,1,7,3,3,4,4,9,5,7,2,5,6,4,3,3,4,9],[2,7,2,1,2,0,1,4,5,2,5,4,6,2,4,5,6,5,3,5,5,6,4,6],[8,4,3,0,2,0,1,1,9,3,4,9,9,10,10,4,7,4,4,10,8,8,9,10],[3,5,1,1,3,0,1,2,3,6,8,6,9,4,7,4,14,4,9,6,4,6,10,10]],"repeat":{"total":763,"repeat_cnt":15,"repeat_rate":2.0,"repeat_aov":109420,"new_aov":102662,"top_retention":[{"name":"Side Tie Dress Navy","cnt":2},{"name":"Leather Bao Bag Black","cnt":2},{"name":"Check Hoodie Jacket Blue","cnt":2},{"name":"Double Velvet Ties Shirt Navy","cnt":2},{"name":"Suede Bao Bag Camel","cnt":2},{"name":"Fleece & Wool Check Crop Jacket Navy","cnt":1},{"name":"Stripe Hoodie Cardigan Ivory","cnt":1},{"name":"Heart Puffer Jacket Burgundy","cnt":1},{"name":"Heart Puffer Jacket Matte Black","cnt":1},{"name":"Off Shoulder Top Navy","cnt":1}]},"country_top":{"US":[{"name":"Double Velvet Ties Shirt Navy","qty":7},{"name":"Stripe Lace Tie Shirt Blue","qty":5},{"name":"Stripe Lace Tie Shirt Ivory","qty":5},{"name":"Check Hoodie Jacket Blue","qty":3},{"name":"Fleece Hockey Jersey Navy","qty":2},{"name":"Suede Bao Bag Brown","qty":2},{"name":"BadBear Ringer Slim Tee Blue","qty":2},{"name":"Bond Bunny Crop Tee Lime","qty":2}],"AU":[{"name":"Muddy Ribbon Dress Brown","qty":1}],"JP":[{"name":"Stripe Lace Tie Shirt Blue","qty":5},{"name":"Double Velvet Ties Shirt Navy","qty":4},{"name":"Heart Puffer Jacket Burgundy","qty":3},{"name":"Wool Check Hoodie Jacket Navy","qty":3},{"name":"BadBear Head Patch Cardigan Black","qty":3},{"name":"Heart Puffer Jacket Check Blue","qty":2},{"name":"Fleece Hockey Jersey Navy","qty":2},{"name":"Racing Crop Tee Black","qty":1}],"GB":[],"SG":[]},"aov_dom":{"buckets":[0,22,187,148,107,197,74,35,7,2,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":102931},"aov_ovs":{"buckets":[2,18,22,12,7,3,1,0],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":140.38},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-03":{"label":"2025년 3월","dom_cnt":675,"ovs_cnt":35,"heatmap":[[5,4,0,0,0,0,0,1,2,5,3,4,3,2,5,11,9,5,4,4,6,9,6,13],[3,4,1,0,1,1,1,1,5,2,4,2,1,4,4,5,3,6,5,7,1,12,4,3],[5,5,1,3,0,0,1,7,4,10,5,7,5,6,4,5,4,4,10,4,6,5,8,8],[1,3,1,0,1,0,2,2,4,3,4,4,2,6,6,5,2,4,5,4,3,5,8,4],[2,1,3,1,2,0,1,3,4,5,2,5,2,9,5,3,4,6,5,4,8,3,4,4],[6,0,3,0,0,0,2,2,5,8,5,7,6,5,5,6,7,4,10,8,6,1,6,3],[7,3,2,2,0,1,2,2,4,6,4,3,7,6,7,3,6,2,7,5,7,5,9,7]],"repeat":{"total":663,"repeat_cnt":11,"repeat_rate":1.7,"repeat_aov":106456,"new_aov":113023,"top_retention":[{"name":"Heart Puffer Jacket Check Blue","cnt":4},{"name":"Leather Bao Bag Black","cnt":2},{"name":"Suede Bao Bag Brown","cnt":1},{"name":"Hockey Jersey Navy","cnt":1},{"name":"Fleece Hockey Jersey Navy","cnt":1},{"name":"Stripe Hoodie Cardigan Blue","cnt":1},{"name":"Wool Check Hoodie Jacket Navy","cnt":1}]},"country_top":{"US":[{"name":"Stripe Lace Tie Shirt Blue","qty":8},{"name":"Check Hoodie Jacket Blue","qty":5},{"name":"Stripe Lace Tie Shirt Ivory","qty":5},{"name":"Double Velvet Ties Shirt Navy","qty":4},{"name":"Heart Puffer Jacket Check Blue","qty":3},{"name":"Ribbon Slim Tee White","qty":3},{"name":"Ribbon Logo Slim Tee Navy","qty":2},{"name":"Side Tie Dress Oatmeal","qty":2}],"AU":[],"JP":[{"name":"Heart Puffer Jacket Check Blue","qty":2},{"name":"Wool Check Hoodie Jacket Navy","qty":1},{"name":"Velour Zipup Crop Jersey Navy","qty":1},{"name":"Earflap Beanie Ivory","qty":1},{"name":"Earflap Beanie Brown","qty":1},{"name":"Stripe Hoodie Cardigan Ivory","qty":1},{"name":"Double Velvet Ties Shirt Navy","qty":1}],"GB":[],"SG":[]},"aov_dom":{"buckets":[0,7,170,79,70,236,69,34,10,0,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":112799},"aov_ovs":{"buckets":[1,4,17,7,2,3,1,0],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":149.23},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-04":{"label":"2025년 4월","dom_cnt":592,"ovs_cnt":31,"heatmap":[[4,4,2,1,0,0,2,1,1,2,5,5,5,2,2,5,3,3,6,3,6,5,7,4],[3,2,1,1,2,0,2,2,4,6,7,5,2,6,3,2,4,4,2,7,1,6,12,9],[3,3,5,3,2,3,2,3,6,5,4,6,7,10,9,4,6,6,3,4,14,6,9,7],[3,2,0,1,0,0,4,3,0,9,6,3,2,3,3,3,4,2,3,1,6,3,9,3],[2,3,2,0,0,0,3,2,3,5,4,8,4,1,4,5,3,1,6,1,1,3,6,8],[2,3,3,1,1,0,1,2,1,2,8,3,4,5,2,6,5,2,1,5,7,3,3,4],[1,4,3,1,1,0,3,3,1,3,5,6,3,0,1,2,6,0,4,2,5,4,6,5]],"repeat":{"total":574,"repeat_cnt":18,"repeat_rate":3.1,"repeat_aov":100880,"new_aov":107913,"top_retention":[{"name":"Check Hoodie Jacket Blue","cnt":4},{"name":"Ribbon Logo Slim Tee Navy","cnt":2},{"name":"Fleece & Wool Check Crop Jacket Navy","cnt":2},{"name":"Dot Denim Hoodie Jacket Deep Blue","cnt":1},{"name":"Knit Hockey Jersey Navy","cnt":1},{"name":"Leather Bao Bag Black","cnt":1},{"name":"Fleece Hockey Jersey Navy","cnt":1},{"name":"Polo Hockey Jersey Navy","cnt":1},{"name":"BadBear Ringer Slim Tee Navy","cnt":1},{"name":"Double Velvet Ties Shirt Butter","cnt":1}]},"country_top":{"US":[{"name":"Stripe Lace Tie Shirt Blue","qty":3},{"name":"Check Hoodie Jacket Blue","qty":3},{"name":"Dot Denim Hoodie Jacket Light Blue","qty":2},{"name":"Velour Ear Zipup Crop Hoodie Navy","qty":2},{"name":"Double Velvet Ties Shirt Navy","qty":2},{"name":"Knit Hockey Jersey Navy","qty":2},{"name":"Polo Hockey Jersey Navy","qty":1},{"name":"Wool Check Duffle Coat Navy","qty":1}],"AU":[],"JP":[{"name":"Check Hoodie Jacket Blue","qty":3},{"name":"Double Velvet Ties Shirt Butter","qty":2},{"name":"Ribbon Logo Slim Tee Navy","qty":2},{"name":"Earflap Beanie Ivory","qty":2},{"name":"BadBear Head Patch Cardigan Cloudy Blue","qty":1},{"name":"Suede Bao Bag Camel","qty":1},{"name":"Velour Ear Zipup Crop Hoodie Navy","qty":1},{"name":"Classic Logo Cap Black","qty":1}],"GB":[],"SG":[]},"aov_dom":{"buckets":[3,81,118,36,45,195,77,30,7,0,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":107486},"aov_ovs":{"buckets":[2,12,3,7,1,2,3,1],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":163.07},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-05":{"label":"2025년 5월","dom_cnt":1090,"ovs_cnt":57,"heatmap":[[12,6,2,0,1,1,2,7,7,6,5,10,6,7,9,12,6,9,8,8,8,12,11,9],[7,3,4,1,1,1,0,4,6,5,12,4,6,12,11,12,7,7,5,5,8,7,10,10],[5,8,5,1,0,0,4,1,6,6,9,9,9,8,7,1,4,8,6,6,6,4,9,12],[8,3,2,1,1,2,5,2,4,11,10,9,9,9,9,8,7,10,8,7,7,8,10,16],[11,1,3,2,1,0,1,1,3,7,11,9,9,8,4,8,4,7,12,2,7,11,9,5],[8,3,8,3,1,1,2,4,3,5,8,10,9,7,13,11,12,8,7,6,9,18,23,13],[9,8,3,4,0,0,1,3,5,7,7,7,3,7,7,7,9,7,9,8,9,7,10,13]],"repeat":{"total":1066,"repeat_cnt":20,"repeat_rate":1.9,"repeat_aov":108506,"new_aov":88801,"top_retention":[{"name":"Check Hoodie Jacket Blue","cnt":3},{"name":"Sheer Dot Buttons Baby Tee Beige","cnt":2},{"name":"Sheer Dot Hand Warmer Beige","cnt":2},{"name":"Stripe Polo Hockey Jersey Blue","cnt":2},{"name":"Cotton Ribbon Shorts Navy","cnt":2},{"name":"Ribbon Logo Slim Tee Navy","cnt":2},{"name":"Ribbon Logo Slim Tee White","cnt":2},{"name":"PPL Cap Black","cnt":2},{"name":"Dot Buttons Knit Double Jacket Gray","cnt":1},{"name":"Sheer Dot Buttons Baby Tee Navy","cnt":1}]},"country_top":{"US":[{"name":"Dot Cozy Dumpling Bag Gray","qty":8},{"name":"Dot Cozy Dumpling Bag Skyblue","qty":5},{"name":"Cotton Ribbon Shorts Navy","qty":4},{"name":"Stripe Lace Tie Shirt Pink","qty":3},{"name":"Dot Cozy Bao Bag Gray","qty":3},{"name":"Ribbon Slim Tee White","qty":3},{"name":"Double Velvet Ties Shirt Navy","qty":3},{"name":"[Setup] Sheer Dot Layerd Tee Navy","qty":2}],"AU":[{"name":"Buttons Angel Tee White","qty":1}],"JP":[{"name":"Lace Inner Shorts White","qty":2},{"name":"Dot Cozy Dumpling Bag Gray","qty":1},{"name":"Shooting Star Angel Dress White","qty":1},{"name":"Dot Cozy Dumpling Bag Skyblue","qty":1},{"name":"Dot Cozy Bao Bag Skyblue","qty":1},{"name":"Dot Cozy Bao Bag Gray","qty":1},{"name":"[Setup] Ribbon Layerd Tee White","qty":1},{"name":"Star Lace Leg Warmer","qty":1}],"GB":[],"SG":[{"name":"Dot Denim Hoodie Jacket Deep Blue","qty":1},{"name":"Knit Hockey Jersey Navy","qty":1}]},"aov_dom":{"buckets":[19,146,274,71,137,342,60,35,6,0,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":89596},"aov_ovs":{"buckets":[4,20,15,8,4,1,3,2],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":143.4},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-06":{"label":"2025년 6월","dom_cnt":866,"ovs_cnt":53,"heatmap":[[11,9,6,3,1,0,0,1,2,5,4,10,9,8,5,9,4,5,7,8,8,13,15,8],[6,6,1,3,0,2,0,3,4,4,4,5,10,5,6,6,4,4,4,9,3,9,5,5],[8,5,0,2,0,0,1,0,6,1,9,4,7,0,7,2,9,9,5,6,3,9,7,9],[6,2,1,1,1,1,1,3,3,1,2,8,7,7,7,6,5,9,3,7,5,7,8,8],[11,6,3,3,1,0,1,4,2,4,5,5,8,7,5,6,10,4,1,6,4,6,9,6],[3,6,1,1,1,2,1,3,3,6,6,3,3,9,5,5,7,9,9,10,5,7,7,7],[9,3,0,2,1,1,0,1,3,5,6,2,3,11,8,5,8,9,9,7,12,14,23,11]],"repeat":{"total":851,"repeat_cnt":15,"repeat_rate":1.8,"repeat_aov":93987,"new_aov":77753,"top_retention":[{"name":"Check Hoodie Jacket Blue","cnt":3},{"name":"Sheer Dot Hand Warmer Beige","cnt":2},{"name":"[Setup] Ribbon Layerd Tee White","cnt":2},{"name":"Shooting Star Angel Dress White","cnt":2},{"name":"Polo Hockey Jersey Navy","cnt":2},{"name":"Dot Buttons Knit Double Jacket Navy","cnt":2},{"name":"Dot Cozy Dumpling Bag Skyblue","cnt":2},{"name":"Sheer Dot Buttons Baby Tee Beige","cnt":1},{"name":"Cotton Ribbon Shorts Navy","cnt":1},{"name":"[Setup] Sheer Dot Layerd Tee Navy","cnt":1}]},"country_top":{"US":[{"name":"Dot Cozy Dumpling Bag Gray","qty":13},{"name":"Lace Inner Shorts White","qty":4},{"name":"Dot Denim Hoodie Jacket Light Blue","qty":3},{"name":"Dot Cozy Dumpling Bag Skyblue","qty":3},{"name":"Shooting Star Angel Dress White","qty":2},{"name":"Check Hoodie Jacket Blue","qty":2},{"name":"Check Hoodie Jacket Navy","qty":2},{"name":"Buttons Collar Dress Black","qty":2}],"AU":[],"JP":[{"name":"Sheer Dot Buttons Baby Tee Beige","qty":3},{"name":"Shooting Star Angel Dress White","qty":3},{"name":"Lace Inner Shorts White","qty":3},{"name":"Buttons Collar Dress White","qty":2},{"name":"Flying Heaven Slim Tee White","qty":1},{"name":"Butterfly Angel Dress Ivory","qty":1},{"name":"Check Hoodie Jacket Navy","qty":1},{"name":"Double Velvet Ties Shirt Navy","qty":1}],"GB":[],"SG":[]},"aov_dom":{"buckets":[28,118,315,72,100,174,32,21,5,1,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":78315},"aov_ovs":{"buckets":[3,28,9,6,6,0,1,0],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":119.89},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-07":{"label":"2025년 7월","dom_cnt":777,"ovs_cnt":159,"heatmap":[[6,2,3,1,0,0,1,1,3,5,3,5,3,6,3,6,3,5,6,2,8,6,11,6],[7,6,3,1,0,3,1,2,2,2,4,9,5,7,9,4,6,3,7,5,10,8,9,8],[11,7,1,1,0,0,1,1,2,5,10,5,8,5,3,8,11,2,4,4,7,1,9,6],[3,8,4,1,0,4,3,0,4,3,7,6,13,7,8,7,2,3,2,10,6,8,6,8],[2,3,1,0,1,0,0,0,10,8,16,5,1,9,6,7,7,3,2,2,5,8,6,7],[6,3,1,2,0,0,2,2,6,7,10,6,5,6,7,5,4,4,8,1,8,6,9,2],[6,8,1,1,0,0,3,3,1,1,5,1,5,7,4,4,13,5,5,5,3,5,11,10]],"repeat":{"total":748,"repeat_cnt":23,"repeat_rate":3.1,"repeat_aov":93361,"new_aov":77964,"top_retention":[{"name":"Lace Inner Shorts White","cnt":3},{"name":"[Setup] Ribbon Layerd Tee White","cnt":3},{"name":"Ribbon Logo Slim Tee Navy","cnt":3},{"name":"Milky Way Leg Warmer Skyblue","cnt":3},{"name":"Cotton Ribbon Shorts Navy","cnt":3},{"name":"Buttons Collar Dress White","cnt":2},{"name":"Dot Cozy Bao Bag Gray","cnt":2},{"name":"Dot Cozy Dumpling Bag Skyblue","cnt":2},{"name":"Dot Cozy Dumpling Bag Gray","cnt":2},{"name":"Buttons Baby Tee Green","cnt":2}]},"country_top":{"US":[{"name":"Dot Cozy Dumpling Bag Gray","qty":31},{"name":"Star Dimsum Tote Bag Charcoal","qty":20},{"name":"Dot Cozy Dumpling Bag Navy","qty":16},{"name":"Check Angel Dress Beige","qty":16},{"name":"Dot Cozy Dumpling Bag Skyblue","qty":13},{"name":"Bite Apple Sleeveless White","qty":10},{"name":"Lace Inner Shorts White","qty":9},{"name":"Check Twin Buttons Shorts Green","qty":9}],"AU":[{"name":"Dot Cozy Dumpling Bag Gray","qty":2},{"name":"Dot Cozy Dumpling Bag Navy","qty":1}],"JP":[{"name":"BadBear Slim Tee White","qty":3},{"name":"BadBear Ringer Slim Tee Skyblue","qty":3},{"name":"BadBear Crop Tee White","qty":2},{"name":"BadBear Slim Tee Skyblue","qty":1},{"name":"BadBear Key Chain","qty":1},{"name":"Dot Cozy Bao Bag Navy","qty":1}],"GB":[{"name":"Star Dimsum Tote Bag Charcoal","qty":1}],"SG":[{"name":"Dot Cozy Dumpling Bag Skyblue","qty":2},{"name":"Suede Bao Bag Camel","qty":1},{"name":"Star Dimsum Tote Bag Charcoal","qty":1},{"name":"Check Twin Buttons Shorts Green","qty":1},{"name":"Dot Cozy Dumpling Bag Gray","qty":1},{"name":"Star Bao Bag Charcoal","qty":1}]},"aov_dom":{"buckets":[5,53,304,141,141,79,33,16,3,2,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":78995},"aov_ovs":{"buckets":[2,66,46,18,10,7,7,3],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":140.99},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-08":{"label":"2025년 8월","dom_cnt":1036,"ovs_cnt":220,"heatmap":[[4,2,3,6,3,0,1,2,1,5,3,5,5,6,6,5,4,4,8,7,4,7,11,7],[4,3,4,1,2,2,3,2,4,2,5,11,6,6,5,6,5,5,3,13,18,9,15,14],[13,4,10,2,2,4,1,2,6,8,11,16,10,9,8,3,12,8,6,2,6,11,12,10],[8,1,3,1,0,0,2,7,5,3,8,6,6,8,8,8,6,10,8,10,5,9,8,10],[10,4,3,2,0,1,0,5,6,8,11,6,10,7,10,8,10,6,5,8,12,9,19,12],[2,5,3,4,2,2,3,2,4,11,8,8,3,3,7,3,10,6,8,5,9,8,9,6],[3,5,4,2,1,1,1,1,5,4,14,9,4,7,8,9,8,9,8,10,11,11,11,14]],"repeat":{"total":1000,"repeat_cnt":35,"repeat_rate":3.5,"repeat_aov":85762,"new_aov":75994,"top_retention":[{"name":"Buttons Baby Tee Green","cnt":4},{"name":"[Setup] Sheer Dot Layerd Tee Navy","cnt":3},{"name":"Sheer Dot Buttons Baby Tee Navy","cnt":3},{"name":"Buttons Baby Tee White","cnt":2},{"name":"Star Lace Hand Warmer","cnt":2},{"name":"Knit Hockey Jersey Skyblue","cnt":2},{"name":"Knit Hockey Jersey Navy","cnt":2},{"name":"Velour Ear Zipup Crop Hoodie Navy","cnt":2},{"name":"Logo Crop Zipup Jersey Pink","cnt":1},{"name":"Buttons Check Hoodie Shirt Blue","cnt":1}]},"country_top":{"US":[{"name":"Star Dimsum Tote Bag Charcoal","qty":92},{"name":"Dot Cozy Dumpling Bag Gray","qty":42},{"name":"Dot Cozy Dumpling Bag Skyblue","qty":13},{"name":"Dot Cozy Dumpling Bag Navy","qty":10},{"name":"Unite Check Jacket Navy","qty":9},{"name":"Stary Night Frill Sleeveless Navy","qty":7},{"name":"Bite Apple Key Chain","qty":7},{"name":"Star Bao Bag Charcoal","qty":6}],"AU":[{"name":"Star Dimsum Tote Bag Charcoal","qty":2}],"JP":[{"name":"Dot Cozy Dumpling Bag Gray","qty":3},{"name":"Stary Night Frill Sleeveless Skyblue","qty":1},{"name":"Shooting Star Angel Dress White","qty":1},{"name":"Dot Cozy Bao Bag Gray","qty":1}],"GB":[{"name":"Star Dimsum Tote Bag Charcoal","qty":2}],"SG":[{"name":"Dot Cozy Dumpling Bag Gray","qty":1},{"name":"Star Dimsum Tote Bag Charcoal","qty":1}]},"aov_dom":{"buckets":[5,92,400,206,125,144,36,22,4,2,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":76664},"aov_ovs":{"buckets":[2,121,54,31,5,4,2,1],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":116.89},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-09":{"label":"2025년 9월","dom_cnt":834,"ovs_cnt":280,"heatmap":[[3,5,5,4,1,2,1,4,3,2,3,6,5,11,6,8,7,8,7,4,8,10,13,8],[10,3,0,2,1,2,1,1,1,3,9,12,12,8,7,7,7,6,8,8,12,9,13,17],[5,1,0,3,1,0,1,2,3,2,5,4,6,5,7,3,5,5,8,1,5,7,13,9],[11,6,4,0,1,0,2,1,4,11,8,6,8,7,13,8,6,5,6,13,4,5,10,9],[6,4,4,5,2,1,1,0,4,0,6,4,3,4,6,3,6,6,7,5,4,4,7,6],[6,4,1,3,0,0,0,0,1,1,2,10,3,6,6,6,6,5,4,9,3,3,5,6],[4,4,3,0,2,0,0,1,4,2,4,3,1,2,4,7,5,6,1,7,7,15,12,10]],"repeat":{"total":815,"repeat_cnt":18,"repeat_rate":2.2,"repeat_aov":114332,"new_aov":112255,"top_retention":[{"name":"Mushroom Pocket Tie Half Shirts Black","cnt":2},{"name":"Pom Pom Knit Half Top Blue","cnt":2},{"name":"[Setup] Sheer Dot Layerd Tee Navy","cnt":1},{"name":"Mushroom Pocket Tie Half Shirts Beige","cnt":1},{"name":"Dot Cozy Dumpling Bag Brown","cnt":1},{"name":"Eco Fur Dumpling Bag Brown","cnt":1},{"name":"Wool Leopard Pillow Bag Beige","cnt":1},{"name":"Sheer Dot Hand Warmer Beige","cnt":1},{"name":"Leopard Dimsum Bag Charcoal","cnt":1},{"name":"Washed Leopard Dumpling Bag Pink","cnt":1}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":68},{"name":"Leopard Dimsum Bag Charcoal","qty":34},{"name":"Washed Leopard Dimsum Bag Pink","qty":33},{"name":"Pom Pom Knit Half Top Blue","qty":21},{"name":"Wool Leopard Pillow Bag Beige","qty":16},{"name":"Removable Shearling Knit Hoodie Zip Brown","qty":15},{"name":"Washed Leopard Dumpling Bag Pink","qty":11},{"name":"Mushroom Pocket Tie Half Shirts Black","qty":11}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":4},{"name":"Star Dimsum Bag Charcoal","qty":1}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":3},{"name":"Wool Leopard Pillow Bag Beige","qty":1},{"name":"Eco Fur Dumpling Bag Brown","qty":1},{"name":"Star Dimsum Bag Charcoal","qty":1}],"GB":[],"SG":[{"name":"Washed Leopard Dimsum Bag Pink","qty":1},{"name":"Star Dimsum Bag Charcoal","qty":1},{"name":"Leopard Dimsum Bag Charcoal","qty":1}]},"aov_dom":{"buckets":[0,18,139,88,50,432,61,34,11,1,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":112347},"aov_ovs":{"buckets":[0,11,149,40,39,14,16,11],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":189.03},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-10":{"label":"2025년 10월","dom_cnt":981,"ovs_cnt":497,"heatmap":[[3,5,1,3,2,1,0,2,4,4,6,10,6,13,6,8,6,12,14,6,10,11,8,11],[10,5,1,2,3,0,0,0,5,4,6,6,3,17,15,11,3,10,7,7,4,9,11,12],[7,3,4,2,1,2,1,3,1,7,6,14,13,9,8,13,10,7,4,4,15,8,7,8],[12,5,6,1,3,2,0,2,4,7,14,11,6,8,3,9,5,8,6,4,5,7,9,7],[5,2,4,4,1,1,0,0,1,7,9,10,10,5,7,9,9,3,5,6,7,12,10,15],[6,7,5,3,1,1,0,2,1,4,4,5,4,2,5,6,3,8,6,5,7,13,2,5],[4,6,1,4,0,0,0,0,2,3,3,2,10,7,8,4,8,3,9,16,11,9,8,12]],"repeat":{"total":920,"repeat_cnt":35,"repeat_rate":3.8,"repeat_aov":130459,"new_aov":112329,"top_retention":[{"name":"Mori Dimsum Bag Brown","cnt":6},{"name":"Washed Leopard Dimsum Bag Pink","cnt":5},{"name":"Wool Leopard Pillow Bag Beige","cnt":3},{"name":"Earflap Beanie Light Blue","cnt":3},{"name":"Leopard Dimsum Bag Charcoal","cnt":3},{"name":"Pom Pom Knit Half Top Blue","cnt":2},{"name":"Dot Cozy Dumpling Bag Brown","cnt":2},{"name":"Earflap Beanie Ivory","cnt":2},{"name":"Earflap Beanie Brown","cnt":2},{"name":"Dot Cozy Bao Bag Brown","cnt":2}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":168},{"name":"Leopard Dimsum Bag Charcoal","qty":40},{"name":"Washed Leopard Dimsum Bag Purple (b2640)","qty":40},{"name":"Washed Leopard Dimsum Bag Pink","qty":40},{"name":"Dot Cozy Dumpling Bag Brown","qty":22},{"name":"Wool Leopard Pillow Bag Beige","qty":22},{"name":"Washed Leopard Dumpling Bag Pink","qty":20},{"name":"Star Dimsum Bag Charcoal","qty":15}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":12},{"name":"Leopard Dimsum Bag Charcoal","qty":2},{"name":"Washed Leopard Dumpling Bag Pink","qty":1},{"name":"Pom Pom Knit Half Top Beige","qty":1},{"name":"Leopard Dimsum Bag Beige","qty":1},{"name":"Washed Leopard Dimsum Bag Pink","qty":1},{"name":"Wool Leopard Pillow Bag Beige","qty":1},{"name":"Eco Fur Dimsum Bag Brown","qty":1}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":3},{"name":"Leopard Dimsum Bag Charcoal","qty":1}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":13},{"name":"Eco Fur Pillow Bag Brown","qty":1},{"name":"Leopard Dimsum Bag Charcoal","qty":1},{"name":"Washed Leopard Dimsum Bag Pink","qty":1},{"name":"Washed Leopard Dimsum Bag Purple (b2640)","qty":1},{"name":"Eco Fur Dimsum Bag Brown","qty":1},{"name":"Removable Shearling Knit Hoodie Zip Brown","qty":1},{"name":"Pom Pom Knit Half Top Blue","qty":1}],"SG":[{"name":"Mori Dimsum Bag Brown","qty":3},{"name":"Dot Cozy Dumpling Bag Gray","qty":1}]},"aov_dom":{"buckets":[2,19,162,112,42,531,50,43,18,2,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":114103},"aov_ovs":{"buckets":[0,4,344,35,83,17,11,3],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":168.46},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-11":{"label":"2025년 11월","dom_cnt":879,"ovs_cnt":896,"heatmap":[[8,6,3,1,2,1,1,2,1,1,8,9,9,8,6,10,8,6,4,6,9,7,16,7],[10,8,3,3,1,0,2,1,2,1,5,4,7,8,5,6,6,4,5,8,5,7,5,10],[9,8,2,0,4,0,0,2,1,3,4,4,4,7,3,9,8,6,14,3,7,5,8,17],[8,5,1,2,4,0,2,3,6,5,3,6,6,1,6,5,6,9,6,7,5,5,3,12],[2,9,4,1,1,0,0,3,2,1,6,7,4,5,6,5,5,4,4,6,4,7,7,12],[10,7,2,2,0,1,0,1,2,3,5,5,12,5,3,7,8,11,9,6,8,4,14,12],[2,2,1,3,0,2,1,3,0,3,5,4,6,6,4,3,11,8,5,10,13,16,16,14]],"repeat":{"total":796,"repeat_cnt":32,"repeat_rate":4.0,"repeat_aov":190705,"new_aov":112624,"top_retention":[{"name":"Mori Dimsum Bag Brown","cnt":15},{"name":"Washed Leopard Dimsum Bag Pink","cnt":9},{"name":"Leopard Dimsum Bag Charcoal","cnt":7},{"name":"Pom Pom Knit Half Top Blue","cnt":6},{"name":"Washed Leopard Dumpling Bag Pink","cnt":2},{"name":"Wool Leopard Pillow Bag Beige","cnt":2},{"name":"Eco Fur Dimsum Bag Brown","cnt":2},{"name":"Dot Cozy Dumpling Bag Brown","cnt":1},{"name":"Dot Cozy Dumpling Bag Navy","cnt":1},{"name":"Star Dimsum Bag Charcoal","cnt":1}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":317},{"name":"Washed Leopard Dimsum Bag Pink","qty":90},{"name":"Leopard Dimsum Bag Charcoal","qty":66},{"name":"Washed Leopard Dimsum Bag Purple (b2640)","qty":40},{"name":"Wool Leopard Pillow Bag Beige","qty":27},{"name":"Star Dimsum Bag Charcoal","qty":24},{"name":"Dot Cozy Dumpling Bag Brown","qty":22},{"name":"Leopard Dimsum Bag Beige","qty":21}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":38},{"name":"Leopard Dimsum Bag Charcoal","qty":5},{"name":"Eco Fur Dumpling Bag Brown","qty":5},{"name":"Dot Cozy Dumpling Bag Navy","qty":4},{"name":"Washed Leopard Dumpling Bag Pink","qty":4},{"name":"Washed Leopard Dimsum Bag Pink","qty":4},{"name":"Star Dimsum Bag Charcoal","qty":3},{"name":"Buttons Sprinkle Hoodie Shirt White","qty":2}],"JP":[{"name":"Stary Night Frill Sleeveless Navy","qty":1},{"name":"Washed Leopard Dumpling Bag Pink","qty":1},{"name":"Sheer Dot Buttons Baby Tee Navy","qty":1},{"name":"Mori Dimsum Bag Brown","qty":1},{"name":"Pom Pom Knit Half Top Blue","qty":1},{"name":"Eco Fur Dimsum Bag Brown","qty":1},{"name":"Washed Leopard Dimsum Bag Pink","qty":1}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":22},{"name":"Leopard Dimsum Bag Charcoal","qty":4},{"name":"Hockey Jersey Blue","qty":2},{"name":"Dot Cozy Dumpling Bag Navy","qty":1},{"name":"Check Hoodie Jacket Blue","qty":1},{"name":"Dot Cozy Dumpling Bag Brown","qty":1},{"name":"Star Dimsum Bag Charcoal","qty":1},{"name":"Washed Leopard Dimsum Bag Purple (b2640)","qty":1}],"SG":[{"name":"Mori Dimsum Bag Brown","qty":22},{"name":"Leopard Dimsum Bag Charcoal","qty":4},{"name":"Washed Leopard Dimsum Bag Pink","qty":3},{"name":"Dot Cozy Bao Bag Gray","qty":2},{"name":"Washed Leopard Dimsum Bag Purple (b2640)","qty":2},{"name":"Dot Cozy Bao Bag Skyblue","qty":1},{"name":"Dot Cozy Dumpling Bag Navy","qty":1},{"name":"Dot Garden Dress Ivory","qty":1}]},"aov_dom":{"buckets":[3,9,110,58,87,511,26,45,21,8,1],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":122839},"aov_ovs":{"buckets":[0,7,558,164,132,19,13,3],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":161.3},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2025-12":{"label":"2025년 12월","dom_cnt":668,"ovs_cnt":1289,"heatmap":[[8,5,5,1,0,1,1,2,4,6,10,5,9,12,6,7,2,7,8,4,4,5,5,7],[11,6,2,4,3,0,4,2,5,5,3,7,5,6,8,10,3,6,7,4,5,6,8,9],[3,4,3,3,1,1,0,0,2,1,4,4,3,6,11,5,4,3,10,10,6,3,12,9],[7,3,2,1,2,0,0,1,2,3,2,3,9,5,2,4,5,5,4,5,5,6,10,4],[5,4,0,1,0,0,0,1,1,6,2,5,3,5,4,4,9,3,5,3,4,3,2,1],[3,6,3,0,3,1,1,0,1,0,3,3,2,3,6,5,2,1,5,2,5,4,7,4],[3,5,3,1,0,0,1,0,2,1,3,4,2,5,6,3,5,3,4,3,2,9,3,8]],"repeat":{"total":603,"repeat_cnt":36,"repeat_rate":6.0,"repeat_aov":172687,"new_aov":130358,"top_retention":[{"name":"Mori Dimsum Bag Brown","cnt":21},{"name":"Washed Leopard Dimsum Bag Pink","cnt":9},{"name":"Leopard Dimsum Bag Charcoal","cnt":5},{"name":"Pom Pom Knit Half Top Blue","cnt":2},{"name":"Dot Cozy Dumpling Bag Navy","cnt":2},{"name":"Star Dimsum Bag Charcoal","cnt":1},{"name":"Patchwork Buttons Pillow Bag Navy","cnt":1},{"name":"Ribbon Logo Slim Tee White","cnt":1},{"name":"Removable Shearling Knit Hoodie Zip Beige","cnt":1},{"name":"Eco Fur Dumpling Bag Brown","cnt":1}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":442},{"name":"Mini Mori Dimsum Bag Brown","qty":89},{"name":"Washed Leopard Dimsum Bag Pink","qty":84},{"name":"Patchwork Buttons Pillow Bag Navy","qty":76},{"name":"Mini Mori Dimsum Bag Black","qty":71},{"name":"Leopard Dimsum Bag Charcoal","qty":48},{"name":"Mori Dimsum Bag Black","qty":47},{"name":"Dot Cozy Dumpling Bag Brown","qty":43}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":29},{"name":"Mini Mori Dimsum Bag Brown","qty":9},{"name":"Washed Leopard Dimsum Bag Pink","qty":7},{"name":"Mori Dimsum Bag Black","qty":4},{"name":"Mini Mori Dimsum Bag Black","qty":3},{"name":"Patchwork Buttons Pillow Bag Navy","qty":3},{"name":"Dot Cozy Dumpling Bag Gray","qty":3},{"name":"Star Dimsum Bag Charcoal","qty":3}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":1},{"name":"Washed Leopard Dimsum Bag Pink","qty":1},{"name":"Dot Cozy Dumpling Bag Brown","qty":1},{"name":"Mini Mori Dimsum Bag Brown","qty":1},{"name":"Mini Mori Dimsum Bag Black","qty":1}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":26},{"name":"Mini Mori Dimsum Bag Brown","qty":5},{"name":"Washed Leopard Dimsum Bag Pink","qty":5},{"name":"Mini Mori Dimsum Bag Black","qty":4},{"name":"Mori Dimsum Bag Black","qty":3},{"name":"Leopard Dimsum Bag Charcoal","qty":3},{"name":"Dot Cozy Dumpling Bag Brown","qty":1},{"name":"Dot Cozy Dumpling Bag Gray","qty":1}],"SG":[{"name":"Mori Dimsum Bag Brown","qty":10},{"name":"Dot Cozy Dumpling Bag Gray","qty":2},{"name":"Mini Mori Dimsum Bag Brown","qty":2},{"name":"Washed Leopard Dimsum Bag Purple (b2640)","qty":2},{"name":"Leopard Bao Bag Charcoal","qty":1},{"name":"Sheer Dot Hand Warmer Beige","qty":1},{"name":"Mini Mori Dimsum Bag Black","qty":1},{"name":"Patchwork Buttons Pillow Bag Navy","qty":1}]},"aov_dom":{"buckets":[0,5,46,65,19,387,77,38,21,10,0],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":136758},"aov_ovs":{"buckets":[0,6,215,857,156,33,19,3],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":166.03},"season_monthly":{"25_FW_가방_1차":[0,0,0,0],"25_FW_02":[0,0,0,0],"25_FW_01":[0,0,0,0],"26 SS 01":[0,0,0,0],"26 발렌타인":[0,0,0,0]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2026-01":{"label":"2026년 1월","dom_cnt":1026,"ovs_cnt":777,"heatmap":[[7,5,0,3,1,0,1,0,6,5,5,11,4,8,15,6,15,7,3,5,6,7,10,13],[5,7,5,1,1,1,0,2,2,4,6,10,9,7,9,9,13,3,3,9,6,8,7,14],[6,6,5,2,0,0,1,6,3,3,3,10,10,7,10,7,9,6,5,7,5,11,5,6],[4,6,6,3,2,3,1,4,6,4,3,6,8,9,12,10,5,3,9,5,6,12,15,19],[7,7,5,2,4,2,0,0,4,5,4,5,9,14,6,9,7,11,10,13,9,9,14,9],[3,7,4,1,2,2,1,5,3,3,5,13,6,8,10,11,7,7,9,7,13,9,10,8],[8,5,2,2,2,2,1,1,2,1,6,6,13,6,7,4,9,10,7,5,6,11,6,7]],"repeat":{"total":893,"repeat_cnt":66,"repeat_rate":7.4,"repeat_aov":181720,"new_aov":130845,"top_retention":[{"name":"Mori Dimsum Bag Brown","cnt":33},{"name":"Washed Leopard Dimsum Bag Pink","cnt":18},{"name":"Mini Mori Dimsum Bag Brown","cnt":14},{"name":"Mori Dimsum Bag Black","cnt":8},{"name":"Washed Leopard Pillow Bag Pink","cnt":4},{"name":"Removable Shearling Knit Hoodie Zip Brown","cnt":3},{"name":"Mini Mori Dimsum Bag Black","cnt":2},{"name":"Pom Pom Knit Half Top Blue","cnt":2},{"name":"Dot Cozy Dumpling Bag Navy","cnt":2},{"name":"Cottage Bambi Fur Trooper Hat Brown","cnt":2}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":136},{"name":"Mini Mori Dimsum Bag Brown","qty":89},{"name":"Patchwork Buttons Pillow Bag Navy","qty":73},{"name":"Mori Dimsum Bag Black","qty":73},{"name":"Mini Mori Dimsum Bag Black","qty":71},{"name":"Washed Leopard Dimsum Bag Pink","qty":54},{"name":"Star Dimsum Bag Charcoal","qty":22},{"name":"Washed Leopard Pillow Bag Pink","qty":19}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":20},{"name":"Mini Mori Dimsum Bag Black","qty":7},{"name":"Washed Leopard Dimsum Bag Pink","qty":6},{"name":"Mini Mori Dimsum Bag Brown","qty":6},{"name":"Mori Dimsum Bag Black","qty":3},{"name":"Patchwork Buttons Pillow Bag Navy","qty":3},{"name":"Star Dimsum Bag Charcoal","qty":2},{"name":"Leopard Dimsum Bag Beige","qty":1}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":5},{"name":"Patchwork Buttons Pillow Bag Navy","qty":1},{"name":"Baby Sheeps Fleece Jacket Ivory","qty":1},{"name":"Leopard Dimsum Bag Beige","qty":1},{"name":"Mini Mori Dimsum Bag Black","qty":1},{"name":"Washed Leopard Pillow Bag Pink","qty":1}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":13},{"name":"Mori Dimsum Bag Black","qty":6},{"name":"Mini Mori Dimsum Bag Black","qty":4},{"name":"Washed Leopard Dimsum Bag Pink","qty":3},{"name":"Patchwork Buttons Pillow Bag Navy","qty":2},{"name":"Cozy Pom-Pom Dot Shearling Dumble Jumper Brown","qty":1},{"name":"Star Dimsum Bag Charcoal","qty":1},{"name":"Washed Leopard Pillow Bag Pink","qty":1}],"SG":[{"name":"Mini Mori Dimsum Bag Brown","qty":7},{"name":"Mori Dimsum Bag Black","qty":4},{"name":"Washed Leopard Dimsum Bag Pink","qty":3},{"name":"Mori Dimsum Bag Brown","qty":3},{"name":"Patchwork Buttons Pillow Bag Navy","qty":2},{"name":"Washed Leopard Pillow Bag Pink","qty":2},{"name":"Dot Cozy Dumpling Bag Gray","qty":1},{"name":"Leopard Dimsum Bag Beige","qty":1}]},"aov_dom":{"buckets":[4,10,47,72,40,615,145,48,31,13,1],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":140712},"aov_ovs":{"buckets":[0,13,245,358,104,36,17,4],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":167.84},"season_monthly":{"25_FW_가방_1차":[806,592,1009,374],"25_FW_02":[1058,363,236,144],"25_FW_01":[84,33,49,20],"26 SS 01":[0,0,0,83],"26 발렌타인":[0,306,344,244]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2026-02":{"label":"2026년 2월","dom_cnt":739,"ovs_cnt":469,"heatmap":[[6,5,1,1,1,1,0,0,1,5,4,6,7,3,4,4,7,7,4,5,6,1,7,7],[2,1,2,0,0,0,0,2,4,4,4,13,7,7,3,9,6,8,5,9,10,6,6,9],[2,6,1,4,1,0,0,1,3,3,8,3,8,5,7,3,5,8,12,7,8,8,7,9],[8,4,5,3,0,1,1,1,4,1,6,11,7,8,7,2,6,13,5,2,6,7,4,7],[7,5,3,2,0,1,1,3,2,2,7,3,4,4,8,5,5,4,5,6,5,3,6,6],[6,3,2,1,0,2,2,0,2,0,2,4,5,5,8,5,3,3,3,7,6,6,4,2],[6,1,2,1,3,0,1,1,0,3,6,10,4,4,2,5,10,4,5,9,7,9,12,8]],"repeat":{"total":678,"repeat_cnt":38,"repeat_rate":5.6,"repeat_aov":174829,"new_aov":127053,"top_retention":[{"name":"Washed Leopard Dimsum Bag Pink","cnt":15},{"name":"Mori Dimsum Bag Brown","cnt":11},{"name":"Mini Mori Dimsum Bag Brown","cnt":7},{"name":"Mini Mori Dimsum Bag Black","cnt":5},{"name":"Mori Dimsum Bag Black","cnt":4},{"name":"Mini Washed Leopard Dimsum Bag Pink","cnt":3},{"name":"Leopard Dimsum Bag Charcoal","cnt":3},{"name":"Patchwork Buttons Pillow Bag Navy","cnt":3},{"name":"Knit Highneck Double Jacket Dark Gray","cnt":3},{"name":"Dot Cozy Bao Bag Gray","cnt":1}]},"country_top":{"US":[{"name":"Washed Leopard Dimsum Bag Pink","qty":50},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":45},{"name":"Leopard Dimsum Bag Charcoal","qty":43},{"name":"Patchwork Buttons Pillow Bag Navy","qty":37},{"name":"Mori Dimsum Bag Brown","qty":35},{"name":"Mini Mori Dimsum Bag Brown","qty":35},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":27},{"name":"Mori Dimsum Bag Black","qty":22}],"AU":[{"name":"Leopard Dimsum Bag Charcoal","qty":8},{"name":"Mori Dimsum Bag Brown","qty":8},{"name":"Washed Leopard Dimsum Bag Pink","qty":6},{"name":"Patchwork Buttons Pillow Bag Navy","qty":5},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":3},{"name":"Charm Holder Backpack Patchwork","qty":2},{"name":"Dot Garden Dress Ivory","qty":1},{"name":"Mushroom Pocket Tie Half Shirts Beige","qty":1}],"JP":[{"name":"Star Dimsum Bag Charcoal","qty":1},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":1},{"name":"Patchwork Buttons Pillow Bag Navy","qty":1},{"name":"Mori Dimsum Bag Brown","qty":1},{"name":"Dot Cozy Dumpling Bag Brown","qty":1},{"name":"Leopard Dimsum Bag Beige","qty":1}],"GB":[{"name":"Mini Mori Dimsum Bag Brown","qty":4},{"name":"Mori Dimsum Bag Black","qty":3},{"name":"Rosie Woolly Off Shouler Rose Gray","qty":2},{"name":"Washed Leopard Dimsum Bag Pink","qty":2},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":2},{"name":"Mori Dimsum Bag Brown","qty":2},{"name":"Leopard Dimsum Bag Beige","qty":1},{"name":"Baby Sheeps Ear Fleece Zip-up Crop Hoodie Ivory","qty":1}],"SG":[{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":3},{"name":"Mini Mori Dimsum Bag Brown","qty":3},{"name":"Patchwork Buttons Pillow Bag Navy","qty":2},{"name":"Mori Dimsum Bag Brown","qty":2},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":1},{"name":"Rosie Woolly Off Shouler Rose Gray","qty":1},{"name":"Charm Holder Backpack Patchwork","qty":1},{"name":"Star Dimsum Bag Charcoal","qty":1}]},"aov_dom":{"buckets":[0,9,32,56,23,487,89,26,12,4,1],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":133453},"aov_ovs":{"buckets":[0,3,144,236,63,15,6,2],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":166.3},"season_monthly":{"25_FW_가방_1차":[806,592,1009,374],"25_FW_02":[1058,363,236,144],"25_FW_01":[84,33,49,20],"26 SS 01":[0,0,0,83],"26 발렌타인":[0,306,344,244]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2026-03":{"label":"2026년 3월","dom_cnt":875,"ovs_cnt":607,"heatmap":[[10,3,4,5,0,1,0,0,7,7,6,6,8,11,9,4,8,7,5,12,7,10,4,9],[8,1,3,1,0,1,0,2,4,3,9,8,5,8,7,7,4,11,4,6,5,8,9,14],[3,3,1,3,1,2,0,2,1,5,5,5,8,9,7,11,8,8,9,5,5,9,16,5],[12,7,5,0,0,1,2,0,3,4,4,7,9,7,3,5,7,10,5,9,9,7,6,8],[5,8,0,0,0,0,0,0,6,5,4,6,7,6,5,7,5,2,4,9,7,8,8,6],[3,5,0,0,1,0,3,1,2,1,5,3,5,5,3,4,3,9,1,8,6,12,11,3],[5,3,1,1,0,0,4,0,2,7,3,7,8,7,9,11,6,13,6,8,7,12,9,12]],"repeat":{"total":750,"repeat_cnt":56,"repeat_rate":7.5,"repeat_aov":181297,"new_aov":114140,"top_retention":[{"name":"Mori Dimsum Bag Brown","cnt":57},{"name":"Washed Leopard Dimsum Bag Pink","cnt":15},{"name":"Patchwork Buttons Pillow Bag Navy","cnt":11},{"name":"Mini Washed Leopard Dimsum Bag Purple","cnt":9},{"name":"Leopard Dimsum Bag Charcoal","cnt":9},{"name":"Mini Washed Leopard Dimsum Bag Pink","cnt":9},{"name":"Removable Shearling Knit Hoodie Zip Brown","cnt":2},{"name":"Charm Holder Backpack Patchwork","cnt":2},{"name":"Rosie Woolly Off Shouler Rose Gray","cnt":1},{"name":"Sheer Dot Buttons Baby Tee Navy","cnt":1}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":142},{"name":"Leopard Dimsum Bag Charcoal","qty":53},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":47},{"name":"Washed Leopard Dimsum Bag Pink","qty":33},{"name":"Patchwork Buttons Pillow Bag Navy","qty":28},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":18},{"name":"Mori Dimsum Bag Black","qty":18},{"name":"Rosie Woolly Off Shouler Rose Gray","qty":6}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":57},{"name":"Leopard Dimsum Bag Charcoal","qty":15},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":14},{"name":"Washed Leopard Dimsum Bag Pink","qty":14},{"name":"Patchwork Buttons Pillow Bag Navy","qty":12},{"name":"Mori Dimsum Bag Black","qty":11},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":5},{"name":"Removable Shearling Knit Hoodie Zip Brown","qty":5}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":2},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":2},{"name":"Leopard Dimsum Bag Charcoal","qty":2},{"name":"Mori Dimsum Bag Black","qty":1},{"name":"Patchwork Buttons Pillow Bag Navy","qty":1},{"name":"Washed Leopard Dimsum Bag Pink","qty":1}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":8},{"name":"Mori Dimsum Bag Black","qty":3},{"name":"Washed Leopard Dimsum Bag Pink","qty":2},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":2},{"name":"Leopard Dimsum Bag Charcoal","qty":2},{"name":"Patchwork Buttons Pillow Bag Navy","qty":2},{"name":"Baby Sheeps Fleece Jacket Ivory","qty":1},{"name":"Cozy Pom-Pom Dot Shearling Dumble Jumper Brown","qty":1}],"SG":[{"name":"Mori Dimsum Bag Brown","qty":11},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":9},{"name":"Patchwork Buttons Pillow Bag Navy","qty":4},{"name":"Washed Leopard Dimsum Bag Pink","qty":3},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":2},{"name":"Earflap Beanie Ivory","qty":1},{"name":"Vine Knit Charcoal","qty":1},{"name":"Leopard Dimsum Bag Charcoal","qty":1}]},"aov_dom":{"buckets":[1,28,37,82,169,431,72,28,19,6,2],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":128032},"aov_ovs":{"buckets":[1,3,313,174,87,21,7,1],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":162.28},"season_monthly":{"25_FW_가방_1차":[806,592,1009,374],"25_FW_02":[1058,363,236,144],"25_FW_01":[84,33,49,20],"26 SS 01":[0,0,0,83],"26 발렌타인":[0,306,344,244]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]},"2026-04":{"label":"2026년 4월","dom_cnt":577,"ovs_cnt":307,"heatmap":[[6,5,1,0,0,0,0,1,1,2,1,3,4,8,9,8,8,9,4,2,5,10,11,3],[7,4,1,2,2,0,0,2,3,4,3,9,7,3,6,5,5,6,2,6,9,9,11,7],[6,4,4,1,1,1,2,3,9,4,7,13,10,4,4,4,4,2,4,3,1,5,3,7],[1,1,2,0,0,0,0,0,1,5,4,2,3,1,4,5,2,2,0,5,6,5,2,4],[7,2,0,1,0,1,0,0,3,4,3,2,4,1,1,4,4,5,4,1,3,5,5,4],[4,1,1,0,1,0,0,1,2,3,2,2,5,1,4,4,5,3,2,1,7,5,3,6],[5,3,1,0,1,1,1,0,1,0,3,0,2,3,3,5,7,6,7,2,3,8,9,4]],"repeat":{"total":455,"repeat_cnt":32,"repeat_rate":7.0,"repeat_aov":143198,"new_aov":102170,"top_retention":[{"name":"Mori Dimsum Bag Brown","cnt":15},{"name":"Mini Washed Leopard Dimsum Bag Pink","cnt":12},{"name":"Washed Leopard Dimsum Bag Pink","cnt":6},{"name":"Mini Washed Leopard Dimsum Bag Purple","cnt":4},{"name":"Leopard Dimsum Bag Charcoal","cnt":2},{"name":"Cotton Ribbon Shorts Navy","cnt":1},{"name":"Baby Sheeps Button Fleece Hoodie Jacket Ivory","cnt":1},{"name":"Baby Sheeps Ear Fleece Zip-up Crop Hoodie Ivory","cnt":1},{"name":"Flora Lace Skirt Baby Pink","cnt":1},{"name":"Dot Garden Dress Ivory","cnt":1}]},"country_top":{"US":[{"name":"Mori Dimsum Bag Brown","qty":37},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":29},{"name":"Patchwork Buttons Pillow Bag Navy","qty":24},{"name":"Leopard Dimsum Bag Charcoal","qty":17},{"name":"Washed Leopard Dimsum Bag Pink","qty":14},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":13},{"name":"Mini Chocolate Blush Mori Dimsum Bag","qty":7},{"name":"Charm Holder Backpack Patchwork","qty":6}],"AU":[{"name":"Mori Dimsum Bag Brown","qty":11},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":9},{"name":"Patchwork Buttons Pillow Bag Navy","qty":6},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":4},{"name":"Leopard Dimsum Bag Charcoal","qty":2},{"name":"Knit Pleats Skirt Dark Gray","qty":2},{"name":"Charm Holder Backpack Patchwork","qty":2},{"name":"Ink Dimsum Bag","qty":1}],"JP":[{"name":"Mori Dimsum Bag Brown","qty":2},{"name":"Leopard Dimsum Bag Charcoal","qty":2},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":1},{"name":"Glaze Pearl Gray Dimsum Bag","qty":1}],"GB":[{"name":"Mori Dimsum Bag Brown","qty":4},{"name":"Patchwork Buttons Pillow Bag Navy","qty":2},{"name":"Washed Leopard Dimsum Bag Purple (b2677)","qty":1},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":1}],"SG":[{"name":"Mori Dimsum Bag Brown","qty":3},{"name":"Mini Chocolate Blush Mori Dimsum Bag","qty":3},{"name":"Leopard Dimsum Bag Charcoal","qty":1},{"name":"Mini Washed Leopard Dimsum Bag Pink","qty":1},{"name":"Mini Washed Leopard Dimsum Bag Purple","qty":1},{"name":"Patchwork Buttons Pillow Bag Navy","qty":1},{"name":"Washed Leopard Dimsum Bag Pink","qty":1}]},"aov_dom":{"buckets":[1,25,51,132,25,231,23,19,11,1,1],"labels":["0-2만","2-4만","4-6만","6-8만","8-10만","10-15만","15-20만","20-30만","30-50만","50-100만","100만+"],"mean":109823},"aov_ovs":{"buckets":[0,3,92,124,28,10,1,2],"labels":["$0-50","$50-100","$100-150","$150-200","$200-250","$250-300","$300-400","$400+"],"mean":158.38},"season_monthly":{"25_FW_가방_1차":[806,592,1009,374],"25_FW_02":[1058,363,236,144],"25_FW_01":[84,33,49,20],"26 SS 01":[0,0,0,83],"26 발렌타인":[0,306,344,244]},"season_labels":["25_FW_가방_1차","25_FW_02","25_FW_01","26 SS 01","26 발렌타인"]}};
-const CD=[{"code":"US","name":"미국","orders":1373,"rev_usd":226184.59,"rev_krw":327967455},{"code":"AU","name":"호주","orders":230,"rev_usd":38777.6,"rev_krw":56227492},{"code":"GB","name":"영국","orders":74,"rev_usd":12043.53,"rev_krw":17463107},{"code":"SG","name":"싱가포르","orders":67,"rev_usd":11453.06,"rev_krw":16606926},{"code":"CA","name":"캐나다","orders":56,"rev_usd":9223.98,"rev_krw":13374764},{"code":"DE","name":"독일","orders":46,"rev_usd":7375.91,"rev_krw":10695065},{"code":"JP","name":"일본","orders":29,"rev_usd":4444.17,"rev_krw":6444043},{"code":"FR","name":"프랑스","orders":25,"rev_usd":4087.93,"rev_krw":5927497},{"code":"SA","name":"사우디아라비아","orders":19,"rev_usd":3174.52,"rev_krw":4603054},{"code":"NZ","name":"뉴질랜드","orders":14,"rev_usd":2156.68,"rev_krw":3127185},{"code":"PL","name":"PL","orders":13,"rev_usd":1991.48,"rev_krw":2887642},{"code":"NL","name":"네덜란드","orders":11,"rev_usd":1719.37,"rev_krw":2493085},{"code":"VN","name":"베트남","orders":11,"rev_usd":1996.9,"rev_krw":2895504},{"code":"SE","name":"스웨덴","orders":10,"rev_usd":1770.84,"rev_krw":2567717},{"code":"CH","name":"스위스","orders":8,"rev_usd":1373.05,"rev_krw":1990922},{"code":"IE","name":"IE","orders":7,"rev_usd":1120.34,"rev_krw":1624492},{"code":"HK","name":"홍콩","orders":7,"rev_usd":1094.37,"rev_krw":1586836},{"code":"NO","name":"노르웨이","orders":7,"rev_usd":1041.74,"rev_krw":1510523},{"code":"IT","name":"이탈리아","orders":6,"rev_usd":1022.64,"rev_krw":1482828},{"code":"TW","name":"대만","orders":6,"rev_usd":1016.94,"rev_krw":1474563},{"code":"ES","name":"스페인","orders":6,"rev_usd":852.0,"rev_krw":1235400},{"code":"PH","name":"필리핀","orders":5,"rev_usd":715.6,"rev_krw":1037620},{"code":"BE","name":"벨기에","orders":5,"rev_usd":791.6,"rev_krw":1147819},{"code":"KR","name":"KR","orders":5,"rev_usd":786.44,"rev_krw":1140337},{"code":"MY","name":"말레이시아","orders":5,"rev_usd":1032.3,"rev_krw":1496834},{"code":"DK","name":"덴마크","orders":5,"rev_usd":873.12,"rev_krw":1266024},{"code":"GR","name":"GR","orders":5,"rev_usd":760.2,"rev_krw":1102289},{"code":"AT","name":"오스트리아","orders":4,"rev_usd":642.64,"rev_krw":931828},{"code":"AE","name":"아랍에미리트","orders":4,"rev_usd":681.8,"rev_krw":988610},{"code":"CN","name":"중국","orders":4,"rev_usd":722.15,"rev_krw":1047117},{"code":"CZ","name":"CZ","orders":4,"rev_usd":594.24,"rev_krw":861648},{"code":"MX","name":"멕시코","orders":4,"rev_usd":594.05,"rev_krw":861372},{"code":"IL","name":"IL","orders":3,"rev_usd":446.2,"rev_krw":646989},{"code":"FI","name":"핀란드","orders":3,"rev_usd":442.64,"rev_krw":641828},{"code":"HU","name":"HU","orders":3,"rev_usd":452.2,"rev_krw":655690},{"code":"LU","name":"LU","orders":3,"rev_usd":491.84,"rev_krw":713168},{"code":"KW","name":"쿠웨이트","orders":2,"rev_usd":365.3,"rev_krw":529685},{"code":"ID","name":"인도네시아","orders":2,"rev_usd":280.8,"rev_krw":407159},{"code":"PT","name":"포르투갈","orders":2,"rev_usd":303.2,"rev_krw":439640},{"code":"CL","name":"CL","orders":2,"rev_usd":382.64,"rev_krw":554828},{"code":"BM","name":"BM","orders":2,"rev_usd":258.7,"rev_krw":375115},{"code":"QA","name":"QA","orders":2,"rev_usd":353.2,"rev_krw":512140},{"code":"SK","name":"SK","orders":2,"rev_usd":456.69,"rev_krw":662200},{"code":"EE","name":"EE","orders":1,"rev_usd":151.6,"rev_krw":219820},{"code":"MP","name":"MP","orders":1,"rev_usd":136.4,"rev_krw":197780},{"code":"BR","name":"브라질","orders":1,"rev_usd":151.6,"rev_krw":219820},{"code":"AZ","name":"AZ","orders":1,"rev_usd":151.6,"rev_krw":219820},{"code":"OM","name":"OM","orders":1,"rev_usd":151.6,"rev_krw":219820},{"code":"PE","name":"PE","orders":1,"rev_usd":151.6,"rev_krw":219820},{"code":"GE","name":"GE","orders":1,"rev_usd":151.6,"rev_krw":219820},{"code":"TR","name":"TR","orders":1,"rev_usd":139.44,"rev_krw":202188},{"code":"GU","name":"GU","orders":1,"rev_usd":139.44,"rev_krw":202188},{"code":"CY","name":"CY","orders":1,"rev_usd":139.44,"rev_krw":202188},{"code":"AL","name":"AL","orders":1,"rev_usd":139.44,"rev_krw":202188},{"code":"SI","name":"SI","orders":1,"rev_usd":135.4,"rev_krw":196330}];
-const CM={"months":["2026-01","2026-02","2026-03","2026-04"],"top10":["US","AU","GB","SG","CA","DE","JP","FR","SA","NZ"],"data":{"US":[563,325,327,158],"AU":[43,35,120,32],"GB":[28,21,18,7],"SG":[20,12,26,9],"CA":[15,12,21,8],"DE":[20,7,14,5],"JP":[8,6,9,6],"FR":[6,6,11,2],"SA":[3,11,3,2],"NZ":[6,4,3,1]}};
-const DK=['월','화','수','목','금','토','일'];
-const CCN={US:'🇺🇸 미국',AU:'🇦🇺 호주',JP:'🇯🇵 일본',GB:'🇬🇧 영국',SG:'🇸🇬 싱가포르'};
-const CCC={US:'#0891b2',AU:'#7c3aed',JP:'#ef4444',GB:'#10b981',SG:'#f59e0b'};
-const SC=['#7c3aed','#0891b2','#ec4899','#f59e0b','#10b981'];
-const CH10=['#0891b2','#7c3aed','#10b981','#f59e0b','#ef4444','#ec4899','#f97316','#06b6d4','#8b5cf6','#84cc16'];
-let C={},cur='all',cc='US',customRange=null;
-function dc(k){if(C[k]){C[k].destroy();C[k]=null;}}
-function sp(p,btn){document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');cur=p;customRange=null;rp();}
-function onDateChange(){document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));}
-function applyDateRange(){
-  const f=document.getElementById('dtFrom').value,t=document.getElementById('dtTo').value;
-  if(!f||!t||f>t){alert('시작일이 종료일보다 앞이어야 합니다.');return;}
-  document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));
-  // 일 단위 → 월 단위로 변환 (인사이트 데이터는 월별 집계)
-  const fromMonth=f.slice(0,7),toMonth=t.slice(0,7);
-  customRange={from:fromMonth,to:toMonth,fromDay:f,toDay:t};cur=null;rp();
-}
-function getMergedData(from,to){
-  const months=Object.keys(INS).filter(k=>/^\d{4}-\d{2}$/.test(k)&&k>=from&&k<=to).sort();
-  if(months.length===0)return INS['all'];
-  if(months.length===1)return INS[months[0]];
-  // Merge monthly data
-  const merged={dom_cnt:0,ovs_cnt:0,heatmap:Array.from({length:7},()=>new Array(24).fill(0)),
-    repeat:{repeat_cnt:0,total:0,repeat_aov:0,new_aov:0,repeat_rate:0,top_retention:[]},
-    country_top:{},aov_dom:{mean:0,labels:null,buckets:null},aov_ovs:{mean:0,labels:null,buckets:null},
-    season_monthly:{},season_labels:[]};
-  let domRev=0,ovsRev=0,repRevSum=0,repCntSum=0,newRevSum=0,newCntSum=0;
-  const retMap={};
-  months.forEach(m=>{
-    const D=INS[m];
-    merged.dom_cnt+=D.dom_cnt;merged.ovs_cnt+=D.ovs_cnt;
-    // heatmap
-    D.heatmap.forEach((row,d)=>row.forEach((v,h)=>merged.heatmap[d][h]+=v));
-    // repeat
-    merged.repeat.repeat_cnt+=D.repeat.repeat_cnt;
-    merged.repeat.total+=D.repeat.total;
-    repRevSum+=D.repeat.repeat_aov*D.repeat.repeat_cnt;repCntSum+=D.repeat.repeat_cnt;
-    newRevSum+=D.repeat.new_aov*(D.repeat.total-D.repeat.repeat_cnt);newCntSum+=(D.repeat.total-D.repeat.repeat_cnt);
-    // top_retention merge
-    (D.repeat.top_retention||[]).forEach(item=>{retMap[item.name]=(retMap[item.name]||0)+item.cnt;});
-    // country_top merge
-    Object.keys(D.country_top||{}).forEach(cc=>{
-      if(!merged.country_top[cc])merged.country_top[cc]=[];
-      const pmap={};merged.country_top[cc].forEach(p=>{pmap[p.name]=p;});
-      D.country_top[cc].forEach(p=>{if(pmap[p.name])pmap[p.name].qty+=p.qty;else{pmap[p.name]={name:p.name,qty:p.qty};merged.country_top[cc].push(pmap[p.name]);}});
-      merged.country_top[cc].sort((a,b)=>b.qty-a.qty);
-    });
-    // aov
-    const md=INS.mom_data.find(x=>x.month===m)||{};
-    domRev+=(md.dom_rev||D.aov_dom.mean*D.dom_cnt);ovsRev+=(md.ovs_rev||D.aov_ovs.mean*D.ovs_cnt);
-    if(!merged.aov_dom.labels){merged.aov_dom.labels=D.aov_dom.labels;merged.aov_dom.buckets=[...D.aov_dom.buckets];}
-    else D.aov_dom.buckets.forEach((v,i)=>merged.aov_dom.buckets[i]+=v);
-    if(!merged.aov_ovs.labels){merged.aov_ovs.labels=D.aov_ovs.labels;merged.aov_ovs.buckets=[...D.aov_ovs.buckets];}
-    else D.aov_ovs.buckets.forEach((v,i)=>merged.aov_ovs.buckets[i]+=v);
-    // season
-    Object.keys(D.season_monthly||{}).forEach(s=>{
-      if(!merged.season_monthly[s])merged.season_monthly[s]=[];
-      const sm=D.season_monthly[s];sm.forEach((v,i)=>{if(merged.season_monthly[s][i]==null)merged.season_monthly[s][i]=0;merged.season_monthly[s][i]+=v;});
-      if(!merged.season_labels.includes(s))merged.season_labels.push(s);
-    });
-  });
-  merged.repeat.repeat_rate=merged.repeat.total>0?Math.round(merged.repeat.repeat_cnt/merged.repeat.total*100):0;
-  merged.repeat.repeat_aov=repCntSum>0?Math.round(repRevSum/repCntSum):0;
-  merged.repeat.new_aov=newCntSum>0?Math.round(newRevSum/newCntSum):0;
-  merged.repeat.top_retention=Object.entries(retMap).map(([name,cnt])=>({name,cnt})).sort((a,b)=>b.cnt-a.cnt).slice(0,10);
-  merged.aov_dom.mean=merged.dom_cnt>0?Math.round(domRev/merged.dom_cnt):0;
-  merged.aov_ovs.mean=merged.ovs_cnt>0?+(ovsRev/merged.ovs_cnt/1450).toFixed(0):0;
-  merged.label=(customRange&&customRange.fromDay?customRange.fromDay:from)+' ~ '+(customRange&&customRange.toDay?customRange.toDay:to);
-  return merged;
-}
-function lb(p){return{all:'전체','2025':'2025년','2026':'2026년','2026-01':'2026 1월','2026-02':'2026 2월','2026-03':'2026 3월','2026-04':'2026 4월','2025-01':'2025 1월','2025-06':'2025 6월','2025-09':'2025 9월','2025-12':'2025 12월'}[p]||p;}
-function rp(){
-  const D=customRange?getMergedData(customRange.from,customRange.to):(INS[cur]||INS['all']);
-  const l=customRange?(customRange.fromDay&&customRange.toDay?(customRange.fromDay+' ~ '+customRange.toDay):(customRange.from+' ~ '+customRange.to)):lb(cur);
-  document.getElementById('hsub').textContent=l+' · 국내 '+D.dom_cnt.toLocaleString()+'건 · 해외 '+D.ovs_cnt.toLocaleString()+'건';
-  document.getElementById('pcnt').textContent='국내 '+D.dom_cnt.toLocaleString()+'건 · 해외 '+D.ovs_cnt.toLocaleString()+'건';
-  ['l2','l3','l4','l7'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='· '+l;});
-  rKPI(D);rRet(D);rHM(D);rCross(D,cc);rAOV(D);
-}
-function rKPI(D){
-  const r=D.repeat,diff=r.repeat_aov>0&&r.new_aov>0?Math.round((r.repeat_aov/r.new_aov-1)*100):0;
-  document.getElementById('k1').textContent=r.repeat_rate+'%';
-  document.getElementById('k1s').textContent=r.repeat_cnt+'명 / '+r.total+'명';
-  document.getElementById('k2').textContent='₩'+r.repeat_aov.toLocaleString();
-  document.getElementById('k2s').textContent='신규 ₩'+r.new_aov.toLocaleString();
-  document.getElementById('k2b').textContent='+'+diff+'%';
-  document.getElementById('adiff').textContent='+'+diff+'%';
-  document.getElementById('k3').textContent='₩'+D.aov_dom.mean.toLocaleString();
-  document.getElementById('k3s').textContent=D.dom_cnt+'건 평균';
-  document.getElementById('k4').textContent='$'+D.aov_ovs.mean;
-  const hm=D.heatmap;let mx=0,md=0,mh=0;
-  hm.forEach((row,d)=>row.forEach((v,h)=>{if(v>mx){mx=v;md=d;mh=h;}}));
-  document.getElementById('k5').textContent=mx>0?DK[md]+' '+mh+'시':'-';
-  document.getElementById('k5s').textContent=mx>0?mx+'건':'-';
-  document.getElementById('pnote').textContent=mx>0?'⭐ '+DK[md]+'요일 '+mh+'시 ('+mx+'건)':'';
-}
-function rMoM(){
-  const md=INS.mom_data,lb2=md.map(d=>d.month.replace('2025-','25.').replace('2026-','26.'));
-  dc('c1');dc('c2');
-  C.c1=new Chart(document.getElementById('c1').getContext('2d'),{type:'bar',data:{labels:lb2,datasets:[
-    {label:'국내',data:md.map(d=>Math.round(d.dom_rev/10000)),backgroundColor:'rgba(8,145,178,.7)',borderRadius:3},
-    {label:'해외',data:md.map(d=>Math.round(d.ovs_rev/10000)),backgroundColor:'rgba(124,58,237,.7)',borderRadius:3},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': ₩'+c.parsed.y.toLocaleString()+'만'}}},scales:{y:{ticks:{font:{size:9},callback:v=>v+'만'},grid:{color:'#f1f5f9'}},x:{ticks:{font:{size:8}},grid:{display:false}}}}});
-  C.c2=new Chart(document.getElementById('c2').getContext('2d'),{type:'bar',data:{labels:md.slice(1).map(d=>d.month.replace('2025-','25.').replace('2026-','26.')),datasets:[
-    {label:'국내',data:md.slice(1).map(d=>d.dom_mom),backgroundColor:md.slice(1).map(d=>d.dom_mom>=0?'rgba(8,145,178,.8)':'rgba(239,68,68,.7)'),borderRadius:3},
-    {label:'해외',data:md.slice(1).map(d=>Math.abs(d.ovs_mom||0)>500?null:d.ovs_mom),backgroundColor:md.slice(1).map(d=>(d.ovs_mom||0)>=0?'rgba(124,58,237,.6)':'rgba(239,68,68,.4)'),borderRadius:3},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+(c.parsed.y>=0?'+':'')+c.parsed.y?.toFixed(1)+'%'}}},scales:{y:{ticks:{font:{size:9},callback:v=>v+'%'},grid:{color:'#f1f5f9'},suggestedMin:-80,suggestedMax:150},x:{ticks:{font:{size:8}},grid:{display:false}}}}});
-}
-function rRet(D){
-  const r=D.repeat;dc('c3');
-  document.getElementById('cs2').textContent=D.dom_cnt+'건 기준';
-  C.c3=new Chart(document.getElementById('c3').getContext('2d'),{type:'doughnut',data:{labels:['재구매 '+r.repeat_cnt+'명','신규 '+(r.total-r.repeat_cnt)+'명'],datasets:[{data:[r.repeat_cnt,r.total-r.repeat_cnt],backgroundColor:['#7c3aed','#e0f2fe'],borderWidth:2,borderColor:'white',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:c=>' '+c.label+': '+(r.total>0?((c.parsed/r.total)*100).toFixed(1):0)+'%'}}}}});
-  document.getElementById('r1').textContent=r.repeat_cnt+'명';
-  document.getElementById('r1s').textContent='AOV ₩'+r.repeat_aov.toLocaleString();
-  document.getElementById('r2').textContent=(r.total-r.repeat_cnt)+'명';
-  document.getElementById('r2s').textContent='AOV ₩'+r.new_aov.toLocaleString();
-  document.getElementById('rt').innerHTML='<tr><th>#</th><th>첫 구매 상품</th><th class="r">재구매 고객</th><th class="r">비율</th></tr>'+(r.top_retention||[]).map((item,i)=>'<tr><td style="color:#94a3b8;font-size:11px">'+(i+1)+'</td><td style="font-weight:'+(i<3?700:400)+';font-size:12px">'+item.name+'</td><td class="r" style="font-weight:700;color:#7c3aed">'+item.cnt+'명</td><td class="r" style="font-size:10px;color:#64748b">'+(r.repeat_cnt>0?((item.cnt/r.repeat_cnt)*100).toFixed(1):0)+'%</td></tr>').join('');
-}
-function rHM(D){
-  const hm=D.heatmap;let mx=0,md=0,mh=0;
-  hm.forEach((row,d)=>row.forEach((v,h)=>{if(v>mx){mx=v;md=d;mh=h;}}));
-  function gc(v){if(!v)return'#f1f5f9';const t=v/Math.max(mx,1);if(t<.2)return'#bfdbfe';if(t<.4)return'#60a5fa';if(t<.6)return'#2563eb';if(t<.8)return'#1d4ed8';return'#1e3a8a';}
-  const g=document.getElementById('hmg');g.innerHTML='';
-  hm.forEach((row,d)=>{
-    const dl=document.createElement('div');dl.className='hml';dl.textContent=DK[d];if(d===md)dl.style.fontWeight='700';g.appendChild(dl);
-    row.forEach((v,h)=>{const c=document.createElement('div');c.className='hmc';c.style.background=gc(v);if(v>0)c.textContent=v;c.title=DK[d]+'요일 '+h+'시: '+v+'건';if(d===md&&h===mh)c.style.outline='2px solid #ef4444';g.appendChild(c);});
-  });
-  document.getElementById('hmh').innerHTML='<div></div>'+Array.from({length:24},(_,h)=>'<div style="font-size:9px;color:#94a3b8;text-align:center">'+h+'</div>').join('');
-}
-function bldTabs(D){
-  document.getElementById('cctabs').innerHTML=Object.keys(CCN).map(c=>'<button class="ctab '+(c===cc?'active':'')+'" data-cc="'+c+'" onclick="swCC(this.dataset.cc)">'+CCN[c]+'</button>').join('');
-}
-function swCC(c){cc=c;document.querySelectorAll('.ctab').forEach(b=>b.classList.toggle('active',b.dataset.cc===c));rCross(INS[cur]||INS['all'],c);}
-function rCross(D,c){
-  bldTabs(D);dc('c4');
-  const items=(D.country_top||{})[c]||[];
-  if(!items.length){document.getElementById('cnote').textContent='해당 기간 데이터 없음';return;}
-  const clr=CCC[c]||'#0891b2';
-  C.c4=new Chart(document.getElementById('c4').getContext('2d'),{type:'bar',data:{labels:items.map(p=>p.name),datasets:[{label:'판매수량',data:items.map(p=>p.qty),backgroundColor:clr+'cc',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed.x+'개',title:t=>t[0].label}}},scales:{x:{ticks:{font:{size:10}},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:10.5},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=210;}}}}});
-  document.getElementById('cnote').innerHTML='💡 <strong>'+CCN[c]+'</strong> 1위: <strong>'+items[0].name+'</strong> ('+items[0].qty+'개).';
-}
-function rCC(){
-  const total=CD.reduce((a,c)=>a+c.orders,0);
-  document.getElementById('cccards').innerHTML=CD.slice(0,5).map((c,i)=>'<div class="scard" style="border-left-color:'+CH10[i]+';cursor:pointer"><div style="font-size:18px;margin-bottom:3px">'+['🇺🇸','🇦🇺','🇬🇧','🇸🇬','🇨🇦'][i]+'</div><div style="font-size:11px;font-weight:700">'+c.name+'</div><div style="font-size:17px;font-weight:700;color:'+CH10[i]+';margin:3px 0">'+c.orders.toLocaleString()+'건</div><div style="font-size:10px;color:#64748b">'+((c.orders/total)*100).toFixed(1)+'%</div></div>').join('');
-  dc('c5');
-  C.c5=new Chart(document.getElementById('c5').getContext('2d'),{type:'bar',data:{labels:CD.slice(0,20).map(c=>c.name),datasets:[{label:'주문건수',data:CD.slice(0,20).map(c=>c.orders),backgroundColor:CD.slice(0,20).map((_,i)=>CH10[i%10]+'cc'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10}},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:11},autoSkip:false},grid:{display:false},afterFit(ax){ax.width=140;}}}}});
-  dc('c6');
-  const top10=CD.slice(0,10),etc=CD.slice(10).reduce((a,c)=>a+c.orders,0);
-  const dl=[...top10.map(c=>c.name),'기타'],dd=[...top10.map(c=>c.orders),etc],dc10=[...CH10,'#cbd5e1'];
-  C.c6=new Chart(document.getElementById('c6').getContext('2d'),{type:'doughnut',data:{labels:dl,datasets:[{data:dd,backgroundColor:dc10,borderWidth:2,borderColor:'white',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed+'건 ('+((c.parsed/total)*100).toFixed(1)+'%)'}}}}});
-  document.getElementById('ccleg').innerHTML=dl.map((l,i)=>'<div style="display:flex;align-items:center;gap:5px;padding:2px 0"><div style="width:7px;height:7px;border-radius:50%;background:'+dc10[i]+';flex-shrink:0"></div><div style="font-size:10px;flex:1">'+l+'</div><div style="font-size:10px;font-weight:700">'+dd[i]+'건</div><div style="font-size:10px;color:#94a3b8">'+((dd[i]/total)*100).toFixed(0)+'%</div></div>').join('');
-  dc('c7');
-  C.c7=new Chart(document.getElementById('c7').getContext('2d'),{type:'line',data:{labels:['1월','2월','3월','4월'],datasets:CM.top10.slice(0,5).map((c,i)=>{const ci=CD.find(x=>x.code===c);return{label:(ci?ci.name:c),data:CM.data[c],borderColor:CH10[i],backgroundColor:CH10[i]+'20',tension:.4,pointRadius:5,borderWidth:2.5,fill:false};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}}},scales:{y:{ticks:{font:{size:10}},grid:{color:'#f1f5f9'},min:0},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
-  document.getElementById('cctbl').innerHTML=CD.map((c,i)=>'<tr style="border-bottom:1px solid #f8fafc"><td style="padding:5px 9px;color:#94a3b8;font-size:11px">'+(i+1)+'</td><td style="padding:5px 9px"><strong>'+c.name+'</strong> <span style="font-size:10px;color:#94a3b8">('+c.code+')</span></td><td style="padding:5px 9px;text-align:right;font-weight:700">'+c.orders+'</td><td style="padding:5px 9px;text-align:right;color:#0891b2">'+Math.round(c.rev_usd).toLocaleString()+'</td></tr>').join('');
-}
-function rSeason(){
-  dc('c8');
-  const D=INS['all'];
-  C.c8=new Chart(document.getElementById('c8').getContext('2d'),{type:'line',data:{labels:['1월','2월','3월','4월'],datasets:D.season_labels.map((s,i)=>({label:s,data:D.season_monthly[s],borderColor:SC[i],backgroundColor:SC[i]+'15',tension:.4,pointRadius:5,borderWidth:2.5,fill:false}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10},boxWidth:8}}},scales:{y:{ticks:{font:{size:10}},grid:{color:'#f1f5f9'},min:0},x:{ticks:{font:{size:11}},grid:{display:false}}}}});
-}
-function rAOV(D){
-  const dom=D.aov_dom,ovs=D.aov_ovs,total=dom.buckets.reduce((a,b)=>a+b,0);
-  const mx=Math.max(...dom.buckets,1);
-  const cls=['#e0f2fe','#bfdbfe','#60a5fa','#2563eb','#1d4ed8','#7c3aed','#6d28d9','#7c2d12','#991b1b','#ef4444','#b91c1c'];
-  document.getElementById('adc').textContent=D.dom_cnt+'건 · 평균 ₩'+dom.mean.toLocaleString();
-  document.getElementById('aoc').textContent=D.ovs_cnt+'건 · 평균 $'+ovs.mean;
-  document.getElementById('omean').textContent='$'+ovs.mean+' (≈₩'+Math.round(ovs.mean*1450).toLocaleString()+')';
-  document.getElementById('avbars').innerHTML=dom.labels.map((l,i)=>{const cnt=dom.buckets[i],pct=total>0?Math.round(cnt/total*100):0,w=Math.round(cnt/mx*100),ik=i===5;return '<div class="aovr"><div class="aovl" style="font-weight:'+(ik?700:400)+'">'+l+'</div><div class="aovb"><div class="aovf" style="width:'+w+'%;background:'+(ik?'#7c3aed':cls[i])+'">'+(w>15?'<span class="aovt">'+cnt+'건 ('+pct+'%)</span>':'')+'</div></div><div class="aovc" style="font-weight:'+(ik?700:400)+'">'+cnt+'</div></div>';}).join('');
-  dc('c9');
-  C.c9=new Chart(document.getElementById('c9').getContext('2d'),{type:'bar',data:{labels:ovs.labels,datasets:[{label:'주문건수',data:ovs.buckets,backgroundColor:ovs.buckets.map((_,i)=>i===2||i===3?'#7c3aedcc':'#0891b255'),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const t=ovs.buckets.reduce((a,b)=>a+b,0);return ' '+c.parsed.y+'건 ('+(t>0?((c.parsed.y/t)*100).toFixed(1):0)+'%)';}}}},scales:{y:{ticks:{font:{size:10}},grid:{color:'#f1f5f9'}},x:{ticks:{font:{size:10}},grid:{display:false}}}}});
-}
-rMoM();rSeason();rCC();rp();
-</script></body></html>
+const INS = {"summary": {"period_start": "2025-01-01", "period_end": "2026-04-21", "total_revenue_krw": 3017573556, "total_orders": 20832, "total_qty": 28147, "dom_revenue_krw": 1641853475, "dom_orders": 14980, "dom_qty": 19928, "os_revenue_usd": 948772.4699999999, "os_revenue_krw": 1375720081, "os_orders": 5852, "os_qty": 8219, "num_products": 321, "usd_to_krw": 1450}, "top_countries": [{"국가": "US", "주문": 4267, "매출USD": 693553.91, "매출KRW": 1005653169.5}, {"국가": "AU", "주문": 385, "매출USD": 64940.6, "매출KRW": 94163870.0}, {"국가": "GB", "주문": 181, "매출USD": 28354.69, "매출KRW": 41114300.5}, {"국가": "CA", "주문": 164, "매출USD": 27101.079999999998, "매출KRW": 39296566.0}, {"국가": "SG", "주문": 131, "매출USD": 22372.96, "매출KRW": 32440792.0}, {"국가": "JP", "주문": 155, "매출USD": 19904.69, "매출KRW": 28861800.499999996}, {"국가": "DE", "주문": 90, "매출USD": 14315.38, "매출KRW": 20757301.0}, {"국가": "FR", "주문": 58, "매출USD": 9222.2, "매출KRW": 13372190.000000002}, {"국가": "SA", "주문": 28, "매출USD": 5154.67, "매출KRW": 7474271.5}, {"국가": "CH", "주문": 24, "매출USD": 4041.1499999999996, "매출KRW": 5859667.499999999}, {"국가": "NZ", "주문": 24, "매출USD": 3922.48, "매출KRW": 5687596.0}, {"국가": "PL", "주문": 24, "매출USD": 3785.5, "매출KRW": 5488975.0}, {"국가": "NL", "주문": 21, "매출USD": 3200.61, "매출KRW": 4640884.5}, {"국가": "SE", "주문": 17, "매출USD": 2841.81, "매출KRW": 4120624.5}, {"국가": "NO", "주문": 15, "매출USD": 2628.91, "매출KRW": 3811919.5}, {"국가": "VN", "주문": 15, "매출USD": 2593.3, "매출KRW": 3760285.0000000005}, {"국가": "TW", "주문": 13, "매출USD": 2420.25, "매출KRW": 3509362.5}, {"국가": "AE", "주문": 15, "매출USD": 2382.02, "매출KRW": 3453929.0}, {"국가": "BE", "주문": 14, "매출USD": 2270.17, "매출KRW": 3291746.5}, {"국가": "HK", "주문": 14, "매출USD": 2253.35, "매출KRW": 3267357.5}], "weekday": [{"요일": "월", "국내": 239219499.0, "해외": 207407971.00000003}, {"요일": "화", "국내": 233976122.0, "해외": 184475452.5}, {"요일": "수", "국내": 262893889.0, "해외": 187034383.5}, {"요일": "목", "국내": 238382836.0, "해외": 185983061.0}, {"요일": "금", "국내": 215395581.0, "해외": 201644830.0}, {"요일": "토", "국내": 219592987.0, "해외": 210126518.0}, {"요일": "일", "국내": 232392561.0, "해외": 199047865.49999997}], "loyalty": {"신규고객수": 10724, "재구매고객수": 1517, "재구매주문수": 4256, "신규주문수": 10724}, "aov": {"국내": 109603.03571428571, "해외_USD": 162.1278998632946, "해외_KRW": 235085.45480177717}, "category": [{"category": "가방", "qty": 14249.0, "rev": 2029935816.2015152, "n": 50}, {"category": "셔츠/탑", "qty": 3867.0, "rev": 250161444.55531135, "n": 101}, {"category": "기타", "qty": 2827.0, "rev": 169831711.8880772, "n": 37}, {"category": "아우터", "qty": 2730.0, "rev": 377814270.7730478, "n": 39}, {"category": "스웨트셔츠/니트", "qty": 1459.0, "rev": 132281872.39090493, "n": 30}, {"category": "스커트/팬츠", "qty": 1398.0, "rev": 78747681.68436147, "n": 31}, {"category": "원피스", "qty": 1294.0, "rev": 107167771.07003967, "n": 18}, {"category": "액세서리/기타", "qty": 323.0, "rev": 13497045.936742425, "n": 15}], "top_rev_products": [{"상품명": "Mori Dimsum Bag Brown", "category": "가방", "통합판매수량": 3390.0, "통합매출_KRW": 587161659.4916667, "국내판매수량": 1294.0, "해외판매수량": 2096.0}, {"상품명": "Washed Leopard Dimsum Bag Pink", "category": "가방", "통합판매수량": 1909.0, "통합매출_KRW": 283736618.68333334, "국내판매수량": 1348.0, "해외판매수량": 561.0}, {"상품명": "Leopard Dimsum Bag Charcoal", "category": "가방", "통합판매수량": 1103.0, "통합매출_KRW": 167927305.3, "국내판매수량": 684.0, "해외판매수량": 419.0}, {"상품명": "Check Hoodie Jacket Blue", "category": "아우터", "통합판매수량": 1094.0, "통합매출_KRW": 156753822.71666667, "국내판매수량": 1056.0, "해외판매수량": 38.0}, {"상품명": "Patchwork Buttons Pillow Bag Navy", "category": "가방", "통합판매수량": 652.0, "통합매출_KRW": 131071845.29166667, "국내판매수량": 317.0, "해외판매수량": 335.0}, {"상품명": "Mini Washed Leopard Dimsum Bag Pink", "category": "가방", "통합판매수량": 561.0, "통합매출_KRW": 67445360.70833333, "국내판매수량": 353.0, "해외판매수량": 208.0}, {"상품명": "Mini Mori Dimsum Bag Brown", "category": "가방", "통합판매수량": 408.0, "통합매출_KRW": 66099824.45833333, "국내판매수량": 119.0, "해외판매수량": 289.0}, {"상품명": "Mori Dimsum Bag Black", "category": "가방", "통합판매수량": 369.0, "통합매출_KRW": 64678639.583333336, "국내판매수량": 131.0, "해외판매수량": 238.0}, {"상품명": "Wool Leopard Pillow Bag Beige", "category": "가방", "통합판매수량": 337.0, "통합매출_KRW": 58665194.00833333, "국내판매수량": 247.0, "해외판매수량": 90.0}, {"상품명": "Dot Cozy Dumpling Bag Gray", "category": "가방", "통합판매수량": 456.0, "통합매출_KRW": 52546153.781060606, "국내판매수량": 266.0, "해외판매수량": 190.0}, {"상품명": "Mini Mori Dimsum Bag Black", "category": "가방", "통합판매수량": 291.0, "통합매출_KRW": 45909701.833333336, "국내판매수량": 97.0, "해외판매수량": 194.0}, {"상품명": "Washed Leopard Dimsum Bag Purple", "category": "가방", "통합판매수량": 253.0, "통합매출_KRW": 41729408.60119048, "국내판매수량": 125.0, "해외판매수량": 128.0}, {"상품명": "Dot Cozy Dumpling Bag Brown", "category": "가방", "통합판매수량": 213.0, "통합매출_KRW": 36054944.75, "국내판매수량": 79.0, "해외판매수량": 134.0}, {"상품명": "Heart Puffer Jacket Check Blue", "category": "아우터", "통합판매수량": 244.0, "통합매출_KRW": 35898935.416666664, "국내판매수량": 230.0, "해외판매수량": 14.0}, {"상품명": "Hand Warmer L/S Charcoal", "category": "기타", "통합판매수량": 486.0, "통합매출_KRW": 34888049.16111111, "국내판매수량": 391.0, "해외판매수량": 95.0}], "top_day": [{"날짜": "2025-11-29", "통합매출_KRW": 25895689.0, "통합주문건수": 123.0}, {"날짜": "2025-11-30", "통합매출_KRW": 22893899.5, "통합주문건수": 118.0}, {"날짜": "2026-03-05", "통합매출_KRW": 20220242.0, "통합주문건수": 85.0}, {"날짜": "2025-11-28", "통합매출_KRW": 18812060.5, "통합주문건수": 97.0}, {"날짜": "2026-01-22", "통합매출_KRW": 17995814.0, "통합주문건수": 92.0}], "monthly": [{"월": "2025-01", "통합매출_KRW": 102759989.0, "통합주문건수": 923.0, "국내매출_KRW": 97003489, "국내주문건수": 893, "해외매출_USD": 3970.0, "해외매출_KRW환산": 5756500.0, "해외주문건수": 30.0}, {"월": "2025-02", "통합매출_KRW": 104225922.5, "통합주문건수": 957.0, "국내매출_KRW": 90995035, "국내주문건수": 892, "해외매출_USD": 9124.75, "해외매출_KRW환산": 13230887.5, "해외주문건수": 65.0}, {"월": "2025-03", "통합매출_KRW": 94201505.0, "통합주문건수": 791.0, "국내매출_KRW": 86628155, "국내주문건수": 756, "해외매출_USD": 5223.0, "해외매출_KRW환산": 7573350.0, "해외주문건수": 35.0}, {"월": "2025-04", "통합매출_KRW": 79171469.5, "통합주문건수": 693.0, "국내매출_KRW": 71841386, "국내주문건수": 662, "해외매출_USD": 5055.2300000000005, "해외매출_KRW환산": 7330083.5, "해외주문건수": 31.0}, {"월": "2025-05", "통합매출_KRW": 120369101.0, "통합주문건수": 1268.0, "국내매출_KRW": 108517120, "국내주문건수": 1211, "해외매출_USD": 8173.78, "해외매출_KRW환산": 11851981.0, "해외주문건수": 57.0}, {"월": "2025-06", "통합매출_KRW": 86084145.0, "통합주문건수": 1012.0, "국내매출_KRW": 76870526, "국내주문건수": 959, "해외매출_USD": 6354.22, "해외매출_KRW환산": 9213619.0, "해외주문건수": 53.0}, {"월": "2025-07", "통합매출_KRW": 101210107.5, "통합주문건수": 1030.0, "국내매출_KRW": 68705965, "국내주문건수": 871, "해외매출_USD": 22416.65, "해외매출_KRW환산": 32504142.5, "해외주문건수": 159.0}, {"월": "2025-08", "통합매출_KRW": 128919668.0, "통합주문건수": 1413.0, "국내매출_KRW": 91631410, "국내주문건수": 1193, "해외매출_USD": 25716.04, "해외매출_KRW환산": 37288258.0, "해외주문건수": 220.0}, {"월": "2025-09", "통합매출_KRW": 186983129.0, "통합주문건수": 1246.0, "국내매출_KRW": 110235934, "국내주문건수": 966, "해외매출_USD": 52929.1, "해외매출_KRW환산": 76747195.0, "해외주문건수": 280.0}, {"월": "2025-10", "통합매출_KRW": 245436646.0, "통합주문건수": 1582.0, "국내매출_KRW": 124037832, "국내주문건수": 1085, "해외매출_USD": 83723.31999999999, "해외매출_KRW환산": 121398814.0, "해외주문건수": 497.0}, {"월": "2025-11", "통합매출_KRW": 327691198.0, "통합주문건수": 1846.0, "국내매출_KRW": 118127251, "국내주문건수": 950, "해외매출_USD": 144526.86, "해외매출_KRW환산": 209563947.0, "해외주문건수": 896.0}, {"월": "2025-12", "통합매출_KRW": 415025782.5, "통합주문건수": 2058.0, "국내매출_KRW": 104715966, "국내주문건수": 769, "해외매출_USD": 214006.77, "해외매출_KRW환산": 310309816.5, "해외주문건수": 1289.0}, {"월": "2026-01", "통합매출_KRW": 352333816.5, "통합주문건수": 1926.0, "국내매출_KRW": 163239650, "국내주문건수": 1149, "해외매출_USD": 130409.77, "해외매출_KRW환산": 189094166.5, "해외주문건수": 777.0}, {"월": "2026-02", "통합매출_KRW": 222011740.0, "통합주문건수": 1289.0, "국내매출_KRW": 108917395, "국내주문건수": 820, "해외매출_USD": 77996.09999999999, "해외매출_KRW환산": 113094345.0, "해외주문건수": 469.0}, {"월": "2026-03", "통합매출_KRW": 272831819.0, "통합주문건수": 1593.0, "국내매출_KRW": 130000236, "국내주문건수": 986, "해외매출_USD": 98504.54, "해외매출_KRW환산": 142831583.0, "해외주문건수": 607.0}, {"월": "2026-04", "통합매출_KRW": 178317518.0, "통합주문건수": 1205.0, "국내매출_KRW": 90386125, "국내주문건수": 818, "해외매출_USD": 60642.34, "해외매출_KRW환산": 87931393.0, "해외주문건수": 387.0}]};
+const SUM = INS.summary;
+
+const won = n => '₩' + Math.round(n||0).toLocaleString();
+const wonShort = n => {
+  if (n >= 1e8) return '₩' + (n/1e8).toFixed(1) + '억';
+  if (n >= 1e4) return '₩' + Math.round(n/1e4).toLocaleString() + '만';
+  return '₩' + Math.round(n||0).toLocaleString();
+};
+const num = n => Number(n||0).toLocaleString();
+const usd = n => '$' + Math.round(n||0).toLocaleString();
+
+// === AOV 카드 ===
+document.getElementById('aov-dom').textContent = won(INS.aov['국내']);
+document.getElementById('aov-os').textContent = won(INS.aov['해외_KRW']) + ' ($' + Math.round(INS.aov['해외_USD']) + ')';
+
+const L = INS.loyalty;
+const totalCust = L['신규고객수'] + L['재구매고객수'];
+const rpr = (L['재구매고객수']/totalCust*100).toFixed(1);
+document.getElementById('rpr').textContent = rpr + '%';
+document.getElementById('rpr-sub').textContent = '재구매 ' + num(L['재구매고객수']) + '명 / 총 ' + num(totalCust) + '명';
+
+// === 국가별 차트 ===
+const topCountries = INS.top_countries.slice(0,15);
+const totalOsRev = INS.top_countries.reduce((s,c)=>s+c['매출USD'],0);
+new Chart(document.getElementById('countryChart'), {
+  type:'bar',
+  data:{
+    labels: topCountries.map(c=>c['국가']),
+    datasets:[{label:'매출 (USD)', data: topCountries.map(c=>c['매출USD']), backgroundColor:'#8b5cf6'}]
+  },
+  options:{
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>usd(c.parsed.x)+' / ₩'+Math.round(c.parsed.x*1450).toLocaleString()}}}
+  }
+});
+
+// 국가 테이블
+const ctyTbody = document.getElementById('country-tbody');
+INS.top_countries.slice(0,20).forEach((c,i) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${i+1}</td><td><strong>${c['국가']}</strong></td><td>${num(c['주문'])}</td><td>${usd(c['매출USD'])}</td><td>${wonShort(c['매출KRW'])}</td><td style="color:#64748b">${(c['매출USD']/totalOsRev*100).toFixed(1)}%</td>`;
+  ctyTbody.appendChild(tr);
+});
+
+// === 요일별 ===
+new Chart(document.getElementById('weekdayChart'), {
+  type:'bar',
+  data:{
+    labels: INS.weekday.map(w=>w['요일']),
+    datasets:[
+      {label:'국내', data: INS.weekday.map(w=>w['국내']), backgroundColor:'#0891b2'},
+      {label:'해외', data: INS.weekday.map(w=>w['해외']), backgroundColor:'#8b5cf6'}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{y:{ticks:{callback:v=>wonShort(v)}}},
+    plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+wonShort(c.parsed.y)}}}
+  }
+});
+
+// === 카테고리 ===
+const catColors = {'가방':'#0ea5e9','스웨트셔츠/니트':'#f59e0b','셔츠/탑':'#10b981','원피스':'#ec4899','스커트/팬츠':'#f97316','아우터':'#8b5cf6','액세서리/기타':'#6b7280','기타':'#94a3b8'};
+new Chart(document.getElementById('catChart'), {
+  type:'doughnut',
+  data:{
+    labels: INS.category.map(c=>c.category),
+    datasets:[{data: INS.category.map(c=>c.rev), backgroundColor: INS.category.map(c=>catColors[c.category]||'#94a3b8'), borderWidth:0}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+wonShort(c.parsed)+' ('+(c.parsed/INS.summary.total_revenue_krw*100).toFixed(1)+'%)'}}}}
+});
+
+// === TOP 상품 ===
+const tpTbody = document.getElementById('top-prod-tbody');
+INS.top_rev_products.forEach((p,i) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${i+1}</td><td><strong>${p['상품명']}</strong></td><td style="color:#64748b">${p['category']||'-'}</td><td>${num(p['통합판매수량'])}</td><td>${wonShort(p['통합매출_KRW'])}</td>`;
+  tpTbody.appendChild(tr);
+});
+
+// === 최고 매출일 ===
+const tdTbody = document.getElementById('top-day-tbody');
+INS.top_day.forEach((d,i) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${i+1}</td><td><strong>${d['날짜']}</strong></td><td>${wonShort(d['통합매출_KRW'])}</td><td>${num(d['통합주문건수'])}</td>`;
+  tdTbody.appendChild(tr);
+});
+
+// === 고객 구성 ===
+new Chart(document.getElementById('loyaltyChart'), {
+  type:'doughnut',
+  data:{
+    labels:['신규고객','재구매고객'],
+    datasets:[{data:[L['신규고객수'], L['재구매고객수']], backgroundColor:['#e2e8f0','#10b981'], borderWidth:0}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}},tooltip:{callbacks:{label:c=>c.label+': '+num(c.parsed)+'명'}}}}
+});
+
+// === 월별 추이 ===
+new Chart(document.getElementById('monthlyChart'), {
+  type:'line',
+  data:{
+    labels: INS.monthly.map(m=>m['월']),
+    datasets:[
+      {label:'국내', data:INS.monthly.map(m=>m['국내매출_KRW']), borderColor:'#0891b2',backgroundColor:'rgba(8,145,178,0.1)',tension:0.3,borderWidth:2,fill:true},
+      {label:'해외', data:INS.monthly.map(m=>m['해외매출_KRW환산']), borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,0.1)',tension:0.3,borderWidth:2,fill:true}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{ticks:{callback:v=>wonShort(v)}}},
+    plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+wonShort(c.parsed.y)}}}}
+});
+</script>
+</body>
+</html>
