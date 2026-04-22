@@ -398,7 +398,7 @@
     <a href="product_analytics.html" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.8);font-size:12px;padding:7px 16px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🛍️ 상품</a>
     <a href="insights.html" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.8);font-size:12px;padding:7px 16px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🔍 인사이트</a>
     <a href="product_report.html" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.8);font-size:12px;padding:7px 16px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">📋 리포트</a>
-    <div class="header-badge">마지막 업데이트: 2026.04.16</div>
+    <div class="header-badge">마지막 업데이트: 2026.04.22</div>
   </div>
 </div>
 
@@ -423,7 +423,7 @@
   <div class="date-group">
     <input type="date" class="date-input" id="startDate" value="2025-01-01">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-04-19">
+    <input type="date" class="date-input" id="endDate" value="2026-04-21">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)">전체</button>
@@ -1127,6 +1127,8 @@ const DOMESTIC = [
   { date: '2026-04-17', orders: 30, revenue: 3260123 },
   { date: '2026-04-18', orders: 44, revenue: 4481012 },
   { date: '2026-04-19', orders: 38, revenue: 5083727 },
+  { date: '2026-04-20', orders: 29, revenue: 3081827 },
+  { date: '2026-04-21', orders: 28, revenue: 2848864 },
 ];
 
 const OVERSEAS = [
@@ -1545,6 +1547,8 @@ const OVERSEAS = [
   { date: '2026-04-17', orders: 16, revenue_usd: 2379.37, revenue_krw: 3450086 },
   { date: '2026-04-18', orders: 15, revenue_usd: 2322.32, revenue_krw: 3367364 },
   { date: '2026-04-19', orders: 21, revenue_usd: 3242.72, revenue_krw: 4701944 },
+  { date: '2026-04-20', orders: 28, revenue_usd: 4631.35, revenue_krw: 6391261 },
+  { date: '2026-04-21', orders: 19, revenue_usd: 2798.22, revenue_krw: 3861542 },
 ];
 
 let lineChart = null;
@@ -1586,13 +1590,13 @@ function setQuick(mode, btn) {
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const map = {
-    all:   ['2025-01-01','2026-04-19'],
+    all:   ['2025-01-01','2026-04-21'],
     y2025: ['2025-01-01','2025-12-31'],
-    y2026: ['2026-01-01','2026-04-19'],
-    '26apr':['2026-01-01','2026-04-19'],
+    y2026: ['2026-01-01','2026-04-21'],
+    '26apr':['2026-01-01','2026-04-21'],
     '25apr':['2025-01-01','2025-04-30'],
     mar:   ['2026-03-01','2026-03-31'],
-    today: ['2026-04-19','2026-04-19'],
+    today: ['2026-04-21','2026-04-21'],
   };
   document.getElementById('startDate').value = map[mode][0];
   document.getElementById('endDate').value   = map[mode][1];
