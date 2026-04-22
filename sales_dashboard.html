@@ -103,6 +103,12 @@
   .date-input:focus { border-color: #3b82f6; }
   .date-sep { color: #94a3b8; font-size: 13px; }
   .quick-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.quick-btn.qsep { margin-left: 10px; position: relative; }
+.quick-btn.qsep::before { content: ''; position: absolute; left: -6px; top: 4px; bottom: 4px; width: 1px; background: #e2e8f0; }
+.month-select { margin-left: 10px; padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; font-size: 12px; color: #475569; cursor: pointer; font-family: inherit; }
+.month-select:hover { border-color: #94a3b8; }
+.month-select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
+
   .quick-btn {
     padding: 7px 14px;
     border-radius: 8px;
@@ -426,13 +432,38 @@
     <input type="date" class="date-input" id="endDate" value="2026-04-21">
   </div>
   <div class="quick-btns">
-    <button class="quick-btn active" onclick="setQuick('all',this)">전체</button>
-    <button class="quick-btn" onclick="setQuick('y2025',this)">2025년</button>
-    <button class="quick-btn" onclick="setQuick('y2026',this)">2026년</button>
-    <button class="quick-btn" onclick="setQuick('26apr',this)">2026 1~4월</button>
-    <button class="quick-btn" onclick="setQuick('25apr',this)">2025 1~4월</button>
-    <button class="quick-btn" onclick="setQuick('mar',this)">2026.3월</button>
-    <button class="quick-btn" onclick="setQuick('today',this)">04.19</button>
+    <button class="quick-btn active" onclick="setQuick('all',this)" title="전체 기간 (2025-01-01 ~ 최신)">전체</button>
+    <button class="quick-btn" onclick="setQuick('y2026',this)" title="2026년 전체 (YTD)">올해</button>
+    <button class="quick-btn" onclick="setQuick('y2025',this)" title="2025년 전체">작년</button>
+    <button class="quick-btn qsep" onclick="setQuick('last7',this)" title="최근 7일">최근 7일</button>
+    <button class="quick-btn" onclick="setQuick('last30',this)" title="최근 30일">최근 30일</button>
+    <button class="quick-btn" onclick="setQuick('last90',this)" title="최근 90일">최근 90일</button>
+    <button class="quick-btn qsep" onclick="setQuick('thismonth',this)" title="이번 달">이번 달</button>
+    <button class="quick-btn" onclick="setQuick('lastmonth',this)" title="지난 달">지난 달</button>
+    <button class="quick-btn qsep" onclick="setQuick('yoy',this)" title="올해(1월~현재) vs 작년 동기 비교">🔄 작년 동기</button>
+    <select class="month-select" id="monthSelect" onchange="setMonthQuick(this.value)" title="특정 월 선택">
+      <option value="">📅 월 선택</option>
+      <optgroup label="2026년">
+        <option value="2026-04">2026년 4월</option>
+        <option value="2026-03">2026년 3월</option>
+        <option value="2026-02">2026년 2월</option>
+        <option value="2026-01">2026년 1월</option>
+      </optgroup>
+      <optgroup label="2025년">
+        <option value="2025-12">2025년 12월</option>
+        <option value="2025-11">2025년 11월</option>
+        <option value="2025-10">2025년 10월</option>
+        <option value="2025-09">2025년 9월</option>
+        <option value="2025-08">2025년 8월</option>
+        <option value="2025-07">2025년 7월</option>
+        <option value="2025-06">2025년 6월</option>
+        <option value="2025-05">2025년 5월</option>
+        <option value="2025-04">2025년 4월</option>
+        <option value="2025-03">2025년 3월</option>
+        <option value="2025-02">2025년 2월</option>
+        <option value="2025-01">2025년 1월</option>
+      </optgroup>
+    </select>
   </div>
   <span class="filter-label" style="margin-left:16px;">채널</span>
   <div class="store-toggle">
@@ -1588,18 +1619,57 @@ function getFilteredData() {
 
 function setQuick(mode, btn) {
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('monthSelect').value = '';
+
+  const MAX_DATE = '2026-04-21';  // 데이터 최신 일자
+  function addDays(dateStr, n) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + n);
+    return d.toISOString().slice(0, 10);
+  }
+  function monthStart(dateStr) {
+    return dateStr.slice(0,8) + '01';
+  }
+  function monthEnd(yearMonth) {
+    const [y,m] = yearMonth.split('-').map(Number);
+    const last = new Date(y, m, 0).getDate();
+    return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
+  }
+  function prevMonth(yearMonth) {
+    const [y,m] = yearMonth.split('-').map(Number);
+    if (m === 1) return `${y-1}-12`;
+    return `${y}-${String(m-1).padStart(2,'0')}`;
+  }
+
+  const thisMonth = MAX_DATE.slice(0,7);
+  const lastMonth = prevMonth(thisMonth);
+
   const map = {
-    all:   ['2025-01-01','2026-04-21'],
-    y2025: ['2025-01-01','2025-12-31'],
-    y2026: ['2026-01-01','2026-04-21'],
-    '26apr':['2026-01-01','2026-04-21'],
-    '25apr':['2025-01-01','2025-04-30'],
-    mar:   ['2026-03-01','2026-03-31'],
-    today: ['2026-04-21','2026-04-21'],
+    all:       ['2025-01-01', MAX_DATE],
+    y2025:     ['2025-01-01', '2025-12-31'],
+    y2026:     ['2026-01-01', MAX_DATE],
+    last7:     [addDays(MAX_DATE, -6), MAX_DATE],
+    last30:    [addDays(MAX_DATE, -29), MAX_DATE],
+    last90:    [addDays(MAX_DATE, -89), MAX_DATE],
+    thismonth: [thisMonth + '-01', MAX_DATE],
+    lastmonth: [lastMonth + '-01', monthEnd(lastMonth)],
+    yoy:       ['2025-01-01', `2025-${MAX_DATE.slice(5)}`],  // 작년 동기 (1월~현재일자)
   };
   document.getElementById('startDate').value = map[mode][0];
   document.getElementById('endDate').value   = map[mode][1];
+  applyFilter();
+}
+
+function setMonthQuick(yearMonth) {
+  if (!yearMonth) return;
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  const [y,m] = yearMonth.split('-').map(Number);
+  const last = new Date(y, m, 0).getDate();
+  const MAX_DATE = '2026-04-21';
+  const endDay = (yearMonth === '2026-04') ? 21 : last;
+  document.getElementById('startDate').value = `${yearMonth}-01`;
+  document.getElementById('endDate').value = `${y}-${String(m).padStart(2,'0')}-${String(endDay).padStart(2,'0')}`;
   applyFilter();
 }
 
