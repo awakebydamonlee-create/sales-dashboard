@@ -9,6 +9,15 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;background:#f0f2f7;color:#1a1a2e;min-height:100vh}
+.top-header{background:linear-gradient(135deg,#0f1823 0%,#16213e 50%,#1a1a2e 100%);color:#fff;padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.top-left{flex:1 1 auto;min-width:0}
+.top-title{font-size:22px;font-weight:700;letter-spacing:-.3px;color:#fff;margin:0}
+.top-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:4px;line-height:1.4}
+.top-nav{display:flex;gap:8px;flex-wrap:wrap}
+.top-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:rgba(255,255,255,.8);font-size:13px;font-weight:600;padding:8px 16px;text-decoration:none;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;font-family:inherit;cursor:pointer}
+.top-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.top-btn.active{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.4);color:#fff;font-weight:700;pointer-events:none;cursor:default}
+@media(max-width:680px){.top-header{flex-direction:column;align-items:flex-start}}
 .header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);color:white;padding:22px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(0,0,0,.3)}
 .header h1{font-size:20px;font-weight:700}
 .header-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
@@ -125,13 +134,17 @@ table.rt tbody tr:hover{background:#fafbff}
 </head>
 <body>
 
-<div class="header">
-  <div><h1>상품</h1><p class="header-sub" id="hdr-sub">국내+해외 · 2025년 1월 ~ 2026년 4월 15일</p></div>
-  <div style="display:flex;gap:6px">
-    <a href="sales_dashboard.html" class="nav-btn">📊 매출</a>
-    <span class="nav-btn active">🛍️ 상품</span>
-    <a href="insights.html" class="nav-btn">🔍 인사이트</a>
-    <a href="product_report.html" class="nav-btn">📋 리포트</a>
+<!-- HEADER (통일 규격) -->
+<div class="top-header">
+  <div class="top-left">
+    <h1 class="top-title">🛍️ 상품</h1>
+    <p class="top-sub" id="hdr-sub">국내+해외 · 2025-01-01 ~ 2026-04-21</p>
+  </div>
+  <div class="top-nav">
+    <a href="sales_dashboard.html" class="top-btn">📊 매출</a>
+    <span class="top-btn active">🛍️ 상품</span>
+    <a href="insights.html" class="top-btn">🔎 인사이트</a>
+    <a href="product_report.html" class="top-btn">📋 리포트</a>
   </div>
 </div>
 
@@ -1581,10 +1594,8 @@ function go(){
   window._prods=prods;
   window._lastData={seasonStats};
 
-  const s=dk().replace('2026-','').replace('-','.'),e=ek().replace('2026-','').replace('-','.');
-  const ch=curStore==='both'?'국내+해외':curStore==='dom'?'국내':'해외';
-  
-  document.getElementById('hdr-sub').textContent=`${ch} · 2026.${s} ~ 2026.${e}${sk()!=='all'?' · '+sk():''}`;
+  const ch = curStore==='both' ? '국내+해외' : curStore==='dom' ? '국내' : '해외';
+  document.getElementById('hdr-sub').textContent = `${ch} · ${dk()} ~ ${ek()}${sk()!=='all' ? ' · ' + sk() : ''}`;
 
   renderSummary(prods);
   renderSeasonCards(seasonStats,prods);

@@ -6,6 +6,15 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;background:#f4f6f9;color:#1a202c}
+.top-header{background:linear-gradient(135deg,#0f1823 0%,#16213e 50%,#1a1a2e 100%);color:#fff;padding:20px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.top-left{flex:1 1 auto;min-width:0}
+.top-title{font-size:22px;font-weight:700;letter-spacing:-.3px;color:#fff;margin:0}
+.top-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:4px;line-height:1.4}
+.top-nav{display:flex;gap:8px;flex-wrap:wrap}
+.top-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:rgba(255,255,255,.8);font-size:13px;font-weight:600;padding:8px 16px;text-decoration:none;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;font-family:inherit;cursor:pointer}
+.top-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.top-btn.active{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.4);color:#fff;font-weight:700;pointer-events:none;cursor:default}
+@media(max-width:680px){.top-header{flex-direction:column;align-items:flex-start}}
 .nav{background:#0f1823;color:#fff;padding:18px 28px;display:flex;justify-content:space-between;align-items:center}
 .nav h1{font-size:20px;font-weight:700}
 .nav .sub{font-size:12px;color:#94a3b8;margin-top:4px}
@@ -68,17 +77,18 @@ tbody tr:hover{background:#f8fafc}
 </style>
 </head>
 <body>
-<div class="nav">
- <div>
-  <h1>📦 상품 리포트</h1>
-  <div class="sub">상품별 판매 상세 · 2025-01-01 ~ 2026-04-22</div>
- </div>
- <div class="tabs">
-  <a href="sales_dashboard.html">📊 매출</a>
-  <a href="product_report.html" class="active">📦 상품리포트</a>
-  <a href="product_analytics.html">🛍️ 상품</a>
-  <a href="insights.html">🔎 인사이트</a>
- </div>
+<!-- HEADER (통일 규격) -->
+<div class="top-header">
+  <div class="top-left">
+    <h1 class="top-title">📋 리포트</h1>
+    <p class="top-sub">상품별 판매 상세 · 2025-01-01 ~ 2026-04-22</p>
+  </div>
+  <div class="top-nav">
+    <a href="sales_dashboard.html" class="top-btn">📊 매출</a>
+    <a href="product_analytics.html" class="top-btn">🛍️ 상품</a>
+    <a href="insights.html" class="top-btn">🔎 인사이트</a>
+    <span class="top-btn active">📋 리포트</span>
+  </div>
 </div>
 
 <div class="container">
