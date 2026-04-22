@@ -332,40 +332,79 @@ table.rt tbody tr:hover{background:#fafbff}
     <div class="cw" style="height:340px"><canvas id="revChart"></canvas></div>
   </div>
   <div class="card">
-    <div class="ct">🔀 채널별 랭킹 역전 <span style="font-size:11px;font-weight:400;color:#94a3b8" id="rankcmp-range">· 선택 기간 기준</span></div>
-    <div class="cs">같은 상품의 국내/해외 순위 차이가 큰 항목</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-      <div><div style="font-size:10px;font-weight:700;color:#0891b2;margin-bottom:6px;padding:4px 8px;background:#e0f2fe;border-radius:6px">🏠 국내↑ (국내에서 더 잘 팔림)</div><div id="domH"></div></div>
-      <div><div style="font-size:10px;font-weight:700;color:#7c3aed;margin-bottom:6px;padding:4px 8px;background:#ede9fe;border-radius:6px">🌏 해외↑ (해외에서 더 잘 팔림)</div><div id="ovsH"></div></div>
+    <div class="ct">⚖️ 채널 편향 TOP <span style="font-size:11px;font-weight:400;color:#94a3b8" id="skew-range">· 선택 기간 기준</span></div>
+    <div class="cs">같은 상품의 국내·해외 판매 쏠림 · 실제 수량 기반</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#0891b2;margin-bottom:6px;padding:4px 8px;background:#e0f2fe;border-radius:6px">🏠 국내 쏠림 TOP 5</div>
+        <div id="domSkew"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#7c3aed;margin-bottom:6px;padding:4px 8px;background:#ede9fe;border-radius:6px">🌏 해외 쏠림 TOP 5</div>
+        <div id="ovsSkew"></div>
+      </div>
     </div>
-    <div class="abox" id="flip-note">-</div>
-    <div style="font-size:10px;color:#94a3b8;margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9">ℹ️ 큰 틀에서의 랭킹 변화 추이는 <a href="insights.html" style="color:#0f3460;font-weight:600">🔎 인사이트</a> 대시보드에서 확인하세요.</div>
+    <div class="abox" id="skew-note">-</div>
+    <div style="font-size:10px;color:#94a3b8;margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9">ℹ️ 랭킹 변화 추이·쉰위 비교는 <a href="insights.html" style="color:#0f3460;font-weight:600">🔎 인사이트</a>에서 확인하세요.</div>
   </div>
 </div>
 
-<!-- 합배송 -->
+<!-- 신상품 런칭 성과 + 카테고리 교차 구매 -->
 <div class="sec" style="display:grid;grid-template-columns:3fr 2fr;gap:14px">
   <div class="card">
-    <div class="ct">🔗 국내 자주 같이 구매</div><div class="cs">TOP 10 조합 · 전체 기간 기준</div>
-    <div id="domCp"></div>
-    <div class="abox">💡 <strong>Leopard + Mini Leopard</strong> 등 동일 라인 교차 구매가 강합니다. 묶음 할인 기획을 검토해보세요.</div>
+    <div class="ct">🚀 신상품 런칭 성과 <span style="font-size:11px;font-weight:400;color:#94a3b8" id="launch-range">· 선택 기간 내 첫 판매 상품</span></div>
+    <div class="cs">출시 후 첫 4주 판매 속도 TOP 8 · 재고/마케팅 배분 판단용</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#f8fafc">
+            <th style="text-align:left;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase">신상품</th>
+            <th style="text-align:center;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">카테고리</th>
+            <th style="text-align:center;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">출시일</th>
+            <th style="text-align:right;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">1주차</th>
+            <th style="text-align:right;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">4주 누적</th>
+            <th style="text-align:right;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">주평균</th>
+            <th style="text-align:center;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">라이프</th>
+          </tr>
+        </thead>
+        <tbody id="launchBody"><tr><td colspan="7" style="padding:14px;text-align:center;color:#94a3b8">계산 중…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="abox" id="launch-note">-</div>
   </div>
   <div class="card">
-    <div class="ct">🌏 해외 합배송 요약</div><div class="cs">TOP 5 조합 · 전체 기간 기준</div>
-    <div id="ovsCp"></div>
-    <div class="abox" style="font-size:11px">💡 해외는 합배송 비율이 국내보다 높습니다. 2개 이상 구매 시 무료배송 인센티브가 효과적입니다.</div>
+    <div class="ct">🔀 카테고리 교차 구매</div>
+    <div class="cs">주문 내 카테고리 간 동반 구매 비중 · 전체 기간 기준</div>
+    <div class="cw" style="height:200px;margin-top:8px"><canvas id="catCrossChart"></canvas></div>
+    <div id="catCrossTop" style="margin-top:8px;font-size:11px"></div>
+    <div class="abox" id="cross-note">-</div>
   </div>
 </div>
 
-<!-- 합배송 현황 (카테고리 분포는 위로 이동됨) -->
-<div class="sec two">
+<!-- 가격대별 히트맵 + 시즌 집중도 -->
+<div class="sec" style="display:grid;grid-template-columns:3fr 2fr;gap:14px">
+  <div class="card">
+    <div class="ct">💰 가격대별 성과 히트맵 <span style="font-size:11px;font-weight:400;color:#94a3b8" id="price-range">· 선택 기간 기준</span></div>
+    <div class="cs">가격대 × 카테고리 판매수량 분포 · 기획/가격책정 판단용</div>
+    <div id="priceHeatmap" style="margin-top:10px"></div>
+    <div class="abox" id="price-note">-</div>
+  </div>
+  <div class="card">
+    <div class="ct">📅 시즌 집중도 + 재고 소진 신호 <span style="font-size:11px;font-weight:400;color:#94a3b8" id="conc-range">· 선택 기간 기준</span></div>
+    <div class="cs">시즌별 판매 피크 월 + 최근 4주 하락률</div>
+    <div id="seasonConc" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- 합배송 현황 카드는 제거됨. 카테고리 분포는 renderCatChart가 필요한 hidden placeholder만 유지 -->
+<div class="sec" style="display:none">
   <div class="card" style="display:none">
-    <div class="ct">📈 카테고리 분포</div><div class="cs">키워드 기반 자동 분류</div>
+    <div class="ct">📈 카테고리 분포</div><div class="cs">키워드 기반 자동 분류 (hidden)</div>
     <div class="cw h220"><canvas id="catChart"></canvas></div>
     <div id="catDetail" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:10px"></div>
   </div>
-  <div class="card" style="grid-column:1/-1">
-    <div class="ct">📦 합배송 현황</div><div class="cs">멀티 아이템 주문 비율</div>
+  <div class="card" style="display:none">
+    <div class="ct">📦 합배송 현황 (hidden)</div><div class="cs">deprecated</div>
     <div class="cw h180"><canvas id="multiChart"></canvas></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
       <div style="background:#f0f9ff;border-radius:10px;padding:10px 12px">
@@ -995,25 +1034,57 @@ function renderRevChart(prods){
   });
 }
 
+// 채널 편향 TOP (선택 기간 prods 기준, 실제 수량 + 비율)
 function renderRankCompare(prods){
-  const both=prods.filter(p=>p.dom_rank&&p.ovs_rank);
-  const oh=both.filter(p=>p.dom_rank-p.ovs_rank>=2).sort((a,b)=>(b.dom_rank-b.ovs_rank)-(a.dom_rank-a.ovs_rank)).slice(0,6);
-  const dh=both.filter(p=>p.ovs_rank-p.dom_rank>=2).sort((a,b)=>(b.ovs_rank-b.dom_rank)-(a.ovs_rank-a.dom_rank)).slice(0,6);
-  const mk=(list,fav)=>list.length?list.map(p=>{
-    const diff=fav==='ovs'?p.dom_rank-p.ovs_rank:p.ovs_rank-p.dom_rank;
-    const col=fav==='ovs'?'#7c3aed':'#0891b2';
-    return `<div style="display:flex;align-items:center;gap:5px;padding:6px 0;border-bottom:1px solid #f8fafc">
-      <div style="width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:#e0f2fe;color:#0369a1;flex-shrink:0">#${p.dom_rank}</div>
-      <span style="color:#94a3b8;font-size:11px">→</span>
-      <div style="width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:#ede9fe;color:#6d28d9;flex-shrink:0">#${p.ovs_rank}</div>
-      <div style="flex:1;font-size:11px;font-weight:600;color:#1a1a2e;line-height:1.3;min-width:0">${p.name.length>20?p.name.slice(0,19)+'…':p.name}</div>
-      <span style="font-size:10px;font-weight:700;color:${col};white-space:nowrap">+${diff}</span>
-    </div>`;
-  }).join(''):'<div style="font-size:11px;color:#94a3b8;padding:8px 0">해당 없음</div>';
-  document.getElementById('ovsH').innerHTML=mk(oh,'ovs');
-  document.getElementById('domH').innerHTML=mk(dh,'dom');
-  const best=oh[0]||dh[0];
-  document.getElementById('flip-note').innerHTML=best?`💡 <strong>${best.name.slice(0,25)}</strong>은 국내 #${best.dom_rank} → 해외 #${best.ovs_rank}로 ${best.dom_rank>best.ovs_rank?'해외':'국내'}에서 더 강한 상품입니다.`:'💡 현재 기간 랭킹 역전 상품 없음';
+  // 1) 기간 라벨 갱신
+  const rangeTxt = (dk()<=PA_MIN && ek()>=PA_MAX) ? '전체 기간' : `${dk().slice(5).replace('-','.')} ~ ${ek().slice(5).replace('-','.')}`;
+  const rl = document.getElementById('skew-range'); if (rl) rl.textContent = `· ${rangeTxt} 기준`;
+
+  // 2) 의미 있는 상품만 (총 수량 ≥ 5, 양 채널 중 한쪽이라도 판매 있음)
+  const elig = prods.filter(p => (p.dom_qty + p.ovs_qty) >= 5);
+
+  // 3) 쏠림 점수: 국내 쏠림 = dom/(dom+ovs), 해외 쏠림 = ovs/(dom+ovs)
+  //    추가 조건: 3:1 이상 편향 (75% 이상) 또는 상대 채널 판매 ≤ 총량의 25%
+  const scored = elig.map(p => {
+    const tot = p.dom_qty + p.ovs_qty;
+    const domRatio = p.dom_qty / tot;
+    const ovsRatio = p.ovs_qty / tot;
+    return {...p, domRatio, ovsRatio, tot};
+  });
+  const domSkew = scored.filter(p => p.domRatio >= 0.75).sort((a,b) => (b.dom_qty - b.ovs_qty) - (a.dom_qty - a.ovs_qty)).slice(0,5);
+  const ovsSkew = scored.filter(p => p.ovsRatio >= 0.75).sort((a,b) => (b.ovs_qty - b.dom_qty) - (a.ovs_qty - a.dom_qty)).slice(0,5);
+
+  const mk = (list, side) => {
+    if (!list.length) return '<div style="font-size:11px;color:#94a3b8;padding:10px 4px">선택 기간 내 뚜렷한 쏠림 없음</div>';
+    return list.map(p => {
+      const domPct = Math.round(p.domRatio * 100);
+      const ovsPct = 100 - domPct;
+      const strong = side === 'dom' ? '#0891b2' : '#7c3aed';
+      return `<div style="padding:8px 0;border-bottom:1px solid #f8fafc">
+        <div style="font-size:11px;font-weight:600;color:#1a1a2e;line-height:1.3;margin-bottom:4px" title="${p.name}">${p.name.length>32?p.name.slice(0,31)+'…':p.name}</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;display:flex">
+            <div style="width:${domPct}%;background:#0891b2"></div>
+            <div style="width:${ovsPct}%;background:#7c3aed"></div>
+          </div>
+          <div style="font-size:10px;font-weight:700;color:${strong};white-space:nowrap">
+            ${side==='dom' ? `국내 ${p.dom_qty}개` : `해외 ${p.ovs_qty}개`} · ${side==='dom' ? domPct : ovsPct}%
+          </div>
+        </div>
+        <div style="font-size:9px;color:#94a3b8;margin-top:2px">국내 ${p.dom_qty} / 해외 ${p.ovs_qty} (총 ${p.tot})</div>
+      </div>`;
+    }).join('');
+  };
+  document.getElementById('domSkew').innerHTML = mk(domSkew, 'dom');
+  document.getElementById('ovsSkew').innerHTML = mk(ovsSkew, 'ovs');
+
+  // 4) 요약 인사이트
+  const bestDom = domSkew[0];
+  const bestOvs = ovsSkew[0];
+  const parts = [];
+  if (bestDom) parts.push(`🏠 <strong>${bestDom.name.slice(0,24)}</strong>은 국내 ${bestDom.dom_qty}개 / 해외 ${bestDom.ovs_qty}개로 국내 집중 상품`);
+  if (bestOvs) parts.push(`🌏 <strong>${bestOvs.name.slice(0,24)}</strong>은 해외 ${bestOvs.ovs_qty}개 / 국내 ${bestOvs.dom_qty}개로 해외 집중 상품`);
+  document.getElementById('skew-note').innerHTML = parts.length ? '💡 ' + parts.join(' · ') : '💡 선택 기간 내 채널 편향 상품 없음';
 }
 
 function showTab(t,btn){
@@ -1036,17 +1107,319 @@ function renderRCChart(prods){
     scales:{y:{reverse:true,min:1,ticks:{font:{size:10},callback:v=>'#'+v},grid:{color:'#f1f5f9'}},x:{ticks:{font:{size:9}},grid:{display:false}}}}});
 }
 
+// 상품별 최초 판매일 캐시 (ROWS 전체 기준)
+let _firstDateCache = null;
+function paGetFirstSoldDate(){
+  if (_firstDateCache) return _firstDateCache;
+  const fd = {};
+  ROWS.forEach(r => {
+    if (!fd[r.n] || r.d < fd[r.n]) fd[r.n] = r.d;
+  });
+  _firstDateCache = fd;
+  return fd;
+}
+
+// 신상품 런칭 성과 + 라이프사이클
+function renderLaunchPerf(){
+  const s = dk(), e = ek();
+  const rangeTxt = (s<=PA_MIN && e>=PA_MAX) ? '전체 기간' : `${s.slice(5).replace('-','.')} ~ ${e.slice(5).replace('-','.')}`;
+  const rl = document.getElementById('launch-range'); if (rl) rl.textContent = `· ${rangeTxt} 내 첫 판매 상품`;
+
+  const firstDate = paGetFirstSoldDate();
+  // 선택 기간 내에 첫 판매된 상품 (= 신상품)
+  const newProds = Object.keys(firstDate).filter(n => firstDate[n] >= s && firstDate[n] <= e);
+
+  // 각 신상품별: 출시일부터 4주까지 주별 수량 계산
+  function dayDiff(d1, d2) { return Math.floor((new Date(d2) - new Date(d1)) / 86400000); }
+  const today = PA_MAX;
+  const results = [];
+  newProds.forEach(name => {
+    const fd = firstDate[name];
+    const sales = ROWS.filter(r => r.n === name && r.d >= fd && r.d <= today);
+    if (!sales.length) return;
+    // 주차별 집계 (fd 기준 0~6일=1주차, 7~13일=2주차...)
+    const weekSales = [0,0,0,0];
+    sales.forEach(r => {
+      const wk = Math.floor(dayDiff(fd, r.d) / 7);
+      if (wk >= 0 && wk < 4) weekSales[wk] += r.dq + r.oq;
+    });
+    const w1 = weekSales[0];
+    const cum4 = weekSales.reduce((a,b)=>a+b, 0);
+    const weeksElapsed = Math.min(4, Math.max(1, Math.floor(dayDiff(fd, today)/7) + 1));
+    const weeklyAvg = weeksElapsed > 0 ? cum4 / weeksElapsed : 0;
+    // 라이프: 1주차 대비 이후 3주 평균 → ↑성장 / →유지 / ↓감소
+    const afterAvg = weekSales.slice(1).reduce((a,b)=>a+b,0) / 3;
+    let life = '—';
+    if (w1 >= 3 && afterAvg >= w1 * 0.8) life = '↑ 성장';
+    else if (w1 >= 3 && afterAvg >= w1 * 0.5) life = '→ 유지';
+    else if (w1 >= 3) life = '↓ 감소';
+    else if (cum4 < 3) life = '⚠️ 저조';
+    results.push({name, fd, w1, cum4, weeklyAvg, life, cat: paClassifyCloth(name) || '가방/기타'});
+  });
+  results.sort((a,b) => b.cum4 - a.cum4);
+  const top = results.slice(0, 8);
+
+  const body = document.getElementById('launchBody');
+  if (!top.length) {
+    body.innerHTML = '<tr><td colspan="7" style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">선택 기간 내 신규 출시 상품이 없습니다.</td></tr>';
+  } else {
+    body.innerHTML = top.map(p => {
+      const lifeColor = p.life.startsWith('↑') ? '#10b981' : p.life.startsWith('→') ? '#0891b2' : p.life.startsWith('↓') ? '#ef4444' : '#94a3b8';
+      const catBg = (p.cat === '가방/기타') ? '#e0f2fe' : '#fef3c7';
+      return `<tr style="border-bottom:1px solid #f1f5f9">
+        <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.3" title="${p.name}">${p.name.length>35?p.name.slice(0,34)+'…':p.name}</td>
+        <td style="text-align:center;padding:7px 9px"><span style="font-size:10px;padding:2px 7px;background:${catBg};border-radius:4px;color:#475569">${p.cat}</span></td>
+        <td style="text-align:center;padding:7px 9px;font-size:10px;color:#64748b">${p.fd.slice(5)}</td>
+        <td style="text-align:right;padding:7px 9px;font-weight:600">${p.w1}</td>
+        <td style="text-align:right;padding:7px 9px;font-weight:700;color:#0f3460">${p.cum4}</td>
+        <td style="text-align:right;padding:7px 9px">${p.weeklyAvg.toFixed(1)}</td>
+        <td style="text-align:center;padding:7px 9px;font-size:11px;font-weight:700;color:${lifeColor}">${p.life}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 요약 인사이트
+  const best = top[0];
+  const growing = results.filter(r => r.life.startsWith('↑')).length;
+  const declining = results.filter(r => r.life.startsWith('↓')).length;
+  const note = document.getElementById('launch-note');
+  if (!top.length) {
+    note.innerHTML = '💡 선택 기간 내 신상품 데이터가 없어 런칭 성과를 계산할 수 없습니다.';
+  } else {
+    note.innerHTML = `💡 신상품 ${results.length}종 중 1위 <strong>${best.name.slice(0,28)}</strong> (4주 ${best.cum4}개). 성장세 ${growing}종 · 감소세 ${declining}종.`;
+  }
+}
+
 function renderCombos(data,elId,cnt){
   const el = document.getElementById(elId);
   if (!el) return;
-  if (window._cpFullRangeOnly) {
-    el.innerHTML = '<div class="empty" style="padding:14px;color:#94a3b8;font-size:12px;text-align:center">합배송 분석은 트랜잭션 단위 원본이 필요해 선택 기간으로 재집계할 수 없습니다.<br>전체 기간을 선택하면 표시됩니다.</div>';
+  // 이전에는 합배송 카드였으나, 이제 하단 섹션에서 개별 렌더러가 처리하므로 빈 함수로 유지
+  return;
+}
+
+// 카테고리 분류(가방 포함, 의류 세부 + 가방 + 기타)
+function paClassifyAll(name){
+  const n = (name||'').toLowerCase();
+  if (n.includes('dimsum bag')||n.includes('pillow bag')||n.includes('backpack')||n.includes('dumpling bag')||n.includes('bao bag')) return '가방';
+  if (n.includes('skirt')||n.includes('pants')||n.includes('shorts')) return '스커트/팬츠';
+  if (n.includes('dress')) return '원피스';
+  if (n.includes('jacket')||n.includes('coat')||n.includes('jumper')||n.includes('dumble')||n.includes('varsity')||n.includes('puffer')) return '아우터웨어';
+  if (n.includes('hoodie')||n.includes('cardigan')||n.includes('sweatshirt')||n.includes('knit')||n.includes('shouler')||n.includes('jersey')||n.includes('fleece')||n.includes('college')||n.includes('velour')) return '스웨트셔츠/니트';
+  if (n.includes('tee')||n.includes(' top')||n.includes('sleeveless')||n.includes('shirt')||n.includes('l/s')) return '셔츠/탑';
+  return '액세서리/기타';
+}
+
+// 카테고리 교차 구매 - CP_DOM + CP_OVS 합산을 카테고리 수준으로 집계
+function renderCatCross(){
+  dc('crs');
+  // 카테고리 그룹: 가방 / 의류 / 기타
+  function grp(cat) {
+    if (cat === '가방') return '가방';
+    if (cat === '액세서리/기타') return '기타';
+    return '의류';
+  }
+  const pairs = {};  // {'가방↔의류': cnt, ...}
+  [...CP_DOM, ...CP_OVS].forEach(c => {
+    const ga = grp(paClassifyAll(c.a));
+    const gb = grp(paClassifyAll(c.b));
+    const key = [ga, gb].sort().join('↔');
+    pairs[key] = (pairs[key]||0) + c.c;
+  });
+  const total = Object.values(pairs).reduce((a,b)=>a+b, 0);
+  const entries = Object.entries(pairs).sort((a,b)=>b[1]-a[1]);
+  const colors = {'가방↔가방':'#0891b2','가방↔의류':'#7c3aed','의류↔의류':'#f59e0b','가방↔기타':'#10b981','기타↔의류':'#ef4444','기타↔기타':'#94a3b8'};
+
+  const ctx = document.getElementById('catCrossChart').getContext('2d');
+  charts.crs = new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels: entries.map(([k])=>k),
+      datasets:[{data: entries.map(([,v])=>v), backgroundColor: entries.map(([k])=>colors[k]||'#94a3b8'), borderWidth:0}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+      plugins:{
+        legend:{position:'right',labels:{font:{size:10},boxWidth:10}},
+        tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}회 (${(c.parsed/total*100).toFixed(0)}%)`}}
+      }
+    }
+  });
+
+  // 주요 교차 패턴 (가방↔의류 등) TOP 상세
+  const top = entries.slice(0,3);
+  document.getElementById('catCrossTop').innerHTML = top.map(([k,v]) => {
+    const pct = (v/total*100).toFixed(0);
+    return `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f8fafc">
+      <span style="font-weight:600;color:${colors[k]||'#94a3b8'}">${k}</span>
+      <span style="color:#64748b"><strong>${v}</strong>회 · ${pct}%</span>
+    </div>`;
+  }).join('');
+
+  // 인사이트
+  const topPair = entries[0];
+  const crossClothBag = pairs['가방↔의류'] || 0;
+  const sameBag = pairs['가방↔가방'] || 0;
+  const sameCloth = pairs['의류↔의류'] || 0;
+  const parts = [];
+  if (topPair) parts.push(`가장 흔한 조합은 <strong>${topPair[0]}</strong> (${(topPair[1]/total*100).toFixed(0)}%)`);
+  if (crossClothBag > 0) parts.push(`가방+의류 교차 ${crossClothBag}회`);
+  document.getElementById('cross-note').innerHTML = '💡 ' + (parts.join(' · ') || '데이터 없음') + '. 가방↔의류 교차가 많다면 번들 할인 기획을 검토해보세요.';
+}
+
+// 가격대별 히트맵 (선택 기간 prods 기준)
+function renderPriceHeatmap(prods){
+  const s = dk(), e = ek();
+  const rangeTxt = (s<=PA_MIN && e>=PA_MAX) ? '전체 기간' : `${s.slice(5).replace('-','.')} ~ ${e.slice(5).replace('-','.')}`;
+  const rl = document.getElementById('price-range'); if (rl) rl.textContent = `· ${rangeTxt} 기준`;
+
+  const bands = [
+    {label:'~3만', min:0, max:30000},
+    {label:'3~5만', min:30000, max:50000},
+    {label:'5~10만', min:50000, max:100000},
+    {label:'10~20만', min:100000, max:200000},
+    {label:'20만+', min:200000, max:Infinity}
+  ];
+  const cats = ['아우터웨어','스웨트셔츠/니트','셔츠/탑','원피스','스커트/팬츠','가방','액세서리/기타'];
+  const catColors = {'가방':'#0891b2','아우터웨어':'#7c3aed','스웨트셔츠/니트':'#f59e0b','셔츠/탑':'#10b981','원피스':'#ec4899','스커트/팬츠':'#f97316','액세서리/기타':'#94a3b8'};
+
+  // 집계: qty[band][cat]
+  const qty = bands.map(() => cats.map(()=>0));
+  prods.forEach(p => {
+    const up = p.unit_price || (p.total_qty>0 ? p.total_rev/p.total_qty : 0);
+    if (!up) return;
+    const bi = bands.findIndex(b => up >= b.min && up < b.max);
+    const cat = paClassifyAll(p.name);
+    const ci = cats.indexOf(cat);
+    if (bi >= 0 && ci >= 0) qty[bi][ci] += p.total_qty;
+  });
+  // 최대값 찾아 색상 강도 스케일
+  const maxV = Math.max(1, ...qty.flat());
+
+  // 행: 가격대, 열: 카테고리
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">
+    <thead><tr>
+      <th style="padding:6px 8px;text-align:left;font-size:10px;color:#64748b;font-weight:700">가격대 \\ 카테고리</th>
+      ${cats.map(c => `<th style="padding:6px 8px;text-align:center;font-size:10px;color:${catColors[c]||'#64748b'};font-weight:700">${c}</th>`).join('')}
+      <th style="padding:6px 8px;text-align:right;font-size:10px;color:#64748b;font-weight:700">합계</th>
+    </tr></thead><tbody>`;
+  bands.forEach((b, bi) => {
+    const rowTotal = qty[bi].reduce((a,c)=>a+c, 0);
+    html += `<tr><td style="padding:6px 8px;font-weight:600">${b.label}</td>`;
+    cats.forEach((c, ci) => {
+      const v = qty[bi][ci];
+      const intensity = v > 0 ? Math.min(1, v / maxV) : 0;
+      const bg = v > 0 ? `rgba(15,52,96,${(intensity*0.85+0.1).toFixed(2)})` : '#f8fafc';
+      const txt = intensity > 0.5 ? '#fff' : '#1a1a2e';
+      html += `<td style="padding:6px 8px;text-align:center;background:${bg};color:${txt};font-weight:600">${v>0?v.toLocaleString():'·'}</td>`;
+    });
+    html += `<td style="padding:6px 8px;text-align:right;font-weight:700;color:#0f3460">${rowTotal.toLocaleString()}</td></tr>`;
+  });
+  // 카테고리 합계 행
+  html += `<tr style="border-top:2px solid #e2e8f0"><td style="padding:6px 8px;font-weight:700;color:#0f3460">합계</td>`;
+  cats.forEach((_, ci) => {
+    const colTotal = qty.reduce((a, row)=>a+row[ci], 0);
+    html += `<td style="padding:6px 8px;text-align:center;font-weight:700;color:#0f3460">${colTotal.toLocaleString()}</td>`;
+  });
+  const grand = qty.flat().reduce((a,b)=>a+b, 0);
+  html += `<td style="padding:6px 8px;text-align:right;font-weight:700;color:#0f3460">${grand.toLocaleString()}</td></tr>`;
+  html += '</tbody></table></div>';
+  document.getElementById('priceHeatmap').innerHTML = html;
+
+  // 인사이트: 최다 판매 가격대 × 카테고리 셀
+  let maxCell = {v:0, bi:0, ci:0};
+  qty.forEach((row, bi) => row.forEach((v, ci) => { if (v > maxCell.v) maxCell = {v, bi, ci}; }));
+  // 가격대별 최다 카테고리
+  const bandWinners = bands.map((b, bi) => {
+    const top = cats.map((c, ci) => ({c, v: qty[bi][ci]})).sort((a,b)=>b.v-a.v)[0];
+    return {band: b.label, cat: top.c, qty: top.v};
+  }).filter(x => x.qty > 0);
+  const topBand = bandWinners.sort((a,b)=>b.qty-a.qty)[0];
+  document.getElementById('price-note').innerHTML =
+    topBand ? `💡 최다 판매 가격대×카테고리: <strong>${bands[maxCell.bi].label} × ${cats[maxCell.ci]}</strong> (${maxCell.v.toLocaleString()}개). ${topBand.band} 대역이 가장 활발합니다.` : '💡 선택 기간 데이터 없음';
+}
+
+// 시즌 집중도 + 재고 소진 신호
+function renderSeasonConc(prods){
+  const s = dk(), e = ek();
+  const rangeTxt = (s<=PA_MIN && e>=PA_MAX) ? '전체 기간' : `${s.slice(5).replace('-','.')} ~ ${e.slice(5).replace('-','.')}`;
+  const rl = document.getElementById('conc-range'); if (rl) rl.textContent = `· ${rangeTxt} 기준`;
+
+  // 선택 기간에 판매된 시즌별로: 월별 수량 계산 → 피크월 + 최근 4주 하락률
+  const seasonMonthly = {};  // {season: {yyyy-mm: qty}}
+  const seasonProducts = {}; // {season: Set(name)}
+  ROWS.filter(r => r.d >= s && r.d <= e).forEach(r => {
+    if (!r.se) return;
+    const ym = r.d.slice(0,7);
+    if (!seasonMonthly[r.se]) seasonMonthly[r.se] = {};
+    seasonMonthly[r.se][ym] = (seasonMonthly[r.se][ym]||0) + r.dq + r.oq;
+    if (!seasonProducts[r.se]) seasonProducts[r.se] = new Set();
+    seasonProducts[r.se].add(r.n);
+  });
+
+  // 최근 4주 vs 이전 4주 하락률 - _filteredWeekly 기반
+  const fw = window._filteredWeekly || {weeks:[], pm:{}};
+  const weeks = fw.weeks;
+  const recentN = Math.min(4, Math.max(1, Math.floor(weeks.length / 3)));
+  const recent = weeks.slice(-recentN);
+  const prev = weeks.slice(Math.max(0, weeks.length - recentN * 2), -recentN);
+
+  const seasonRecentDelta = {};
+  Object.entries(fw.pm).forEach(([name, wm]) => {
+    // 이 상품의 시즌 찾기
+    const prod = prods.find(p => p.name === name);
+    const se = prod?.season;
+    if (!se) return;
+    const rQ = recent.reduce((a,w)=>a+((wm[w]||{}).q||0), 0);
+    const pQ = prev.reduce((a,w)=>a+((wm[w]||{}).q||0), 0);
+    if (!seasonRecentDelta[se]) seasonRecentDelta[se] = {recent:0, prev:0};
+    seasonRecentDelta[se].recent += rQ;
+    seasonRecentDelta[se].prev += pQ;
+  });
+
+  // 시즌별 행 구성
+  const seasons = Object.keys(seasonMonthly).sort();
+  if (!seasons.length) {
+    document.getElementById('seasonConc').innerHTML = '<div style="padding:14px;text-align:center;color:#94a3b8;font-size:12px">선택 기간 내 시즌별 판매 데이터가 없습니다.</div>';
     return;
   }
-  el.innerHTML = data.slice(0,cnt||10).map((c,i)=>`
-    <div class="combo"><div class="combo-r">${i+1}</div>
-    <div class="combo-ps"><div class="combo-p">${c.a}</div><div class="combo-pl">+ 함께 구매</div><div class="combo-p">${c.b}</div></div>
-    <div class="combo-c ${c.c>=4?'hi':''}">${c.c}회</div></div>`).join('') || '<div class="empty">데이터 없음</div>';
+
+  let html = '<div style="display:flex;flex-direction:column;gap:6px">';
+  seasons.sort((a,b) => {
+    const aT = Object.values(seasonMonthly[a]).reduce((x,y)=>x+y,0);
+    const bT = Object.values(seasonMonthly[b]).reduce((x,y)=>x+y,0);
+    return bT - aT;
+  }).forEach(se => {
+    const months = seasonMonthly[se];
+    const total = Object.values(months).reduce((a,b)=>a+b, 0);
+    const peakEntry = Object.entries(months).sort((a,b)=>b[1]-a[1])[0];
+    const peakMonth = peakEntry[0];
+    const peakQty = peakEntry[1];
+    const peakPct = total > 0 ? (peakQty/total*100).toFixed(0) : 0;
+    const prodCount = (seasonProducts[se]||new Set()).size;
+    const d = seasonRecentDelta[se];
+    let trend = '—', trendClr = '#94a3b8';
+    if (d && d.prev > 0) {
+      const dropPct = ((d.recent - d.prev) / d.prev * 100).toFixed(0);
+      if (d.prev >= 5) {
+        if (dropPct < -30) { trend = `↓ ${dropPct}%`; trendClr = '#ef4444'; }
+        else if (dropPct > 30) { trend = `↑ +${dropPct}%`; trendClr = '#10b981'; }
+        else { trend = `→ ${dropPct>=0?'+':''}${dropPct}%`; trendClr = '#64748b'; }
+      }
+    }
+    html += `<div style="display:grid;grid-template-columns:90px 1fr 70px 60px;gap:8px;align-items:center;padding:6px 8px;background:#f8fafc;border-radius:6px">
+      <div style="font-size:11px;font-weight:700;color:#1a1a2e">${se}</div>
+      <div>
+        <div style="font-size:10px;color:#64748b">피크 <strong>${peakMonth}</strong> (${peakQty.toLocaleString()}개, ${peakPct}%)</div>
+        <div style="height:5px;background:#e2e8f0;border-radius:2px;margin-top:3px;overflow:hidden">
+          <div style="height:100%;width:${peakPct}%;background:linear-gradient(90deg,#0891b2,#7c3aed);border-radius:2px"></div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#64748b;text-align:right">${prodCount}종 · ${total.toLocaleString()}개</div>
+      <div style="font-size:11px;font-weight:700;color:${trendClr};text-align:right">${trend}</div>
+    </div>`;
+  });
+  html += '</div>';
+  html += '<div style="font-size:10px;color:#94a3b8;margin-top:8px">ℹ️ 추세: 최근 ' + recentN + '주 vs 이전 ' + Math.min(recentN, prev.length) + '주 · 30% 이상 하락 시 🔴(재고 소진 신호)</div>';
+  document.getElementById('seasonConc').innerHTML = html;
 }
 
 function renderCatChart(prods){
@@ -1220,15 +1593,16 @@ function go(){
   renderSeasonChart(seasonStats);
   renderBagChart(prods);
   renderClothSection(prods);
-  renderSpikeDrops();
   renderBagTrend();
   renderRevChart(prods);
-  renderRankCompare(prods);
-  renderCombos(cp_dom,'domCp',10);
-  renderCombos(cp_ovs,'ovsCp',5);
-  renderCatChart(prods);
-  renderMultiChart();
-  // renderRCChart는 인사이트로 이동함에 따라 상품 페이지에서 제거됨
+  renderRankCompare(prods);     // 채널 편향 TOP
+  renderLaunchPerf();           // 신상품 런칭 성과
+  renderCatCross();             // 카테고리 교차 구매
+  renderPriceHeatmap(prods);    // 가격대별 히트맵
+  renderSeasonConc(prods);      // 시즌 집중도 + 재고 소진
+  renderSpikeDrops();           // 급상승/급하락 (최하단)
+  renderCatChart(prods);        // hidden placeholder
+  renderMultiChart();           // hidden placeholder
 }
 
 // 시즌 드롭다운을 현재 데이터의 실제 시즌으로 동적 채움
