@@ -43,6 +43,28 @@ tbody tr:hover{background:#f8fafc}
 .product-title{font-size:18px;font-weight:700;color:#0f172a;margin-bottom:4px}
 .product-sub{font-size:12px;color:#64748b;margin-bottom:16px}
 .footer{text-align:center;color:#94a3b8;font-size:12px;padding:20px}
+.filter-bar{background:#fff;margin:0 0 16px;padding:14px 20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,0.05);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filter-bar .fl{font-size:13px;font-weight:600;color:#64748b;white-space:nowrap}
+.filter-bar .date-input{border:1.5px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:12px;font-family:inherit;color:#374151;outline:none;cursor:pointer}
+.filter-bar .date-input:focus{border-color:#3b82f6}
+.filter-bar .date-sep{color:#94a3b8;font-size:13px}
+.quick-btns{display:flex;gap:6px;flex-wrap:wrap}
+.quick-btn{padding:6px 12px;border:1px solid #e2e8f0;background:#fff;color:#64748b;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.quick-btn:hover{border-color:#3b82f6;color:#3b82f6;background:#eff6ff}
+.quick-btn.active{background:#3b82f6;color:white;border-color:#3b82f6}
+.quick-btn.qsep{margin-left:10px;position:relative}
+.quick-btn.qsep::before{content:'';position:absolute;left:-6px;top:4px;bottom:4px;width:1px;background:#e2e8f0}
+.month-select{margin-left:6px;padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;font-size:12px;color:#475569;cursor:pointer;font-family:inherit}
+.store-toggle{display:flex;gap:6px;margin-left:8px}
+.store-btn{padding:6px 12px;border:1px solid #e2e8f0;background:#fff;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s}
+.store-btn.domestic{color:#0891b2}
+.store-btn.overseas{color:#7c3aed}
+.store-btn.active.domestic{background:#0891b2;color:white;border-color:#0891b2}
+.store-btn.active.overseas{background:#7c3aed;color:white;border-color:#7c3aed}
+.store-btn.active.both{background:#1a1a2e;color:white;border-color:#1a1a2e}
+.apply-btn{background:#1a1a2e;color:white;border:none;border-radius:8px;padding:7px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.apply-btn:hover{background:#0f3460}
+.range-note{font-size:11px;color:#94a3b8;margin-left:auto;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -60,9 +82,50 @@ tbody tr:hover{background:#f8fafc}
 </div>
 
 <div class="container">
+ <div class="filter-bar">
+  <span class="fl">기간</span>
+  <input type="date" class="date-input" id="startDate" value="2025-01-01" min="2025-01-01" max="2026-04-21">
+  <span class="date-sep">~</span>
+  <input type="date" class="date-input" id="endDate" value="2026-04-21" min="2025-01-01" max="2026-04-21">
+  <div class="quick-btns">
+   <button class="quick-btn active" onclick="setQuick('all',this)">전체</button>
+   <button class="quick-btn" onclick="setQuick('y2026',this)">올해</button>
+   <button class="quick-btn" onclick="setQuick('y2025',this)">작년</button>
+   <button class="quick-btn qsep" onclick="setQuick('last7',this)">최근 7일</button>
+   <button class="quick-btn" onclick="setQuick('last30',this)">최근 30일</button>
+   <button class="quick-btn" onclick="setQuick('last90',this)">최근 90일</button>
+   <button class="quick-btn qsep" onclick="setQuick('thismonth',this)">이번 달</button>
+   <button class="quick-btn" onclick="setQuick('lastmonth',this)">지난 달</button>
+   <button class="quick-btn qsep" onclick="setQuick('yoy',this)" title="올해 vs 작년 동기">🔄 작년 동기</button>
+   <select class="month-select" id="monthSelect" onchange="setMonthQuick(this.value)">
+    <option value="">📅 월 선택</option>
+    <optgroup label="2026년">
+     <option value="2026-01">2026-01</option>
+     <option value="2026-02">2026-02</option>
+     <option value="2026-03">2026-03</option>
+     <option value="2026-04">2026-04</option>
+    </optgroup>
+    <optgroup label="2025년">
+     <option value="2025-01">2025-01</option><option value="2025-02">2025-02</option>
+     <option value="2025-03">2025-03</option><option value="2025-04">2025-04</option>
+     <option value="2025-05">2025-05</option><option value="2025-06">2025-06</option>
+     <option value="2025-07">2025-07</option><option value="2025-08">2025-08</option>
+     <option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+     <option value="2025-11">2025-11</option><option value="2025-12">2025-12</option>
+    </optgroup>
+   </select>
+  </div>
+  <div class="store-toggle">
+   <button class="store-btn both active" id="btn-both" onclick="setStore('both')">전체</button>
+   <button class="store-btn domestic" id="btn-domestic" onclick="setStore('domestic')">국내</button>
+   <button class="store-btn overseas" id="btn-overseas" onclick="setStore('overseas')">해외</button>
+  </div>
+  <button class="apply-btn" onclick="applyFilter()">조회</button>
+  <span class="range-note" id="range-note"></span>
+ </div>
  <div class="grid">
   <div class="panel">
-   <h3>🔍 상품 검색 <span style="font-size:11px;color:#94a3b8;margin-left:6px">(321종)</span></h3>
+   <h3>🔍 상품 검색 <span style="font-size:11px;color:#94a3b8;margin-left:6px" id="prod-count">(321종)</span></h3>
    <div class="search-box"><input type="text" id="search" placeholder="상품명 검색..."></div>
    <div style="display:flex;gap:4px;margin-bottom:6px;font-size:11px">
     <button data-sort="qty" class="srt-btn" style="padding:4px 8px;border:1px solid #e2e8f0;border-radius:4px;background:#f1f5f9;cursor:pointer">수량순</button>
@@ -98,12 +161,130 @@ const num = n => Number(n||0).toLocaleString();
 let curSort = 'qty';
 let curQuery = '';
 
+// ===== 기간·채널 필터 상태 =====
+const MAX_DATE = '2026-04-21';
+const MIN_DATE = '2025-01-01';
+let filterStart = MIN_DATE;
+let filterEnd   = MAX_DATE;
+let filterStore = 'both'; // both / domestic / overseas
+let filteredProducts = null;
+
+// 기간 내 월(YYYY-MM) 목록
+function monthsInRange(start, end) {
+  const a = start.slice(0,7), b = end.slice(0,7);
+  return MONTHS.filter(m => m >= a && m <= b);
+}
+
+// 상품별로 [filterStart,filterEnd] 범위에 해당하는 월만 합산
+function getFilteredProducts() {
+  if (filteredProducts) return filteredProducts;
+  const ms = monthsInRange(filterStart, filterEnd);
+  const out = [];
+  PRODUCTS.forEach(p => {
+    const md = MONTHLY[p['상품명']] || {months:[], dom_qty:[], os_qty:[], dom_rev:[], os_rev:[]};
+    let dq=0, oq=0, dr=0, or_=0;
+    md.months.forEach((m, i) => {
+      if (ms.includes(m)) {
+        dq += md.dom_qty[i] || 0;
+        oq += md.os_qty[i]  || 0;
+        dr += md.dom_rev[i] || 0;
+        or_ += md.os_rev[i] || 0;
+      }
+    });
+    const tq = dq + oq, tr = dr + or_;
+    // 매장 토글: 선택한 채널에 기간 내 판매가 없으면 제외
+    if (filterStore === 'domestic' && dq === 0) return;
+    if (filterStore === 'overseas' && oq === 0) return;
+    if (filterStore === 'both' && tq === 0) return;
+    out.push({
+      ...p,
+      '통합판매수량': tq, '국내판매수량': dq, '해외판매수량': oq,
+      '통합매출_KRW': tr, '국내매출_KRW': dr, '해외매출_KRW환산': or_,
+      '평균단가_KRW': tq > 0 ? tr/tq : 0,
+      _dom_qty: dq, _ovs_qty: oq, _dom_rev: dr, _ovs_rev: or_, _total_qty: tq, _total_rev: tr
+    });
+  });
+  filteredProducts = out;
+  return out;
+}
+
 function getList() {
-  const list = PRODUCTS.filter(p => p['상품명'].toLowerCase().includes(curQuery.toLowerCase()));
-  if (curSort==='qty') list.sort((a,b)=>b['통합판매수량']-a['통합판매수량']);
-  else if (curSort==='rev') list.sort((a,b)=>b['통합매출_KRW']-a['통합매출_KRW']);
+  const list = getFilteredProducts().filter(p => p['상품명'].toLowerCase().includes(curQuery.toLowerCase()));
+  const sortKey = filterStore === 'domestic' ? '국내판매수량'
+                : filterStore === 'overseas' ? '해외판매수량'
+                : '통합판매수량';
+  const revKey  = filterStore === 'domestic' ? '국내매출_KRW'
+                : filterStore === 'overseas' ? '해외매출_KRW환산'
+                : '통합매출_KRW';
+  if (curSort==='qty') list.sort((a,b)=>b[sortKey]-a[sortKey]);
+  else if (curSort==='rev') list.sort((a,b)=>b[revKey]-a[revKey]);
   else list.sort((a,b)=>a['상품명'].localeCompare(b['상품명']));
   return list;
+}
+
+// ===== 필터 핸들러 =====
+function addDays(d, n) { const dt = new Date(d + 'T00:00:00'); dt.setDate(dt.getDate()+n); return dt.toISOString().slice(0,10); }
+function monthEnd(ym) { const [y,m] = ym.split('-').map(Number); const last = new Date(y,m,0).getDate(); return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`; }
+function prevMonth(ym) { const [y,m] = ym.split('-').map(Number); if (m===1) return `${y-1}-12`; return `${y}-${String(m-1).padStart(2,'0')}`; }
+
+function setQuick(mode, btn) {
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('monthSelect').value = '';
+  const thisMonth = MAX_DATE.slice(0,7);
+  const last = prevMonth(thisMonth);
+  const map = {
+    all:       [MIN_DATE, MAX_DATE],
+    y2025:     ['2025-01-01','2025-12-31'],
+    y2026:     ['2026-01-01', MAX_DATE],
+    last7:     [addDays(MAX_DATE,-6),  MAX_DATE],
+    last30:    [addDays(MAX_DATE,-29), MAX_DATE],
+    last90:    [addDays(MAX_DATE,-89), MAX_DATE],
+    thismonth: [thisMonth+'-01', MAX_DATE],
+    lastmonth: [last+'-01', monthEnd(last)],
+    yoy:       ['2025-01-01', `2025-${MAX_DATE.slice(5)}`],
+  };
+  const [s,e] = map[mode] || [MIN_DATE, MAX_DATE];
+  document.getElementById('startDate').value = s;
+  document.getElementById('endDate').value   = e;
+  applyFilter();
+}
+
+function setMonthQuick(ym) {
+  if (!ym) return;
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('startDate').value = ym + '-01';
+  document.getElementById('endDate').value   = monthEnd(ym);
+  applyFilter();
+}
+
+function setStore(s) {
+  filterStore = s;
+  ['btn-both','btn-domestic','btn-overseas'].forEach(id => document.getElementById(id).classList.remove('active'));
+  document.getElementById('btn-' + s).classList.add('active');
+  filteredProducts = null;
+  renderList();
+  const sel = document.querySelector('.prod-item.active');
+  if (sel) selectProduct(sel.dataset.name);
+}
+
+function applyFilter() {
+  filterStart = document.getElementById('startDate').value || MIN_DATE;
+  filterEnd   = document.getElementById('endDate').value   || MAX_DATE;
+  if (filterStart > filterEnd) { alert('시작일이 종료일보다 앞이어야 합니다.'); return; }
+  filteredProducts = null;
+  const cnt = getFilteredProducts().length;
+  document.getElementById('prod-count').textContent = `(${cnt}종 · ${filterStart.replace(/-/g,'.')} ~ ${filterEnd.replace(/-/g,'.')})`;
+  document.getElementById('range-note').textContent = `${filterStart} ~ ${filterEnd} · ${filterStore==='both'?'국내+해외':filterStore==='domestic'?'국내':'해외'}`;
+  renderList();
+  const sel = document.querySelector('.prod-item.active');
+  if (sel && filteredProducts.some(p => p['상품명'] === sel.dataset.name)) {
+    selectProduct(sel.dataset.name);
+  } else {
+    const top = getList()[0];
+    if (top) selectProduct(top['상품명']);
+    else document.getElementById('detail-pane').innerHTML = '<div class="panel empty">선택한 기간/채널에 해당하는 판매 데이터가 없습니다.</div>';
+  }
 }
 
 function renderList() {
@@ -124,16 +305,21 @@ function selectProduct(name) {
   const sel = document.querySelector(`.prod-item[data-name="${CSS.escape(name)}"]`);
   if (sel) sel.classList.add('active');
 
-  const p = PRODUCTS.find(x=>x['상품명']===name);
+  // 필터링된 상품에서 우선 조회 (기간·채널 반영된 합계 사용)
+  const fp = (filteredProducts || getFilteredProducts()).find(x => x['상품명'] === name);
+  const p  = fp || PRODUCTS.find(x=>x['상품명']===name);
   const md = MONTHLY[name] || {months:[], dom_qty:[], os_qty:[], dom_rev:[], os_rev:[]};
-  // 전체 기간의 월 배열에 맞춰 값 배치
+  // 선택한 기간 내 월에만 값 배치
+  const rangeMonths = monthsInRange(filterStart, filterEnd);
   const alignedDQ = [], alignedOQ = [], alignedDR = [], alignedOR = [];
-  MONTHS.forEach(m => {
+  rangeMonths.forEach(m => {
     const i = md.months.indexOf(m);
-    alignedDQ.push(i>=0 ? md.dom_qty[i] : 0);
-    alignedOQ.push(i>=0 ? md.os_qty[i] : 0);
-    alignedDR.push(i>=0 ? md.dom_rev[i] : 0);
-    alignedOR.push(i>=0 ? md.os_rev[i] : 0);
+    const inDom = filterStore !== 'overseas';
+    const inOvs = filterStore !== 'domestic';
+    alignedDQ.push(i>=0 && inDom ? md.dom_qty[i] : 0);
+    alignedOQ.push(i>=0 && inOvs ? md.os_qty[i]  : 0);
+    alignedDR.push(i>=0 && inDom ? md.dom_rev[i] : 0);
+    alignedOR.push(i>=0 && inOvs ? md.os_rev[i]  : 0);
   });
 
   const pane = document.getElementById('detail-pane');
@@ -170,7 +356,7 @@ function selectProduct(name) {
   `;
 
   const tb = document.getElementById('mdetail-tbody');
-  MONTHS.forEach((m, i) => {
+  rangeMonths.forEach((m, i) => {
     const tq = alignedDQ[i] + alignedOQ[i];
     const tr = alignedDR[i] + alignedOR[i];
     const row = document.createElement('tr');
@@ -180,7 +366,7 @@ function selectProduct(name) {
 
   new Chart(document.getElementById('mqChart'), {
     type:'bar',
-    data:{labels:MONTHS,datasets:[
+    data:{labels:rangeMonths,datasets:[
       {label:'국내',data:alignedDQ,backgroundColor:'#22d3ee'},
       {label:'해외',data:alignedOQ,backgroundColor:'#a78bfa'}
     ]},
@@ -188,7 +374,7 @@ function selectProduct(name) {
   });
   new Chart(document.getElementById('mrChart'), {
     type:'bar',
-    data:{labels:MONTHS,datasets:[
+    data:{labels:rangeMonths,datasets:[
       {label:'국내',data:alignedDR,backgroundColor:'#0891b2'},
       {label:'해외',data:alignedOR,backgroundColor:'#8b5cf6'}
     ]},
@@ -209,10 +395,8 @@ document.querySelectorAll('.srt-btn').forEach(b => {
   });
 });
 
-renderList();
-// 초기 선택
-const topProd = getList()[0];
-if (topProd) selectProduct(topProd['상품명']);
+// 초기화: 전체 기간 · 전체 채널
+applyFilter();
 </script>
 </body>
 </html>

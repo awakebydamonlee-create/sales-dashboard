@@ -1,0 +1,339 @@
+SHOP SEOUL	B0406		BadBear Seoul Varsity Jacket Navy / SIZE: 1
+	B0407		BadBear Seoul Varsity Jacket Navy / SIZE: 2
+	B0404		BadBear Seoul Varsity Jacket Blue / SIZE: 1
+	B0405		BadBear Seoul Varsity Jacket Blue / SIZE: 2
+	B0410		BadBear Seoul Hoodie White / SIZE: 1
+	B0411		BadBear Seoul Hoodie White / SIZE: 2
+	B0408		BadBear Seoul Hoodie Navy / SIZE: 1
+	B0409		BadBear Seoul Hoodie Navy / SIZE: 2
+	B0412		BadBear Seoul Tee Black / SIZE: 1
+	B0413		BadBear Seoul Tee Black / SIZE: 2
+	B0414		BadBear Seoul Tee White / SIZE: 1
+	B0415		BadBear Seoul Tee White / SIZE: 2
+	B0416		BadBear Seoul Slim Tee White
+	B0419		BadBear Removable Sticker Set
+	B0420		BadBear Seoul Stacking Mug
+24_08_FW	b0347	LMS	Heart Puffer Jacket City Black
+	b0508	LMS	Heart Puffer Jacket Check Blue
+	b0506	LMS	Heart Puffer Jacket Matte Black
+	b0507	LMS	Heart Puffer Jacket Burgundy
+	 b0470 		Check Hoodie Jacket Blue
+	 b0471 		Biker Jacket Ivory
+	 b0472 		Hockey Jersey Blue
+	 b0473 		Hockey Jersey Navy
+	 b0474 		Double Velvet Ties Shirt Butter
+	 b0475 		Double Velvet Ties Shirt Navy
+	 b0476 		Stripe Lace Tie Shirt Ivory
+	 b0477 		Stripe Lace Tie Shirt Blue
+	 b0478 		Loose Fit Top Charcoal
+	 b0479 		Loose Fit Top Deep Beige
+	 b0480 		Loose Fit Top Ivory
+	b0481		Balloon Mini Skirt Navy / SIZE: 1
+	b0482		Balloon Mini Skirt Navy / SIZE: 2
+	b0483		Balloon Mini Skirt Cream / SIZE: 1
+	b0484		Balloon Mini Skirt Cream / SIZE: 2
+	b0485		Side Tie Dress Oatmeal
+	  b0486  		Side Tie Dress Navy
+	  b0487  		Muddy Ribbon Dress Brown
+	  b0488  		Lace Godet Mid Skirt Ivory
+	  b0489  	LMS	Suede Bao Bag Black
+	  b0490  	LMS	Suede Bao Bag Brown
+	b0491	LMS	Leather Cowboy Boots Black / SIZE: 230 (EU37)
+	b0492	LMS	Leather Cowboy Boots Black / SIZE: 240 (EU38)
+	b0493	LMS	Leather Cowboy Boots Black / SIZE: 250 (EU39)
+	b0494	LMS	Leather Cowboy Boots Black / SIZE: 260 (EU40)
+	b0496	LMS	Leather Cowboy Boots Brown / SIZE: 230 (EU37)
+	b0497	LMS	Leather Cowboy Boots Brown / SIZE: 240 (EU38)
+	b0498	LMS	Leather Cowboy Boots Brown / SIZE: 250 (EU39)
+	b0499	LMS	Leather Cowboy Boots Brown / SIZE: 260 (EU40)
+25_SS_01	b2530	LMS	Dot Buttons Knit Double Jacket Navy
+	b2531	LMS	Dot Buttons Knit Double Jacket Gray
+	b2528	LMS	Knit Hockey Jersey Navy
+	b2529	LMS	Knit Hockey Jersey Skyblue
+	b2532		Stripe My Little Star L/S Blue
+	b2533		My Little Star L/S Navy
+	b2534		My Little Star L/S Mint
+	b2535		My Little Star L/S Chocolate
+	b2536		My Little Star L/S Purple
+	b2501		Endot Blazer Jacket Navy SIZE: 1
+	b2502		Endot Blazer Jacket Navy SIZE: 2
+	b2503		Endot Blazer Jacket Charcoal SIZE: 1
+	b2504		Endot Blazer Jacket Charcoal SIZE: 2
+	b2505		Pocket Pleats Shorts Skirt Navy SIZE: 1
+	b2506		Pocket Pleats Shorts Skirt Navy SIZE: 2
+	b2507		Pocket Pleats Shorts Skirt Charocal SIZE: 1
+	b2508		Pocket Pleats Shorts Skirt Charocal SIZE: 2
+	b2509		P Pleats Mid Skirt Navy SIZE: 1
+	b2510		P Pleats Mid Skirt Navy SIZE: 2
+	b2511		P Pleats Mid Skirt Charcoal SIZE: 1
+	b2512		P Pleats Mid Skirt Charcoal SIZE: 2
+	b2526		Stripe Polo Hockey Jersey Blue
+	b2527		Polo Hockey Jersey Navy
+	b2523		Dot Hoodie Jacket Deep Blue
+	b2524		Dot Hoodie Jacket Light Blue
+	b2525		Check Hoodie Jacket Navy
+	b2516		Unite Check Jacket Navy
+	b2515		Stripe Lace Tie Shirt Pink
+	b2513		Blue Hour Stripe Lace Tie Shirt Blue SIZE: 1
+	b2514		Blue Hour Stripe Lace Tie Shirt Blue SIZE: 2
+	b2517		Blooming Tie Shirt Blue SIZE: 1
+	b2518		Blooming Tie Shirt Blue SIZE: 2
+	b2519		Blooming Tie Shirt Pink SIZE: 1
+	b2520		Blooming Tie Shirt Pink SIZE: 2
+	b2521		Blooming Tie Shirt Ivory SIZE: 1
+	b2522		Blooming Tie Shirt Ivory SIZE: 2
+25_SS_02	  b0490  	LMS	[2.0] Suede Bao Bag Brown
+	b2538	LMS	Dot Cozy Dumpling Bag Skyblue
+	b2539	LMS	Dot Cozy Dumpling Bag Gray
+	b2540	LMS	Dot Cozy Bao Bag Skyblue
+	b2541	LMS	Dot Cozy Bao Bag Gray
+	b2542		Sheer Dot Leg Warmer Beige
+	b2543		Star Lace Leg Warmer
+	b2544		Sheer Dot Hand Warmer Beige
+	b2545		Star Lace Hand Warmer
+	b2546		Buttons Baby Tee Green
+	b2547		Buttons Baby Tee White
+	b2548		Sheer Dot Buttons Baby Tee Beige
+	b2549		Sheer Dot Buttons Baby Tee Navy
+	b2550		Setup Sheer Dot Layerd Tee Beige
+	b2551		Setup Sheer Dot Layerd Tee Navy
+	b2552		Setup Ribbon Layerd Tee Green
+	b2553		Setup Ribbon Layerd Tee White
+	b2554		Buttons Angel Tee White
+	b2556	가우.ver	Butterfly Angel Dress Ivory
+	b2556	LMS.ver	Butterfly Angel Dress Ivory
+	b2557	가우.ver	Shooting Star Angel Dress White
+	b2557	LMS.ver	Shooting Star Angel Dress White
+	b2558		Buttons Collar Dress Black
+	b2559		Buttons Collar Dress White
+	b2560		Check Twin Bottons Shorts Blue
+	b2561		Check Twin Buttons Shorts Green
+	b2562		Lace Inner Shorts White
+	b2563		Angel Slim Tee White
+	b2564		Flying Heaven Slim Tee White
+25_SS_03	b2565	LMS	Dot Cozy Bao Bag Navy
+	b2566	LMS	Dot Cozy Dumpling Bag Navy
+	b2567	LMS	Star Bao Bag Charcoal
+	b2568	LMS	Star Dimsum Bag Charcoal
+	b2569		Check Angel Dress Mint
+	b2570		Check Angel Dress Beige
+	b2571	LMS.ver	Dot Garden Dress Ivory
+	b2572	LMS.ver	Dot Garden Dress Mint
+	b2573		Stary Night Frill Sleeveless Navy
+	b2574		Stary Night Frill Sleeveless Skyblue
+	b2575		Check Puffed Rain Jacket Blue
+	b2576		Puffed Rain Jacket White
+	b2578		Bite Apple Sleeveless White
+	b2579		Bite Apple Sleeveless Gray
+	b2580		My Little Star Shorts Navy
+	b2581		My Little Star Shorts White
+	b2582		Lace Inner Shorts Gray
+	b2583		Milky way Leg Warmer White
+	b2584		Milky way Leg Warmer Blue
+	b2585		Milky way Leg Warmer Black
+	b2586		Milky way Hand Warmer White
+	b2587		Buttons Sprinkle Hoodie Shirt White
+	b2588		Buttons Check Hoodie Shirt Blue
+	b2589	LMS	Bite Apple Key Chain
+25_FW_가방_1차	b2640	LMS	Washed Leopard Dimsum Bag Purple
+	b2600	LMS	Washed Leopard Dimsum Bag Pink
+	b2601	LMS	Eco Fur Dimsum Bag Brown
+	b2602	LMS	Mori Dimsum Bag Brown
+	b2603	LMS	Leopard Dimsum Bag Charcoal
+	b2604	LMS	Leopard Dimsum Bag Beige
+	b2605	LMS	Washed Leopard Dumpling Bag Pink
+	b2606	LMS	Eco Fur Dumpling Bag Brown
+	b2607	LMS	Dot Cozy Dumpling Bag Brown
+	b2608	LMS	Leopard Bao Bag Charcoal
+	b2609	LMS	Dot Cozy Bao Bag Brown
+	b2610	LMS	Wool Leopard Pillow Bag Beige
+	b2611	LMS	Eco Fur Pillow Bag Brown
+25_FW_01	b2612	LMS	Removable Shearling Knit Hoodie Zip Brown
+	b2613	LMS	Removable Shearling Knit Hoodie Zip Beige
+	b2614	LMS	Vine Knit Light Khaki
+	b2615	LMS	Vine Knit Charcoal
+	b2616	LMS	Pom Pom Knit Half Top Blue
+	b2617	LMS	Pom Pom Knit Half Top Beige
+	b2618	LMS	Shade Tied Dress Jade SIZE:1
+	b2619	LMS	Shade Tied Dress Jade SIZE:2
+	b2620	LMS	Shade Tied Dress Charcoal SIZE:1
+	b2621	LMS	Shade Tied Dress Charcoal SIZE:2
+	b2622		Ragged Scarf Check Shirts Navy
+	b2623		Wood Check Hoodie Shirts Green
+	b2624		Mossy Slip Dress Dusty Pink SIZE:1
+	b2625		Mossy Slip Dress Dusty Pink SIZE:2
+	b2626		Mossy Slip Dress Khaki SIZE:1
+	b2627		Mossy Slip Dress Khaki SIZE:2
+	b2628		Mushroom Pocket Tie Half Shirts Black
+	b2629		Mushroom Pocket Tie Half Shirts Beige
+	b2630		Stilla Lace L/S Khaki
+	b2631		Stilla Lace L/S Ivory
+	b2632		Hand Warmer L/S Pale Violet
+	b2633		Hand Warmer L/S Charcoal
+	b2634		Hand Warmer Stripe L/S Charcoal
+	b2635		Hand Warmer Stripe L/S Light Khaki
+	b2636		Moldy Pigment Long Skirt Brown SIZE:1
+	b2637		Moldy Pigment Long Skirt Brown SIZE:2
+	b2638		Moldy Pigment Long Skirt Rose Gray SIZE:1
+	b2639		Moldy Pigment Long Skirt Rose Gray SIZE:2
+25_FW_02	b2666	LMS > 1.2	Cozy Pom Pom Dot Shearling Dumble Jumper Brwon
+	b2653	LMS > 12/26 > 가격확인중	Belted Highneck Warmer Faux Fur Jacket Brown
+	b2654	LMS > 12/26 > 가격확인중	Belted Highneck Warmer Faux Fur Jacket Black
+	b2655	LMS > 12/26 > 가격확인중	Flare Bambi Shearling Mini Coat Ivory
+	b2656	LMS > 12/18	Cottage Bambi Fur Trooper Hat Brown
+	b2657	LMS > 12/18	Mori Dimsum Bag Black
+	b2658	LMS > 12/18	Mini Mori Dimsum Bag Brown
+	b2659	LMS > 12/18	Mini Mori Dimsum Bag Black
+	b2660	LMS > 12/26	Patchwork Buttons Pillow Bag Navy
+	b2661	LMS > 12/18	Washed Leopard Pillow Bag Pink
+	b2662	LMS > 12/26	Mori Backpack Brown
+	b2663	LMS > 12/26	Puffy Mori Backpack Khaki
+	b2664	LMS > 12/26	Puffy Mori Backpack Sage Green
+	b2665	LMS > 12/26	Patchwork Mori Backpack Navy
+	b2652	LMS	Boucle Check Hoodie Jacket Navy
+	b2641		Reversible Grass Check Shearling Jacket Green
+	b2645		Reversible Check Shearling Jacket Blue
+	b2642		Baby Sheeps Button Fleece Hoodie Jacket Ivory
+	b2643		Baby Sheeps Fleece Jacket Ivory
+	b2644		Baby Sheeps Ear Fleece Zip-up Crop Hoodie Ivory
+	b2646		Zzz Baby Sheeps Pajama Top Ivory
+	b2647		Zzz Baby Sheeps Pajama Crop Pants Ivory
+	b2648		Venatio Layered Belt Skirt Brown
+	b2649		Venatio Layered Belt Skirt Charcoal
+	b2651		Hand Warmer Cottage Floral L/S Beige
+	b2650		Hand Warmer Hairy Cozy Stripe L/S Brown
+26 SS 01	b2678		Doze Lace Sleeveless Neo Dot
+	b2679		Doze Lace Sleeveless Mint
+	b2680		Doze Lace Sleeveless White
+	b2681	국내 니트공장	Pore Half Knit Top Baby Mint
+	b2682	국내 니트공장	Pore Half Knit Top Ivory
+	b2683	국내 니트공장	Dreamy Rose Cardigan White
+	b2684	국내 니트공장	Dreamy Rose Cardigan Oatmeal
+	b2685		Lullaby Satin Lace Top Coral
+	b2686		Lullaby Satin Lace Top Lemon
+	b2687		Tiered Lace Capri Pants Vanilla
+	b2688		Dotty Tutu Mini Dress Misty Blue
+	b2689		Dotty Tutu Mini Dress Dusty Pink
+	b2690		Rush Drapey Snap One Shoulder Top Gray
+	b2691		Rush Drapey Snap One Shoulder Top Ivory
+	b2692		Fairy Tale Side Tie Skirt White
+	b2693		Fairy Tale Side Tie Skirt White
+	b2694		Fairy Tale Side Tie Skirt Lemon
+	b2695		Fairy Tale Side Tie Skirt Lemon
+	bb2601	LMS	Ink Dimsum Bag
+	bb2602	LMS	Mocha Dimsum Bag
+	bb2603	LMS	Butter Dimsum Bag
+	bb2604	LMS	Cream Puff Dimsum Bag
+	bb2610	LMS	Glaze Vanilla Dimsum Bag
+	bb2611	LMS	Glaze Pearl Gray Dimsum Bag
+	bb2620	LMS	Chocolate Blush Mori Dimsum Bag
+	bb2621	LMS	Mini Chocolate Blush Mori Dimsum Bag
+	b2677	LMS	Washed Leopard Dimsum Bag Purple
+26 VT	b2667		Flora Lace Skirt Baby Pink
+	b2668		Silky Babydoll Dress Ivory SIZE: 1
+	b2669		Silky Babydoll Dress Ivory SIZE: 2
+	b2670		Love Message One Shoulder L/S Ivory
+	b2671	중국	Rosie Woolly Off Shouler Cream
+	b2672	중국	Rosie Woolly Off Shouler Rose Gray
+	b2673	중국	Knit Highneck Double Jacket Dark Gray
+	b2674	중국	Knit Pleats Skirt Dark Gray
+	b2675		Mini Washed Leopard Dimsum Bag Pink
+	b2676		Mini Washed Leopard Dimsum Bag Purple
+24_홀리데이컬렉션	b0532	중국	Leather Bao Bag Black
+	b0532	중국	Leather Bao Bag Black
+	b0531	중국	Leather Bao Bag Brown
+	b0530	중국	Suede Bao Bag Camel
+	b0529		Off Shoulder Top Pink
+	b0528		Off Shoulder Top Navy
+	b0516		Stripe Hoodie Cardigan Ivory
+	b0515		Stripe Hoodie Cardigan Blue
+	b0524		Stripe Star L/S Blue
+	b0522		Velour Pants Skyblue SIZE:1
+	b0523		Velour Pants Skyblue SIZE:2
+	b0519		Velour Pants Navy SIZE:1
+	b0520		Velour Pants Navy SIZE:2
+	b0519		Velour Zipup Crop Jersey Navy
+	b0518		Velour Ear Zipup Crop Hoodie Skyblue
+	b0517		Velour Ear Zipup Crop Hoodie Navy
+	b0514		Fleece Hockey Jersey Navy
+	b0511		Fleece & Wool Check Crop Jacket Navy
+	b0510		Wool Check Duffle Coat Navy
+	b0512	LMS.ver	Wool Check Hoodie Jacket Navy(LMS)
+	b0512		Wool Check Hoodie Jacket Navy(가우)
+	b0527	LMS	Earflap Beanie Light Brown
+	b0526	LMS	Earflap Beanie Light Ivory
+	b0525	LMS	Earflap Beanie Light Blue
+배드베어	b0146		BadBear Varsity Jacket / SIZE: 1
+	b0147		BadBear Varsity Jacket / SIZE: 2
+	b0266		BadBear Varsity Jacket Navy / SIZE: 1
+	b0266		BadBear Varsity Jacket Navy / SIZE: 2
+	b0188		BadBear Crop Tee White
+	b0417		Ribbon BadBear Rubber Keyring
+	B0418		BadBear Rubber Keyring
+	B0421		BadBear Photo Card Keyring
+	b0447		BadBear Key Chain
+	b0145		BadBear Art Toy#2
+	b0160		BadBear Hug Tee White / SIZE: 1
+	b0161		BadBear Hug Tee White / SIZE: 2
+	b0158		BadBear Graphic Tee White / SIZE: 1
+	b0159		BadBear Graphic Tee White / SIZE: 2
+	b0168		BadBear Tee White / SIZE: 1
+	b0169		BadBear Tee White / SIZE: 2
+	 b0445 		BadBear Slim Tee Skyblue
+	 b0446 		BadBear Slim Tee Blue
+	 b0434 		BadBear Slim Tee White
+	 b0435 		BadBear Slim Tee Black
+	 b0436 		BadBear Ringer Slim Tee Blue
+	 b0437 		BadBear Ringer Slim Tee Skyblue
+	 b0438 		BadBear Ringer Slim Tee Navy
+	 b0439 		Ribbon BadBear Ringer Slim Tee White
+	 b0455 		Ribbon Badbear Tee Black / SIZE: 1
+	b0456		Ribbon Badbear Tee Black / SIZE: 2
+	 b0453 		Ribbon Badbear Tee White / SIZE: 1
+	b0454		Ribbon Badbear Tee White / SIZE: 2
+	 b0468 		Berry BadBear Tee White / SIZE: 1
+	 b0469 		Berry BadBear Tee White / SIZE: 2
+	 b0467 		Berry BadBear Slim Tee White
+캐리오버	 b0504 		Logo Puff Hoodie Blue / SIZE: 1
+	 b0505 		Logo Puff Hoodie Blue / SIZE: 2
+	b0176		Logo Tee White / SIZE: 1
+	b0177		Logo Tee White / SIZE: 2
+	b0463		Logo Tee Navy / SIZE: 1
+	b0464		Logo Tee Navy / SIZE: 2
+			BadBear Patch Tee Navy / SIZE: 1
+			BadBear Patch Tee Navy / SIZE: 2
+	b0148		Logo Pull Zip Hoodie Navy / SIZE: 1
+	b0149		Logo Pull Zip Hoodie Navy / SIZE: 2
+	b0150		Logo Pull Zip Hoodie Blue / SIZE: 1
+	b0151		Logo Pull Zip Hoodie Blue / SIZE: 2
+			BadBear Hug Patch Zipup Crop Hoodie Navy
+	 b0503 		Bear Ear Zipup Crop Hoodie Ivory
+	 b0422 		Bear Ear Zipup Hoodie Navy / SIZE: 1
+	 b0423 		Bear Ear Zipup Hoodie Navy / SIZE: 2
+	b0371		Bear Ear Zipup Crop Hoodie Skyblyue
+	b0370		Bear Ear Zipup Crop Hoodie Navy
+	b0200		Logo Crop Zipup Jersey Navy
+	b0368		Ribbon Crop Sweatshirt Navy
+	b0369		Ribbon Crop Sweatshirt Skyblue
+			BadBear Graphic Hoodie Grey
+			BadBear L/S Charcoal
+			BadBear Crop Top White
+			College Sweat Pants Navy / SIZE: 1
+			College Sweat Pants Navy / SIZE: 2
+	b0152		Logo Sweat Pants Navy / SIZE: 1
+	b0153		Logo Sweat Pants Navy / SIZE: 2
+	 b0501 		Logo Sweat Pants Ivory / SIZE: 1
+	 b0502 		Logo Sweat Pants Ivory / SIZE: 2
+			BadBear Head Patch Slim Tee White
+	 b0450 		Ribbon Logo Slim Tee White
+	 b0451 		Ribbon Logo  Slim Tee Navy
+	b0457		Ribbon Logo Sleeveless White
+	b0458		Ribbon Logo Sleeveless Navy
+	b0460		Ribbon Logo Tee White / SIZE: 1
+	b0461		Ribbon Logo Tee White / SIZE: 2
+	b0459		Ribbon Sleeveless White
+	b0462		Cotton Ribbon Shorts Navy
+	b0449		Cotton Ribbon Shorts White
+	b0361		Ribbon Crop Jacket Navy
+	b0329		Circle Sleeveless Navy
+	b0448		Ribbon Blossom Crop Jacket White

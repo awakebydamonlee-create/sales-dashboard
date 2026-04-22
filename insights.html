@@ -77,16 +77,35 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
   </div>
 </div>
 <div class="fbar">
-  <span class="fl">빠른 선택</span>
-  <button class="qb active" id="qb-all" onclick="sp('all',this)">전체</button>
-  <button class="qb" id="qb-2025" onclick="sp('2025',this)">2025년</button>
-  <button class="qb" id="qb-2026" onclick="sp('2026',this)">2026년</button>
-  <span class="sep">|</span>
-  <span class="fl">기간 지정</span>
+  <span class="fl">기간</span>
   <input type="date" id="dtFrom" min="2025-01-01" max="2026-04-21" value="2025-01-01" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
   <span style="font-size:12px;color:#94a3b8">~</span>
   <input type="date" id="dtTo" min="2025-01-01" max="2026-04-21" value="2026-04-21" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
-  <button onclick="applyDateRange()" style="background:#0f3460;color:white;border:none;border-radius:8px;padding:5px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">적용</button>
+  <button class="qb active" id="qb-all" onclick="qb_set('all',this)">전체</button>
+  <button class="qb" id="qb-y2026" onclick="qb_set('y2026',this)">올해</button>
+  <button class="qb" id="qb-y2025" onclick="qb_set('y2025',this)">작년</button>
+  <button class="qb" id="qb-last7" onclick="qb_set('last7',this)">최근 7일</button>
+  <button class="qb" id="qb-last30" onclick="qb_set('last30',this)">최근 30일</button>
+  <button class="qb" id="qb-last90" onclick="qb_set('last90',this)">최근 90일</button>
+  <button class="qb" id="qb-thismonth" onclick="qb_set('thismonth',this)">이번 달</button>
+  <button class="qb" id="qb-lastmonth" onclick="qb_set('lastmonth',this)">지난 달</button>
+  <button class="qb" id="qb-yoy" onclick="qb_set('yoy',this)" title="올해 vs 작년 동기">🔄 작년 동기</button>
+  <select id="monthSelect" onchange="qb_month(this.value)" style="padding:4px 9px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;font-size:11px;font-family:inherit;color:#475569;cursor:pointer">
+    <option value="">📅 월 선택</option>
+    <optgroup label="2026년">
+      <option value="2026-01">2026-01</option><option value="2026-02">2026-02</option>
+      <option value="2026-03">2026-03</option><option value="2026-04">2026-04</option>
+    </optgroup>
+    <optgroup label="2025년">
+      <option value="2025-01">2025-01</option><option value="2025-02">2025-02</option>
+      <option value="2025-03">2025-03</option><option value="2025-04">2025-04</option>
+      <option value="2025-05">2025-05</option><option value="2025-06">2025-06</option>
+      <option value="2025-07">2025-07</option><option value="2025-08">2025-08</option>
+      <option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+      <option value="2025-11">2025-11</option><option value="2025-12">2025-12</option>
+    </optgroup>
+  </select>
+  <button onclick="applyDateRange()" style="background:#0f3460;color:white;border:none;border-radius:8px;padding:5px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">조회</button>
   <span class="fl" style="color:#94a3b8" id="pcnt"></span>
 </div>
 <div class="kstrip">
@@ -202,9 +221,37 @@ function applyDateRange(){
   const f=document.getElementById('dtFrom').value,t=document.getElementById('dtTo').value;
   if(!f||!t||f>t){alert('시작일이 종료일보다 앞이어야 합니다.');return;}
   document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('monthSelect').value='';
   // 일 단위 → 월 단위로 변환 (인사이트 데이터는 월별 집계)
   const fromMonth=f.slice(0,7),toMonth=t.slice(0,7);
   customRange={from:fromMonth,to:toMonth,fromDay:f,toDay:t};cur=null;rp();
+}
+// 매출 대시보드와 동일한 빠른 선택 로직(월단위로 반영)
+const I_MAX='2026-04-21', I_MIN='2025-01-01';
+function iAddDays(d,n){const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()+n);return dt.toISOString().slice(0,10);}
+function iMonthEnd(ym){const [y,m]=ym.split('-').map(Number);const last=new Date(y,m,0).getDate();return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`;}
+function iPrevMonth(ym){const [y,m]=ym.split('-').map(Number);if(m===1)return `${y-1}-12`;return `${y}-${String(m-1).padStart(2,'0')}`;}
+function qb_set(mode,btn){
+  document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('monthSelect').value='';
+  const thisMonth=I_MAX.slice(0,7), last=iPrevMonth(thisMonth);
+  const map={
+    all:[I_MIN,I_MAX], y2025:['2025-01-01','2025-12-31'], y2026:['2026-01-01',I_MAX],
+    last7:[iAddDays(I_MAX,-6),I_MAX], last30:[iAddDays(I_MAX,-29),I_MAX], last90:[iAddDays(I_MAX,-89),I_MAX],
+    thismonth:[thisMonth+'-01',I_MAX], lastmonth:[last+'-01',iMonthEnd(last)],
+    yoy:['2025-01-01',`2025-${I_MAX.slice(5)}`]
+  };
+  const [s,e]=map[mode]||[I_MIN,I_MAX];
+  document.getElementById('dtFrom').value=s; document.getElementById('dtTo').value=e;
+  applyDateRange();
+}
+function qb_month(ym){
+  if(!ym) return;
+  document.querySelectorAll('.qb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dtFrom').value=ym+'-01';
+  document.getElementById('dtTo').value=iMonthEnd(ym);
+  applyDateRange();
 }
 function getMergedData(from,to){
   const months=Object.keys(INS).filter(k=>/^\d{4}-\d{2}$/.test(k)&&k>=from&&k<=to).sort();
