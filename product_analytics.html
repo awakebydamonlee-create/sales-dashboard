@@ -437,6 +437,34 @@ table.rt tbody tr:hover{background:#fafbff}
   </div>
 </div>
 
+<!-- 주력 상품 TOP 10 최근 4주 성과 -->
+<div class="sec">
+  <div class="card">
+    <div class="ct">🏆 주력 상품 TOP 10 · 최근 4주 성과 <span style="font-size:11px;font-weight:400;color:#94a3b8" id="top10-range">· 선택 기간 말일 기준 역산 4주</span></div>
+    <div class="cs">판매수량 TOP 10 · 기존 베스트셀러의 최근 흐름 (신상품 런칭표와 대칭 구조)</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#f8fafc">
+            <th style="text-align:center;padding:7px 6px;font-size:10px;font-weight:700;color:#64748b">#</th>
+            <th style="text-align:left;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase">상품</th>
+            <th style="text-align:right;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">누적</th>
+            <th style="text-align:right;padding:7px 6px;font-size:10px;font-weight:700;color:#64748b">4주전</th>
+            <th style="text-align:right;padding:7px 6px;font-size:10px;font-weight:700;color:#64748b">3주전</th>
+            <th style="text-align:right;padding:7px 6px;font-size:10px;font-weight:700;color:#64748b">2주전</th>
+            <th style="text-align:right;padding:7px 6px;font-size:10px;font-weight:700;color:#64748b">1주전(최근)</th>
+            <th style="text-align:center;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b;min-width:110px">주차 추이</th>
+            <th style="text-align:right;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">주평균</th>
+            <th style="text-align:center;padding:7px 9px;font-size:10px;font-weight:700;color:#64748b">추세</th>
+          </tr>
+        </thead>
+        <tbody id="top10Body"><tr><td colspan="10" style="padding:14px;text-align:center;color:#94a3b8">계산 중…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="abox" id="top10-note">-</div>
+  </div>
+</div>
+
 <!-- 신상품 런칭 성과 + 카테고리 교차 구매 -->
 <div class="sec" style="display:grid;grid-template-columns:3fr 2fr;gap:14px">
   <div class="card">
@@ -1516,6 +1544,93 @@ function paGetFirstSoldDate(){
   return fd;
 }
 
+// 주력 상품 TOP 10 - 선택 기간 말일 기준 최근 4주 성과
+function renderTopProductsWeekly(){
+  const prods = window._prods || [];
+  if (!prods.length) {
+    document.getElementById('top10Body').innerHTML = '<tr><td colspan="10" style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">데이터 없음</td></tr>';
+    return;
+  }
+  const top10 = prods.slice(0, 10);  // 이미 total_qty 내림차순
+  const endD = ek();                 // 필터 종료일
+  // 최근 4주(역순): w4=가장 오래, w1=가장 최근
+  function addDays(dStr, n) { const d = new Date(dStr+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+  // 구간: [w4_from, w4_to], ..., [w1_from, w1_to(=endD)]
+  const weeks = [];
+  for (let i = 3; i >= 0; i--) {
+    const to = addDays(endD, -i*7);
+    const from = addDays(to, -6);
+    weeks.push({from, to});
+  }
+
+  // 기간 라벨
+  const rl = document.getElementById('top10-range');
+  if (rl) rl.textContent = `· ${weeks[0].from} ~ ${weeks[3].to} (말일 기준 역산 4주)`;
+
+  // 상품별 주차 수량
+  const results = top10.map((p, idx) => {
+    const weekQty = weeks.map(w => {
+      let q = 0;
+      for (let r of ROWS) {
+        if (r.n === p.name && r.d >= w.from && r.d <= w.to) q += r.dq + r.oq;
+      }
+      return q;
+    });
+    const totalQty = p.total_qty;
+    const weekSum = weekQty.reduce((a,b)=>a+b, 0);
+    const weeklyAvg = weekSum / 4;  // 4주 평균 (명확)
+    // 추세: 최근 1주(w1=인덱스3) vs 이전 3주(w4~w2=인덱스0~2) 평균
+    const recent = weekQty[3];
+    const prev3Avg = (weekQty[0]+weekQty[1]+weekQty[2]) / 3;
+    let trend, trendColor;
+    const delta = prev3Avg > 0 ? (recent - prev3Avg)/prev3Avg*100 : (recent > 0 ? 100 : 0);
+    if (delta >= 50) { trend='🚀 급상승'; trendColor='#059669'; }
+    else if (delta >= 20) { trend='📈 상승'; trendColor='#10b981'; }
+    else if (delta > -20) { trend='→ 유지'; trendColor='#0891b2'; }
+    else if (delta > -50) { trend='↓ 감소'; trendColor='#ef4444'; }
+    else { trend='⚠️ 급하락'; trendColor='#991b1b'; }
+    return {rank:idx+1, name:p.name, cat:paClassifyCloth(p.name)||'가방/기타', weekQty, totalQty, weeklyAvg, delta, trend, trendColor};
+  });
+
+  // 테이블 렌더
+  const body = document.getElementById('top10Body');
+  const sparkMax = Math.max(1, ...results.flatMap(r => r.weekQty));
+  body.innerHTML = results.map(p => {
+    const catBg = (p.cat === '가방/기타') ? '#e0f2fe' : '#fef3c7';
+    const spark = `<div style="display:flex;align-items:flex-end;gap:2px;height:26px;width:90px;margin:0 auto">${
+      p.weekQty.map((v, i) => {
+        const h = Math.max(3, (v/sparkMax)*26);
+        const isMax = v === Math.max(...p.weekQty);
+        const isRecent = i === 3;
+        const color = isRecent ? '#0f3460' : (isMax ? '#3b82f6' : '#60a5fa');
+        return `<div title="${['4주전','3주전','2주전','1주전(최근)'][i]}: ${v}개" style="flex:1;height:${h}px;background:${color};border-radius:2px 2px 0 0"></div>`;
+      }).join('')
+    }</div>`;
+    const rankColor = p.rank <= 3 ? '#f59e0b' : '#64748b';
+    return `<tr style="border-bottom:1px solid #f1f5f9">
+      <td style="text-align:center;padding:7px 6px;font-size:13px;font-weight:800;color:${rankColor}">${p.rank}</td>
+      <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.3" title="${p.name}">${p.name.length>30?p.name.slice(0,29)+'…':p.name}<div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:2px"><span style="padding:1px 6px;background:${catBg};border-radius:4px">${p.cat}</span></div></td>
+      <td style="text-align:right;padding:7px 9px;font-weight:600;color:#475569">${p.totalQty.toLocaleString()}</td>
+      <td style="text-align:right;padding:7px 6px;color:#475569">${p.weekQty[0]}</td>
+      <td style="text-align:right;padding:7px 6px;color:#475569">${p.weekQty[1]}</td>
+      <td style="text-align:right;padding:7px 6px;color:#475569">${p.weekQty[2]}</td>
+      <td style="text-align:right;padding:7px 6px;font-weight:700;color:#0f3460;background:#eff6ff">${p.weekQty[3]}</td>
+      <td style="text-align:center;padding:7px 9px">${spark}</td>
+      <td style="text-align:right;padding:7px 9px;font-weight:700;color:#0f3460">${p.weeklyAvg.toFixed(1)}</td>
+      <td style="text-align:center;padding:7px 9px;font-size:11px;font-weight:700;color:${p.trendColor}" title="최근 1주 ${p.weekQty[3]}개 vs 이전 3주 평균 ${((p.weekQty[0]+p.weekQty[1]+p.weekQty[2])/3).toFixed(1)}개 · Δ ${p.delta>=0?'+':''}${p.delta.toFixed(0)}%">${p.trend}</td>
+    </tr>`;
+  }).join('');
+
+  // 요약 인사이트
+  const rising = results.filter(r => r.trend.includes('상승')).length;
+  const dropping = results.filter(r => r.trend.includes('감소') || r.trend.includes('급하락')).length;
+  const top1 = results[0];
+  const note = document.getElementById('top10-note');
+  if (note) {
+    note.innerHTML = `💡 주력 TOP 10 중 상승세 <strong>${rising}종</strong> · 하락세 <strong>${dropping}종</strong>. 1위 <strong>${top1.name.slice(0,28)}</strong>는 최근 1주 ${top1.weekQty[3]}개 (이전 3주 평균 ${((top1.weekQty[0]+top1.weekQty[1]+top1.weekQty[2])/3).toFixed(1)}개 대비 ${top1.delta>=0?'+':''}${top1.delta.toFixed(0)}%). <br><span style="font-size:10px;color:#94a3b8">📌 스파크라인 파란 막대 = 과거 3주 / 진한 네이비 = 최근 주. 선택 기간 말일 기준으로 역산됩니다.</span>`;
+  }
+}
+
 // 신상품 런칭 성과 + 라이프사이클 (주차별 전체 + 경과 주차 + 스파크라인)
 function renderLaunchPerf(){
   const s = dk(), e = ek();
@@ -1546,18 +1661,12 @@ function renderLaunchPerf(){
     const currentWk = Math.min(3, Math.floor(elapsedDays / 7));
     // 집계된 수량 (경과 주차 까지)
     const cum = weekSales.slice(0, Math.min(4, Math.ceil(elapsedWeeks))).reduce((a,b)=>a+b, 0);
-    // 주평균: 완료된 주차만 반영 (부분 주차는 pro-rata: 일부 일자 × 7/일수)
-    let weeklyAvg;
-    if (elapsedWeeks >= 4) {
-      weeklyAvg = cum / 4;
-    } else {
-      // 완료된 주 전체합 + 부분 주차를 pro-rata
-      const fullWeeks = Math.floor(elapsedWeeks);
-      const fullSum = weekSales.slice(0, fullWeeks).reduce((a,b)=>a+b, 0);
-      const partialDays = elapsedDays - fullWeeks * 7;
-      const partialSum = partialDays > 0 ? weekSales[fullWeeks] * (7/partialDays) : 0;
-      weeklyAvg = (fullSum + partialSum) / Math.max(1, fullWeeks + (partialDays>0 ? 1 : 0));
-    }
+    // 주평균(페이스) = 경과 일수 기반 판매 속도를 1주로 환산
+    //   공식: 총판매량 / 경과일수 × 7
+    //   예: 13일 동안 46개 → 46/13×7 = 24.77개/주 (직관적, 부분 주 공평 처리)
+    const denomDays = Math.min(elapsedDays, 28);   // 최대 4주까지만 반영
+    const cappedCum = weekSales.slice(0, 4).reduce((a,b)=>a+b, 0);
+    const weeklyAvg = denomDays > 0 ? cappedCum / denomDays * 7 : 0;
     // 라이프 판정 (경과 주차 고려)
     let life, lifeColor;
     if (elapsedWeeks < 2) {
@@ -2045,6 +2154,7 @@ function go(){
   renderBagTrend();
   renderRevChart(prods);
   renderRankCompare(prods);     // 채널 편향 TOP
+  renderTopProductsWeekly();    // 주력 상품 TOP 10 최근 4주
   renderLaunchPerf();           // 신상품 런칭 성과
   renderCatCross();             // 카테고리 교차 구매
   renderPriceHeatmap(prods);    // 가격대별 히트맵
