@@ -1609,7 +1609,7 @@ function renderTopProductsWeekly(){
     const rankColor = p.rank <= 3 ? '#f59e0b' : '#64748b';
     return `<tr style="border-bottom:1px solid #f1f5f9">
       <td style="text-align:center;padding:7px 6px;font-size:13px;font-weight:800;color:${rankColor}">${p.rank}</td>
-      <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.3" title="${p.name}">${p.name.length>30?p.name.slice(0,29)+'…':p.name}<div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:2px"><span style="padding:1px 6px;background:${catBg};border-radius:4px">${p.cat}</span></div></td>
+      <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.35;min-width:220px;white-space:normal;word-break:keep-all" title="${p.name}">${p.name}<div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:3px"><span style="padding:1px 6px;background:${catBg};border-radius:4px">${p.cat}</span></div></td>
       <td style="text-align:right;padding:7px 9px;font-weight:600;color:#475569">${p.totalQty.toLocaleString()}</td>
       <td style="text-align:right;padding:7px 6px;color:#475569">${p.weekQty[0]}</td>
       <td style="text-align:right;padding:7px 6px;color:#475569">${p.weekQty[1]}</td>
@@ -1726,7 +1726,7 @@ function renderLaunchPerf(){
         }).join('')
       }</div>`;
       return `<tr style="border-bottom:1px solid #f1f5f9">
-        <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.3" title="${p.name}">${p.name.length>30?p.name.slice(0,29)+'…':p.name}<div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:2px"><span style="padding:1px 6px;background:${catBg};border-radius:4px">${p.cat}</span></div></td>
+        <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.35;min-width:220px;white-space:normal;word-break:keep-all" title="${p.name}">${p.name}<div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:3px"><span style="padding:1px 6px;background:${catBg};border-radius:4px">${p.cat}</span></div></td>
         <td style="text-align:center;padding:7px 9px;font-size:10px;color:#64748b">${p.fd.slice(5)}</td>
         <td style="text-align:center;padding:7px 9px;font-size:10px;font-weight:600;color:${p.elapsedWeeks<2?'#059669':(p.elapsedWeeks<4?'#0891b2':'#64748b')}">${elapsedTxt}</td>
         ${wkCell(0)}${wkCell(1)}${wkCell(2)}${wkCell(3)}
