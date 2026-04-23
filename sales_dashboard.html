@@ -408,7 +408,7 @@
 <div class="top-header">
   <div class="top-left">
     <h1 class="top-title">📊 매출</h1>
-    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-04-22</p>
+    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-04-23</p>
   </div>
   <div class="top-nav">
     <span class="top-btn active">📊 매출</span>
@@ -439,7 +439,7 @@
   <div class="date-group">
     <input type="date" class="date-input" id="startDate" value="2025-01-01">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-04-21">
+    <input type="date" class="date-input" id="endDate" value="2026-04-22">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)" title="전체 기간 (2025-01-01 ~ 최신)">전체</button>
@@ -1169,7 +1169,8 @@ const DOMESTIC = [
   { date: '2026-04-18', orders: 49, revenue: 5238498 },
   { date: '2026-04-19', orders: 40, revenue: 5237327 },
   { date: '2026-04-20', orders: 34, revenue: 3463157 },
-  { date: '2026-04-21', orders: 31, revenue: 3166964 }
+  { date: '2026-04-21', orders: 31, revenue: 3166964 },
+  { date: '2026-04-22', orders: 40, revenue: 3890842 }
 ];
 
 const OVERSEAS = [
@@ -1589,7 +1590,8 @@ const OVERSEAS = [
   { date: '2026-04-18', orders: 15, revenue_usd: 2322.32, revenue_krw: 3367364 },
   { date: '2026-04-19', orders: 21, revenue_usd: 3242.72, revenue_krw: 4701944 },
   { date: '2026-04-20', orders: 28, revenue_usd: 4631.35, revenue_krw: 6715457 },
-  { date: '2026-04-21', orders: 19, revenue_usd: 2798.22, revenue_krw: 4057419 }
+  { date: '2026-04-21', orders: 19, revenue_usd: 2798.22, revenue_krw: 4057419 },
+  { date: '2026-04-22', orders: 17, revenue_usd: 2520.26, revenue_krw: 3654377 }
 ];
 
 let lineChart = null;
@@ -1632,7 +1634,7 @@ function setQuick(mode, btn) {
   if (btn) btn.classList.add('active');
   document.getElementById('monthSelect').value = '';
 
-  const MAX_DATE = '2026-04-21';  // 데이터 최신 일자
+  const MAX_DATE = '2026-04-22';  // 데이터 최신 일자
   function addDays(dateStr, n) {
     const d = new Date(dateStr + 'T00:00:00');
     d.setDate(d.getDate() + n);
@@ -1676,7 +1678,7 @@ function setMonthQuick(yearMonth) {
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   const [y,m] = yearMonth.split('-').map(Number);
   const last = new Date(y, m, 0).getDate();
-  const MAX_DATE = '2026-04-21';
+  const MAX_DATE = '2026-04-22';
   const endDay = (yearMonth === '2026-04') ? 21 : last;
   document.getElementById('startDate').value = `${yearMonth}-01`;
   document.getElementById('endDate').value = `${y}-${String(m).padStart(2,'0')}-${String(endDay).padStart(2,'0')}`;
