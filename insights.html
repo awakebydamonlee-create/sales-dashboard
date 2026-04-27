@@ -243,7 +243,7 @@ function applyDateRange(){
   customRange={from:fromMonth,to:toMonth,fromDay:f,toDay:t};cur=null;rp();
 }
 // 매출 대시보드와 동일한 빠른 선택 로직(월단위로 반영)
-const I_MAX=INS.mom_data.map(d=>d.month).sort().pop().replace(/-(\d+)$/,(_,mo)=>'-'+String(new Date(parseInt(_.slice ? _.slice : '',0)||2026,parseInt(mo),0).getDate()).padStart(2,'0')).replace(/^(\d{4}-\d{2})$/,'$1-26'), I_MIN='2025-01-01';
+const I_MAX=(()=>{const d=INS.mom_data[INS.mom_data.length-1].month;const [y,mo]=d.split('-').map(Number);return d+'-'+String(new Date(y,mo,0).getDate()).padStart(2,'0');})(), I_MIN='2025-01-01';
 function iAddDays(d,n){const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()+n);return dt.toISOString().slice(0,10);}
 function iMonthEnd(ym){const [y,m]=ym.split('-').map(Number);const last=new Date(y,m,0).getDate();return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`;}
 function iPrevMonth(ym){const [y,m]=ym.split('-').map(Number);if(m===1)return `${y-1}-12`;return `${y}-${String(m-1).padStart(2,'0')}`;}
