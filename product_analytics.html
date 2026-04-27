@@ -153,9 +153,9 @@ table.rt tbody tr:hover{background:#fafbff}
 <!-- FILTER -->
 <div class="filter-bar">
   <span class="fl">기간</span>
-  <input type="date" class="date-input" id="startDate" value="2025-01-01" min="2025-01-01" max="2026-04-26">
+  <input type="date" class="date-input" id="startDate" value="2025-01-01" min="2025-01-01" max="2099-12-31">
   <span style="color:#94a3b8;font-size:12px">~</span>
-  <input type="date" class="date-input" id="endDate" value="2026-04-26" min="2025-01-01" max="2026-04-26">
+  <input type="date" class="date-input" id="endDate" value="2026-04-26" min="2025-01-01" max="2099-12-31">
   <div style="display:flex;gap:5px;flex-wrap:wrap">
     <button class="qbtn active" onclick="setQ('all',this)">전체</button>
     <button class="qbtn" onclick="setQ('y2026',this)">올해</button>
@@ -1204,7 +1204,7 @@ function dc(k){if(charts[k]){charts[k].destroy();charts[k]=null;}}
 const SC = {"SEASON OFF (가방)":"#0891b2","미분류":"#8b5cf6","가방":"#ec4899","SEASON OFF":"#f59e0b","WINTER(의류)":"#10b981","WINTER(가방)":"#ef4444","Dreamy Rush":"#06b6d4","셔츠 및 탑":"#f97316","아우터웨어":"#3b82f6","스웨트셔츠 및 니트":"#a855f7","원피스":"#14b8a6","워머":"#eab308","Not melted":"#84cc16","기타":"#94a3b8","스커트 및 팬츠":"#0ea5e9","부츠":"#f43f5e","모자":"#6366f1","액세서리":"#22c55e","수베니어 샵":"#fb923c"};
 
 // ── FILTER ──
-const PA_MAX='2026-04-23', PA_MIN='2025-01-01';
+const PA_MAX=DATA.rows.map(r=>r.d).sort().pop()||'2026-04-26', PA_MIN='2025-01-01';
 function paAddDays(d,n){const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()+n);return dt.toISOString().slice(0,10);}
 function paMonthEnd(ym){const [y,m]=ym.split('-').map(Number);const last=new Date(y,m,0).getDate();return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`;}
 function paPrevMonth(ym){const [y,m]=ym.split('-').map(Number);if(m===1)return `${y-1}-12`;return `${y}-${String(m-1).padStart(2,'0')}`;}

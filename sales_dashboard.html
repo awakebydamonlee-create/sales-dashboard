@@ -1642,7 +1642,7 @@ function setQuick(mode, btn) {
   if (btn) btn.classList.add('active');
   document.getElementById('monthSelect').value = '';
 
-  const MAX_DATE = '2026-04-23';  // 데이터 최신 일자
+  const MAX_DATE = [...DOMESTIC, ...OVERSEAS].map(r=>r.date).sort().pop();  // 데이터 최신 일자 자동계산
   function addDays(dateStr, n) {
     const d = new Date(dateStr + 'T00:00:00');
     d.setDate(d.getDate() + n);
@@ -1686,8 +1686,8 @@ function setMonthQuick(yearMonth) {
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   const [y,m] = yearMonth.split('-').map(Number);
   const last = new Date(y, m, 0).getDate();
-  const MAX_DATE = '2026-04-23';
-  const endDay = (yearMonth === '2026-04') ? 21 : last;
+  const MAX_DATE = [...DOMESTIC, ...OVERSEAS].map(r=>r.date).sort().pop();
+  const endDay = (yearMonth === MAX_DATE.slice(0,7)) ? parseInt(MAX_DATE.slice(8,10)) : last;
   document.getElementById('startDate').value = `${yearMonth}-01`;
   document.getElementById('endDate').value = `${y}-${String(m).padStart(2,'0')}-${String(endDay).padStart(2,'0')}`;
   applyFilter();

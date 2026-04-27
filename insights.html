@@ -91,9 +91,9 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
 </div>
 <div class="fbar">
   <span class="fl">기간</span>
-  <input type="date" id="dtFrom" min="2025-01-01" max="2026-04-26" value="2025-01-01" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
+  <input type="date" id="dtFrom" min="2025-01-01" max="2099-12-31" value="2025-01-01" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
   <span style="font-size:12px;color:#94a3b8">~</span>
-  <input type="date" id="dtTo" min="2025-01-01" max="2026-04-26" value="2026-04-26" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
+  <input type="date" id="dtTo" min="2025-01-01" max="2099-12-31" value="2026-04-26" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
   <button class="qb active" id="qb-all" onclick="qb_set('all',this)">전체</button>
   <button class="qb" id="qb-y2026" onclick="qb_set('y2026',this)">올해</button>
   <button class="qb" id="qb-y2025" onclick="qb_set('y2025',this)">작년</button>
@@ -243,7 +243,7 @@ function applyDateRange(){
   customRange={from:fromMonth,to:toMonth,fromDay:f,toDay:t};cur=null;rp();
 }
 // 매출 대시보드와 동일한 빠른 선택 로직(월단위로 반영)
-const I_MAX='2026-04-23', I_MIN='2025-01-01';
+const I_MAX=INS.mom_data.map(d=>d.month).sort().pop().replace(/-(\d+)$/,(_,mo)=>'-'+String(new Date(parseInt(_.slice ? _.slice : '',0)||2026,parseInt(mo),0).getDate()).padStart(2,'0')).replace(/^(\d{4}-\d{2})$/,'$1-26'), I_MIN='2025-01-01';
 function iAddDays(d,n){const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()+n);return dt.toISOString().slice(0,10);}
 function iMonthEnd(ym){const [y,m]=ym.split('-').map(Number);const last=new Date(y,m,0).getDate();return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`;}
 function iPrevMonth(ym){const [y,m]=ym.split('-').map(Number);if(m===1)return `${y-1}-12`;return `${y}-${String(m-1).padStart(2,'0')}`;}
