@@ -408,7 +408,7 @@
 <div class="top-header">
   <div class="top-left">
     <h1 class="top-title">📊 매출</h1>
-    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-04-26</p>
+    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-04-27</p>
   </div>
   <div class="top-nav">
     <span class="top-btn active">📊 매출</span>
@@ -439,7 +439,7 @@
   <div class="date-group">
     <input type="date" class="date-input" id="startDate" value="2025-01-01">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-04-26">
+    <input type="date" class="date-input" id="endDate" value="2026-04-27">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)" title="전체 기간 (2025-01-01 ~ 최신)">전체</button>
@@ -1174,8 +1174,9 @@ const DOMESTIC = [
   { date: '2026-04-23', orders: 37, revenue: 3439890 },
   { date: '2026-04-24', orders: 38, revenue: 3710953 },
   { date: '2026-04-25', orders: 26, revenue: 2373282 },
-  { date: '2026-04-26', orders: 26, revenue: 2463876 }
-];
+  { date: '2026-04-26', orders: 26, revenue: 2463876 },
+
+  { date: '2026-04-27', orders: 29, revenue: 3425045 },];
 
 const OVERSEAS = [
   { date: '2025-01-12', orders: 2, revenue_usd: 264.5, revenue_krw: 383525 },
@@ -1599,8 +1600,9 @@ const OVERSEAS = [
   { date: '2026-04-23', orders: 25, revenue_usd: 3837.63, revenue_krw: 5564564 },
   { date: '2026-04-24', orders: 34, revenue_usd: 5066.73, revenue_krw: 6992087 },
   { date: '2026-04-25', orders: 26, revenue_usd: 4301.30, revenue_krw: 5935794 },
-  { date: '2026-04-26', orders: 29, revenue_usd: 4728.92, revenue_krw: 6525910 }
-];
+  { date: '2026-04-26', orders: 29, revenue_usd: 4728.92, revenue_krw: 6525910 },
+
+  { date: '2026-04-27', orders: 30, revenue_usd: 4568.75, revenue_krw: 6304875 },];
 
 let lineChart = null;
 let donutChart = null;
