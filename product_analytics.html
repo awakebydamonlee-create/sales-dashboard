@@ -1064,7 +1064,7 @@ function renderBagChart(prods){
 
 // ── 선택 기간 내 주간 집계 (ROWS에서 실시간 계산) ──
 function paWeekStart(dateStr){
-  const d = new Date(dateStr+'T00:00:00');
+  const d = new Date(dateStr+'T12:00:00');
   const dow = d.getDay();               // 0(일)~6(토)
   const delta = dow === 0 ? -6 : 1-dow; // 월요일 기준
   d.setDate(d.getDate() + delta);
@@ -1222,7 +1222,7 @@ const SC = {"SEASON OFF (가방)":"#0891b2","미분류":"#8b5cf6","가방":"#ec4
 
 // ── FILTER ──
 const PA_MAX=DATA.rows.map(r=>r.d).sort().pop()||'2026-04-28', PA_MIN='2025-01-01';
-function paAddDays(d,n){const dt=new Date(d+'T00:00:00');dt.setDate(dt.getDate()+n);return dt.toISOString().slice(0,10);}
+function paAddDays(d,n){const dt=new Date(d+'T12:00:00');dt.setDate(dt.getDate()+n);return dt.toISOString().slice(0,10);}
 function paMonthEnd(ym){const [y,m]=ym.split('-').map(Number);const last=new Date(y,m,0).getDate();return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`;}
 function paPrevMonth(ym){const [y,m]=ym.split('-').map(Number);if(m===1)return `${y-1}-12`;return `${y}-${String(m-1).padStart(2,'0')}`;}
 function setQ(m,btn){
@@ -1571,7 +1571,7 @@ function renderTopProductsWeekly(){
   const top10 = prods.slice(0, 10);  // 이미 total_qty 내림차순
   const endD = ek();                 // 필터 종료일
   // 최근 4주(역순): w4=가장 오래, w1=가장 최근
-  function addDays(dStr, n) { const d = new Date(dStr+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+  function addDays(dStr, n) { const d = new Date(dStr+'T12:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
   // 구간: [w4_from, w4_to], ..., [w1_from, w1_to(=endD)]
   const weeks = [];
   for (let i = 3; i >= 0; i--) {

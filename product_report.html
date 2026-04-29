@@ -179,7 +179,7 @@ let curSort = 'qty';
 let curQuery = '';
 
 // ===== 기간·채널 필터 상태 =====
-const MAX_DATE = (()=>{ const all=[]; PRODUCTS.forEach(p=>{ (p.mdr||[]).forEach((v,i)=>{ if(v>0 && MONTHS[i]) all.push(MONTHS[i]); }); }); const lastM=all.sort().pop()||'2026-04'; const [y,m]=lastM.split('-').map(Number); return `${lastM}-${String(new Date(y,m,0).getDate()).padStart(2,'0')}`; })();
+const MAX_DATE=(()=>{const all=[];Object.values(DAILY).forEach(p=>{all.push(...p.d);});return all.sort().pop()||'2026-04-28';})();
 const MIN_DATE = '2025-01-01';
 let filterStart = MIN_DATE;
 let filterEnd   = MAX_DATE;
@@ -243,7 +243,7 @@ function getList() {
 }
 
 // ===== 필터 핸들러 =====
-function addDays(d, n) { const dt = new Date(d + 'T00:00:00'); dt.setDate(dt.getDate()+n); return dt.toISOString().slice(0,10); }
+function addDays(d, n) { const dt = new Date(d + 'T12:00:00'); dt.setDate(dt.getDate()+n); return dt.toISOString().slice(0,10); }
 function monthEnd(ym) { const [y,m] = ym.split('-').map(Number); const last = new Date(y,m,0).getDate(); return `${y}-${String(m).padStart(2,'0')}-${String(last).padStart(2,'0')}`; }
 function prevMonth(ym) { const [y,m] = ym.split('-').map(Number); if (m===1) return `${y-1}-12`; return `${y}-${String(m-1).padStart(2,'0')}`; }
 
