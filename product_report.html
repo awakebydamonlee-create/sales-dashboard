@@ -196,21 +196,35 @@ function monthsInRange(start, end) {
 // 상품별로 [filterStart,filterEnd] 범위에 해당하는 월만 합산
 function getFilteredProducts() {
   if (filteredProducts) return filteredProducts;
-  const ms = monthsInRange(filterStart, filterEnd);
   const out = [];
   PRODUCTS.forEach(p => {
     // 시즌 필터: all이 아닌 경우 해당 시즌 상품만
     if (filterSeason !== 'all' && p['시즌'] !== filterSeason) return;
-    const md = MONTHLY[p['상품명']] || {months:[], dom_qty:[], os_qty:[], dom_rev:[], os_rev:[]};
+    const daily = DAILY[p['상품명']];
     let dq=0, oq=0, dr=0, or_=0;
-    md.months.forEach((m, i) => {
-      if (ms.includes(m)) {
-        dq += md.dom_qty[i] || 0;
-        oq += md.os_qty[i]  || 0;
-        dr += md.dom_rev[i] || 0;
-        or_ += md.os_rev[i] || 0;
-      }
-    });
+    if (daily && daily.d && daily.d.length > 0) {
+      // 일자 단위 정확한 필터링 (DAILY 데이터 사용)
+      daily.d.forEach((d, i) => {
+        if (d >= filterStart && d <= filterEnd) {
+          dq += daily.dq[i] || 0;
+          oq += daily.oq[i] || 0;
+          dr += daily.dr[i] || 0;
+          or_ += daily.or[i] || 0;
+        }
+      });
+    } else {
+      // DAILY 없으면 MONTHLY로 fallback (월 단위만 가능)
+      const ms = monthsInRange(filterStart, filterEnd);
+      const md = MONTHLY[p['상품명']] || {months:[], dom_qty:[], os_qty:[], dom_rev:[], os_rev:[]};
+      md.months.forEach((m, i) => {
+        if (ms.includes(m)) {
+          dq += md.dom_qty[i] || 0;
+          oq += md.os_qty[i]  || 0;
+          dr += md.dom_rev[i] || 0;
+          or_ += md.os_rev[i] || 0;
+        }
+      });
+    }
     const tq = dq + oq, tr = dr + or_;
     // 매장 토글: 선택한 채널에 기간 내 판매가 없으면 제외
     if (filterStore === 'domestic' && dq === 0) return;
