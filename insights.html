@@ -235,6 +235,24 @@ function rangeCD(from, to) {
     orders: v.orders, rev_usd: v.usd, rev_krw: Math.round(v.usd * 1450)
   })).sort((a,b) => b.orders - a.orders);
 }
+function rangeCDaily(from, to) {
+  // 일자별 TOP5 국가 추이 — 짧은 기간(1개월 이내)용
+  const dateSet = new Set();
+  const ccDay = {};
+  OVS_RAW_ORDERS.forEach(o => {
+    if (o.d >= from && o.d <= to) {
+      dateSet.add(o.d);
+      if (!ccDay[o.cc]) ccDay[o.cc] = {};
+      ccDay[o.cc][o.d] = (ccDay[o.cc][o.d]||0) + 1;
+    }
+  });
+  const dates = [...dateSet].sort();
+  const ccTotals = Object.entries(ccDay).map(([cc,m])=>({cc, total: Object.values(m).reduce((a,b)=>a+b,0)})).sort((a,b)=>b.total-a.total);
+  const top5 = ccTotals.slice(0,5).map(x=>x.cc);
+  const data = {};
+  top5.forEach(cc => { data[cc] = dates.map(d => ccDay[cc][d]||0); });
+  return {dates, top5, data};
+}
 function rangeCM(from, to) {
   // OVS_RAW_ORDERS에서 from~to 범위, 월별 국가별 집계 → CM 객체 반환
   const monthSet = new Set();
@@ -371,47 +389,96 @@ function rp(){
 }
 
 function rCTrend(period) {
-  // 월별 TOP5 국가 추이 - period 반영
-  let cm, cd;
-  if (typeof customRange !== 'undefined' && customRange && customRange.fromDay && customRange.toDay) {
-    cm = rangeCM(customRange.fromDay, customRange.toDay);
-    cd = rangeCD(customRange.fromDay, customRange.toDay);
-  } else {
-    const p = period || 'all';
-    cm = CM_BY_PERIOD[p] || CM_BY_PERIOD['all'];
-    cd = CD_BY_PERIOD[p] || CD_BY_PERIOD['all'];
-  }
+  // 월별 또는 일자별 TOP5 국가 추이 — 기간 길이에 따라 자동 전환
   if (C.c7) { try { C.c7.destroy(); } catch(e) {} delete C.c7; }
-  const labels = cm.months.map(m => {
-    const [yy, mm] = m.split('-');
-    return yy.slice(2) + '.' + mm + '월';
-  });
-  const top5 = cm.top10.slice(0, 5);
-  C.c7 = new Chart(document.getElementById('c7').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: top5.map((code, i) => {
-        const ci = cd.find(x => x.code === code);
-        return {
-          label: ci ? ci.name : code,
-          data: cm.data[code],
-          borderColor: CH10[i],
-          backgroundColor: CH10[i] + '20',
-          tension: .4,
-          pointRadius: 4,
-          borderWidth: 2.5,
-          fill: false
-        };
-      })
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'top', labels: { usePointStyle: true, font: { size: 10 } } } },
-      scales: { y: { ticks: { font: { size: 10 } }, grid: { color: '#f1f5f9' }, min: 0 },
-                x: { ticks: { font: { size: 11 } }, grid: { display: false } } }
+  
+  let useDaily = false;
+  let from_, to_;
+  if (typeof customRange !== 'undefined' && customRange && customRange.fromDay && customRange.toDay) {
+    from_ = customRange.fromDay; to_ = customRange.toDay;
+    // 기간이 31일 이내면 일자별, 32일 이상이면 월별
+    const dayDiff = (new Date(to_+'T12:00:00') - new Date(from_+'T12:00:00')) / 86400000;
+    useDaily = dayDiff <= 31;
+  }
+  
+  if (useDaily) {
+    // 일자별 차트
+    const d = rangeCDaily(from_, to_);
+    const cd = rangeCD(from_, to_);
+    if (d.dates.length === 0) return;
+    const labels = d.dates.map(s => {
+      const [y,m,dd] = s.split('-');
+      return parseInt(m)+'/'+parseInt(dd);
+    });
+    C.c7 = new Chart(document.getElementById('c7').getContext('2d'), {
+      type: d.dates.length <= 7 ? 'bar' : 'line',
+      data: {
+        labels: labels,
+        datasets: d.top5.map((code, i) => {
+          const ci = cd.find(x => x.code === code);
+          return {
+            label: ci ? ci.name : code,
+            data: d.data[code],
+            borderColor: CH10[i],
+            backgroundColor: d.dates.length <= 7 ? CH10[i]+'cc' : CH10[i]+'20',
+            tension: .4,
+            pointRadius: 3,
+            borderWidth: 2,
+            fill: false,
+            borderRadius: d.dates.length <= 7 ? 4 : undefined
+          };
+        })
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { usePointStyle: true, font: { size: 10 } } } },
+        scales: { y: { ticks: { font: { size: 10 } }, grid: { color: '#f1f5f9' }, min: 0 },
+                  x: { ticks: { font: { size: 11 } }, grid: { display: false } } }
+      }
+    });
+  } else {
+    // 월별 차트 (기존 로직)
+    let cm, cd;
+    if (typeof customRange !== 'undefined' && customRange && customRange.fromDay && customRange.toDay) {
+      cm = rangeCM(customRange.fromDay, customRange.toDay);
+      cd = rangeCD(customRange.fromDay, customRange.toDay);
+    } else {
+      const p = period || 'all';
+      cm = CM_BY_PERIOD[p] || CM_BY_PERIOD['all'];
+      cd = CD_BY_PERIOD[p] || CD_BY_PERIOD['all'];
     }
-  });
+    const labels = cm.months.map(m => {
+      const [yy, mm] = m.split('-');
+      return yy.slice(2) + '.' + mm + '월';
+    });
+    const top5 = cm.top10.slice(0, 5);
+    C.c7 = new Chart(document.getElementById('c7').getContext('2d'), {
+      type: cm.months.length <= 2 ? 'bar' : 'line',
+      data: {
+        labels: labels,
+        datasets: top5.map((code, i) => {
+          const ci = cd.find(x => x.code === code);
+          return {
+            label: ci ? ci.name : code,
+            data: cm.data[code],
+            borderColor: CH10[i],
+            backgroundColor: cm.months.length <= 2 ? CH10[i]+'cc' : CH10[i]+'20',
+            tension: .4,
+            pointRadius: 4,
+            borderWidth: 2.5,
+            fill: false,
+            borderRadius: cm.months.length <= 2 ? 4 : undefined
+          };
+        })
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { usePointStyle: true, font: { size: 10 } } } },
+        scales: { y: { ticks: { font: { size: 10 } }, grid: { color: '#f1f5f9' }, min: 0 },
+                  x: { ticks: { font: { size: 11 } }, grid: { display: false } } }
+      }
+    });
+  }
 }
 
 function rCC_p(period) {
