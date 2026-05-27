@@ -81,7 +81,7 @@ tbody tr:hover{background:#f8fafc}
 <div class="top-header">
   <div class="top-left">
     <h1 class="top-title">📒 리포트</h1>
-    <p class="top-sub">상품별 판매 상세 · 2025-01-01 ~ 2026-05-20</p>
+    <p class="top-sub">상품별 판매 상세 · 2025-01-01 ~ 2026-05-26</p>
   </div>
   <div class="top-nav">
     <a href="sales_dashboard.html" class="top-btn">📊 매출</a>
@@ -94,9 +94,9 @@ tbody tr:hover{background:#f8fafc}
 <div class="container">
  <div class="filter-bar">
   <span class="fl">기간</span>
-  <input type="date" class="date-input" id="startDate" value="2025-01-01" min="2025-01-01" max="2026-05-20">
+  <input type="date" class="date-input" id="startDate" value="2025-01-01" min="2025-01-01" max="2026-05-26">
   <span class="date-sep">~</span>
-  <input type="date" class="date-input" id="endDate" value="2026-05-20" min="2025-01-01" max="2026-05-20">
+  <input type="date" class="date-input" id="endDate" value="2026-05-26" min="2025-01-01" max="2026-05-26">
   <div class="quick-btns">
    <button class="quick-btn active" onclick="setQuick('all',this)">전체</button>
    <button class="quick-btn" onclick="setQuick('y2026',this)">올해</button>
@@ -179,7 +179,7 @@ let curSort = 'qty';
 let curQuery = '';
 
 // ===== 기간·채널 필터 상태 =====
-const MAX_DATE=(()=>{const all=[];Object.values(DAILY).forEach(p=>{all.push(...p.d);});return all.sort().pop()||'2026-05-20';})();
+const MAX_DATE=(()=>{const all=[];Object.values(DAILY).forEach(p=>{all.push(...p.d);});return all.sort().pop()||'2026-05-26';})();
 const MIN_DATE = '2025-01-01';
 let filterStart = MIN_DATE;
 let filterEnd   = MAX_DATE;
