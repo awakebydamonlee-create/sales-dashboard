@@ -437,9 +437,9 @@
 <div class="filter-bar">
   <span class="filter-label">기간 설정</span>
   <div class="date-group">
-    <input max="2026-05-27" type="date" class="date-input" id="startDate" value="2025-01-01">
+    <input type="date" class="date-input" id="startDate" value="2025-01-01">
     <span class="date-sep">~</span>
-    <input max="2026-05-27" type="date" class="date-input" id="endDate" value="2026-05-27">
+    <input type="date" class="date-input" id="endDate" >
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)" title="전체 기간 (2025-01-01 ~ 최신)">전체</button>
@@ -1715,6 +1715,14 @@ function setQuick(mode, btn) {
   document.getElementById('monthSelect').value = '';
 
   const MAX_DATE = [...DOMESTIC, ...OVERSEAS].map(r=>r.date).sort().pop();  // 데이터 최신 일자 자동계산
+  // 날짜 input 동적 세팅
+  (function(){
+    const ed = document.getElementById('endDate');
+    const sd = document.getElementById('startDate');
+    if(ed){ ed.max = MAX_DATE; ed.value = MAX_DATE; }
+    if(sd){ sd.max = MAX_DATE; }
+  })();
+
   function addDays(dateStr, n) {
     const d = new Date(dateStr + 'T12:00:00');
     d.setDate(d.getDate() + n);
