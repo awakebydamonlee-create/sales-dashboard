@@ -93,7 +93,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif;backgrou
   <span class="fl">기간</span>
   <input type="date" id="dtFrom" min="2025-01-01"  value="2025-01-01" style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
   <span style="font-size:12px;color:#94a3b8">~</span>
-  <input type="date" id="dtTo" min="2025-01-01"   style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()">
+  <input type="date" id="dtTo" min="2025-01-01"   style="border:1.5px solid #e2e8f0;border-radius:8px;padding:4px 9px;font-size:11px;font-family:inherit;color:#374151;cursor:pointer;outline:none" onchange="onDateChange()" value="2099-12-31">
   <button class="qb active" id="qb-all" onclick="qb_set('all',this)">전체</button>
   <button class="qb" id="qb-y2026" onclick="qb_set('y2026',this)">올해</button>
   <button class="qb" id="qb-y2025" onclick="qb_set('y2025',this)">작년</button>
@@ -716,13 +716,10 @@ function rAOV(D){
   C.c9=new Chart(document.getElementById('c9').getContext('2d'),{type:'bar',data:{labels:ovs.labels,datasets:[{label:'주문건수',data:ovs.buckets,backgroundColor:ovs.buckets.map((_,i)=>i===2||i===3?'#7c3aedcc':'#0891b255'),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const t=ovs.buckets.reduce((a,b)=>a+b,0);return ' '+c.parsed.y+'건 ('+(t>0?((c.parsed.y/t)*100).toFixed(1):0)+'%)';}}}},scales:{y:{ticks:{font:{size:10}},grid:{color:'#f1f5f9'}},x:{ticks:{font:{size:10}},grid:{display:false}}}}});
 }
 
-const MAX_DATE_OVS = OVS_DAILY.map(r=>r.d).sort().pop() || '2026-05-31';
-const MIN_DATE_OVS = '2025-01-01';
-(function(){
-  const dtTo = document.getElementById('dtTo');
-  const dtFrom = document.getElementById('dtFrom');
-  if(dtTo){ dtTo.max = MAX_DATE_OVS; dtTo.value = MAX_DATE_OVS; }
-  if(dtFrom){ dtFrom.max = MAX_DATE_OVS; }
-})();
+const MAX_DATE_OVS = OVS_DAILY.map(r=>r.d).sort().pop() || '2025-01-01';
+const dtToEl = document.getElementById('dtTo');
+const dtFromEl = document.getElementById('dtFrom');
+if(dtToEl){ dtToEl.max = MAX_DATE_OVS; dtToEl.value = MAX_DATE_OVS; }
+if(dtFromEl){ dtFromEl.max = MAX_DATE_OVS; }
 rMoM();rp();
 </script></body></html>

@@ -1217,14 +1217,6 @@ function renderBagTrend(){
     legendEl.innerHTML = top5.map((name,i)=>`
       <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#374151;min-width:0">
         <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${colors[i]};
-const MAX_DATE_PA = DATA.rows.map(r=>r.d).sort().pop() || '2026-05-31';
-// 날짜 input 동적 세팅
-(function(){
-  const ed = document.getElementById('endDate');
-  const sd = document.getElementById('startDate');
-  if(ed){ ed.max = MAX_DATE_PA; ed.value = MAX_DATE_PA; }
-  if(sd){ sd.max = MAX_DATE_PA; }
-})();
 flex-shrink:0"></span>
         <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px" title="${name}">${name}</span>
       </div>`).join('');
@@ -2226,6 +2218,11 @@ function go(){
   });
 })();
 
+// DATE INPUT 동적 세팅
+const MAX_DATE_PA = DATA.rows.map(r=>r.d).sort().pop() || '2025-01-01';
+document.getElementById('endDate').max   = MAX_DATE_PA;
+document.getElementById('endDate').value = MAX_DATE_PA;
+document.getElementById('startDate').max = MAX_DATE_PA;
 go();
 </script>
 </body>

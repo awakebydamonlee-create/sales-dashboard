@@ -1715,15 +1715,7 @@ function setQuick(mode, btn) {
   document.getElementById('monthSelect').value = '';
 
   const MAX_DATE = [...DOMESTIC, ...OVERSEAS].map(r=>r.date).sort().pop();  // 데이터 최신 일자 자동계산
-  // 날짜 input 동적 세팅
-  (function(){
-    const ed = document.getElementById('endDate');
-    const sd = document.getElementById('startDate');
-    if(ed){ ed.max = MAX_DATE; ed.value = MAX_DATE; }
-    if(sd){ sd.max = MAX_DATE; }
-  })();
-
-  function addDays(dateStr, n) {
+function addDays(dateStr, n) {
     const d = new Date(dateStr + 'T12:00:00');
     d.setDate(d.getDate() + n);
     return d.toISOString().slice(0, 10);
@@ -2285,6 +2277,10 @@ function exportToExcel() {
   XLSX.writeFile(wb, fileName);
 }
 
+// ===== DATE INPUT 동적 세팅 (MAX_DATE 기반) =====
+document.getElementById('endDate').max   = MAX_DATE;
+document.getElementById('endDate').value = MAX_DATE;
+document.getElementById('startDate').max = MAX_DATE;
 // ===== INIT =====
 applyFilter();
 </script>
