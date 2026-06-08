@@ -408,7 +408,7 @@
 <div class="top-header">
   <div class="top-left">
     <h1 class="top-title">📊 매출</h1>
-    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-06-03</p>
+    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-06-07</p>
   </div>
   <div class="top-nav">
     <span class="top-btn active">📊 매출</span>
@@ -437,9 +437,9 @@
 <div class="filter-bar">
   <span class="filter-label">기간 설정</span>
   <div class="date-group">
-    <input type="date" class="date-input" id="startDate" value="2025-01-01" max="2026-06-03">
+    <input type="date" class="date-input" id="startDate" value="2025-01-01" max="2026-06-07">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-06-03" max="2026-06-03">
+    <input type="date" class="date-input" id="endDate" value="2026-06-07" max="2026-06-07">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)" title="전체 기간 (2025-01-01 ~ 최신)">전체</button>
@@ -1225,7 +1225,11 @@ const DOMESTIC = [
   { date: '2026-05-31', orders: 31, revenue: 3067657 },
   { date: '2026-06-01', orders: 38, revenue: 3326075 },
   { date: '2026-06-02', orders: 30, revenue: 4178303 },
-  { date: '2026-06-03', orders: 23, revenue: 3832014 },];
+  { date: '2026-06-03', orders: 23, revenue: 3832014 },
+  { date: '2026-06-04', orders: 32, revenue: 3617733 },
+  { date: '2026-06-05', orders: 32, revenue: 4108067 },
+  { date: '2026-06-06', orders: 28, revenue: 2829854 },
+  { date: '2026-06-07', orders: 28, revenue: 3367898 },];
 
 const OVERSEAS = [
 
@@ -1689,7 +1693,11 @@ const OVERSEAS = [
   { date: '2026-05-31', orders: 21, revenue_usd: 3370.23, revenue_krw: 4886834 },
   { date: '2026-06-01', orders: 25, revenue_usd: 3782.46, revenue_krw: 5484567 },
   { date: '2026-06-02', orders: 31, revenue_usd: 4697.49, revenue_krw: 6811360 },
-  { date: '2026-06-03', orders: 29, revenue_usd: 4943.75, revenue_krw: 7168438 },];
+  { date: '2026-06-03', orders: 29, revenue_usd: 4943.75, revenue_krw: 7168438 },
+  { date: '2026-06-04', orders: 32, revenue_usd: 5011.00, revenue_krw: 7265950 },
+  { date: '2026-06-05', orders: 17, revenue_usd: 2581.20, revenue_krw: 3742740 },
+  { date: '2026-06-06', orders: 37, revenue_usd: 6000.00, revenue_krw: 8700000 },
+  { date: '2026-06-07', orders: 19, revenue_usd: 2981.13, revenue_krw: 4322638 },];
 
 let lineChart = null;
 let donutChart = null;
