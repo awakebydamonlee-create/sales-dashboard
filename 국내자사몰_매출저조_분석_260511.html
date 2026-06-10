@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<title>국내 자사몰 매출 저조 분석 · 2026-05-11</title>
+<style>
+:root{color-scheme:light;--bg:#fafaf7;--card:#fff;--bd:#e6e3dc;--ink:#1d1d1b;--mute:#6b6b66;--red:#c44438;--green:#3a7d44;--accent:#1d1d1b}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;line-height:1.55}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+h2{font-size:16px;margin:24px 0 10px;letter-spacing:-.2px;border-bottom:1px solid var(--bd);padding-bottom:6px}
+h3{font-size:14px;margin:16px 0 8px;color:var(--mute);font-weight:600}
+.sub{color:var(--mute);font-size:13px;margin-bottom:18px}
+.grid{display:grid;gap:14px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+@media (max-width:780px){.g3,.g2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.kpi{font-size:11px;letter-spacing:.05em;color:var(--mute);text-transform:uppercase}
+.val{font-size:24px;font-weight:700;margin-top:4px}
+.delta{font-size:13px;margin-top:2px;color:var(--mute)}
+.delta.neg{color:var(--red)}.delta.pos{color:var(--green)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600;color:var(--mute);font-size:11px;letter-spacing:.04em;text-transform:uppercase;background:#f3f1ec}
+.bar{height:16px;background:#eee5d8;border-radius:3px;overflow:hidden}
+.bar>span{display:block;height:100%;background:#1d1d1b}
+.bar.neg>span{background:var(--red)}
+.kbox{padding:10px 12px;background:#f3f1ec;border-left:3px solid #1d1d1b;border-radius:6px;margin:6px 0}
+.takeaway{background:#fff7e0;border:1px solid #f0d780;border-radius:8px;padding:14px;margin-top:18px}
+.takeaway h2{border:0;margin:0 0 8px}
+canvas{max-width:100%}
+.note{font-size:11px;color:var(--mute);margin-top:6px}
+.tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:3px;background:#eee5d8;color:#5a4a2a;margin-left:6px;vertical-align:middle}
+.tag.bag{background:#1d1d1b;color:#fff}
+.tag.cloth{background:#dcd6c8;color:#5a4a2a}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+</head>
+<body>
+
+<h1>국내 자사몰 매출 저조 원인 분석</h1>
+<div class="sub">분석 기준일 2026-05-11 · 최근 60일(3/12-5/10) vs 직전 60일(1/11-3/11) · 데이터: 01_일별매출현황 + 02_상품별판매현황 + 03_주문원본</div>
+
+<div class="grid g3">
+  <div class="card">
+    <div class="kpi">국내 매출 (60일)</div>
+    <div class="val">214.96<span style="font-size:14px;color:var(--mute)">M ₩</span></div>
+    <div class="delta neg">▼ 24.4% (-69.5M ₩)</div>
+    <div class="note">직전 60일 284.43M</div>
+  </div>
+  <div class="card">
+    <div class="kpi">주문 건수 (60일)</div>
+    <div class="val">1,884<span style="font-size:14px;color:var(--mute)">건</span></div>
+    <div class="delta neg">▼ 8.9% (-184건)</div>
+    <div class="note">직전 60일 2,068건</div>
+  </div>
+  <div class="card">
+    <div class="kpi">평균 객단가</div>
+    <div class="val">114,099<span style="font-size:14px;color:var(--mute)">₩</span></div>
+    <div class="delta neg">▼ 17.0% (-23,440₩)</div>
+    <div class="note">직전 60일 137,540₩</div>
+  </div>
+</div>
+
+<div class="takeaway">
+  <h2>핵심 결론</h2>
+  매출 -24.4% 감소 중 <b>약 70%는 객단가 하락</b>, 30%는 주문 건수 감소가 원인입니다.
+  객단가 하락은 <b>가격 인하(-4%)보다 상품 믹스 변화(-13%)</b>가 결정적입니다.
+  봄으로 들어오면서 <b>FW 의류 시즌이 종료</b>되고, 그 자리를 <b>저가 의류·이너 단품(5~10만원대)</b>이 채우는 동안
+  주력 캐시카우인 <b>가방류 매출은 줄지 않았지만 비중이 떨어진</b> 구조입니다.
+  Charm Holder Backpack(-22~28%) 외에는 가격 자체 인하 영향은 미미합니다.
+</div>
+
+<h2>1. 주별 추이 (최근 16주)</h2>
+<div class="card">
+  <canvas id="weekly" height="120"></canvas>
+  <div class="note">3월 첫째 주(3/02 주) 정점 6.1M/일 → 최근 4주 평균 3.0M/일 수준으로 정착. 객단가 라인이 4월 들어 10만원 초반대로 내려앉은 시점이 변곡점.</div>
+</div>
+
+<h2>2. 매출 감소 분해</h2>
+<div class="grid g2">
+  <div class="card">
+    <h3>요인별 기여도</h3>
+    <table>
+      <tr><th>요인</th><th>기여액</th><th>비중</th></tr>
+      <tr><td>객단가 하락</td><td>-48,474,686 ₩</td><td>70%</td></tr>
+      <tr><td>주문건수 감소</td><td>-25,307,272 ₩</td><td>36%</td></tr>
+      <tr><td>교차효과</td><td>+4,313,028 ₩</td><td>-6%</td></tr>
+      <tr><th>총 변동</th><th>-69,468,930 ₩</th><th>100%</th></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>객단가 분포 변화 (구간별 주문 비중)</h3>
+    <table>
+      <tr><th>구간</th><th>이전 60일</th><th>최근 60일</th><th>변화</th></tr>
+      <tr><td>5만원 미만</td><td>2.8%</td><td>8.6%</td><td style="color:var(--red)">+5.8%p</td></tr>
+      <tr><td>5~10만원</td><td>16.4%</td><td>33.2%</td><td style="color:var(--red)">+16.8%p</td></tr>
+      <tr><td>10~15만원 (가방 1개)</td><td>62.5%</td><td>48.0%</td><td style="color:var(--red)">-14.5%p</td></tr>
+      <tr><td>15~20만원</td><td>11.2%</td><td>4.9%</td><td style="color:var(--red)">-6.3%p</td></tr>
+      <tr><td>20~30만원</td><td>3.7%</td><td>3.0%</td><td>-0.7%p</td></tr>
+      <tr><td>30~50만원</td><td>2.3%</td><td>1.7%</td><td>-0.6%p</td></tr>
+      <tr><td>50만원 초과</td><td>1.2%</td><td>0.6%</td><td style="color:var(--red)">-0.6%p</td></tr>
+    </table>
+    <div class="note">10~20만원대(가방 1점/가방+이너 묶음) 주문이 5~10만원대(이너·티 단품)로 빠짐.</div>
+  </div>
+</div>
+
+<h2>3. 시즌(컬렉션) 코호트 동향</h2>
+<div class="card">
+  <h3>최근 4일(5/7→5/11) 시즌별 매출 기여</h3>
+  <table>
+    <tr><th>시즌</th><th>누적 매출</th><th>최근 4일 매출</th><th>일평균</th><th>최근 4일 기여 시각화</th></tr>
+    <tr><td>25 FW 가방 1차 <span class="tag bag">가방 캐시카우</span></td><td>544.8M</td><td>5,117,000</td><td>1,279,250</td><td><div class="bar"><span style="width:100%"></span></div></td></tr>
+    <tr><td>26 SS 01 <span class="tag bag">신상 가방</span></td><td>51.9M</td><td>2,428,600</td><td>607,150</td><td><div class="bar"><span style="width:47%"></span></div></td></tr>
+    <tr><td>26 VT <span class="tag bag">신상</span></td><td>79.0M</td><td>1,282,500</td><td>320,625</td><td><div class="bar"><span style="width:25%"></span></div></td></tr>
+    <tr><td>25 FW 02 <span class="tag cloth">의류</span></td><td>177.6M</td><td>406,300</td><td>101,575</td><td><div class="bar"><span style="width:8%"></span></div></td></tr>
+    <tr><td>25 SS 02 <span class="tag cloth">SS 의류</span></td><td>139.9M</td><td>308,400</td><td>77,100</td><td><div class="bar"><span style="width:6%"></span></div></td></tr>
+    <tr style="color:var(--red)"><td>24 08 FW (작년 가을의류) <span class="tag cloth">의류</span></td><td>278.4M</td><td>0</td><td>0</td><td><div class="bar"><span style="width:0%"></span></div></td></tr>
+    <tr style="color:var(--red)"><td>24 홀리데이 컬렉션 <span class="tag cloth">의류</span></td><td>155.2M</td><td>0</td><td>0</td><td><div class="bar"><span style="width:0%"></span></div></td></tr>
+    <tr style="color:var(--red)"><td>25 FW 01 / SS 01 / SS 03 <span class="tag cloth">의류</span></td><td>366.7M</td><td>0</td><td>0</td><td><div class="bar"><span style="width:0%"></span></div></td></tr>
+  </table>
+  <div class="note">24~25 작년 시즌 의류군이 4월 후반에 사실상 멈춤. 가방류만 살아있고 26 신상 가방(SS 01·VT)이 보조 중.</div>
+</div>
+
+<div class="grid g2" style="margin-top:14px">
+  <div class="card">
+    <h3>가방 vs 의류·기타 (최근 4일)</h3>
+    <table>
+      <tr><th>카테고리</th><th>최근 4일 매출</th><th>일평균</th><th>평균 단가</th></tr>
+      <tr><td>가방류 (Dimsum/Backpack 등)</td><td>9,177,300</td><td>2,294,325</td><td>111,918 ₩</td></tr>
+      <tr><td>의류·기타</td><td>365,500</td><td>91,375</td><td>40,611 ₩</td></tr>
+    </table>
+    <div class="note">최근 4일 매출의 96%가 가방류 — 의류 비중 거의 소멸.</div>
+  </div>
+  <div class="card">
+    <h3>시즌 코호트 (최근 4일)</h3>
+    <table>
+      <tr><th>코호트</th><th>최근 4일 매출</th><th>일평균</th><th>평균 단가</th></tr>
+      <tr><td>26 신상 (SS 01/VT)</td><td>3,711,100</td><td>927,775</td><td>97,661 ₩</td></tr>
+      <tr><td>25 시즌</td><td>5,831,700</td><td>1,457,925</td><td>110,032 ₩</td></tr>
+      <tr style="color:var(--red)"><td>24 구작</td><td>0</td><td>0</td><td>—</td></tr>
+      <tr style="color:var(--red)"><td>캐리오버·기타</td><td>0</td><td>0</td><td>—</td></tr>
+    </table>
+    <div class="note">26 신상이 매출의 39%까지 끌어왔지만 절대 규모(일 93만원)가 작음 → 신상 라인업 보강 필요.</div>
+  </div>
+</div>
+
+<h2>4. 가격 인하 영향 (동일 상품 단가 비교)</h2>
+<div class="card">
+  <h3>최근 4일 판매 상품의 단가 변화 (수량 가중)</h3>
+  <p style="margin:6px 0 12px">동일 상품 기준 가중 평균 단가는 <b>109,634 → 104,866 ₩ (-4.3%)</b>. 객단가 -17% 중 약 4%p만 가격 인하 기여, 나머지 13%p는 상품 믹스(저가 상품 비중 증가) 영향.</p>
+  <table>
+    <tr><th>상품</th><th>최근 4일 단가</th><th>누적 단가</th><th>변화율</th></tr>
+    <tr><td>Charm Holder Backpack Patchwork</td><td>89,000</td><td>123,727</td><td style="color:var(--red)">-28.1%</td></tr>
+    <tr><td>Charm Holder Backpack Sage Green</td><td>89,000</td><td>115,357</td><td style="color:var(--red)">-22.8%</td></tr>
+    <tr><td>Washed Leopard Dimsum Bag Purple</td><td>119,000</td><td>129,284</td><td>-7.9%</td></tr>
+    <tr><td>Washed Leopard Dimsum Bag Pink</td><td>119,000</td><td>128,102</td><td>-7.1%</td></tr>
+    <tr><td>Mori Dimsum Bag Brown</td><td>119,000</td><td>124,456</td><td>-4.4%</td></tr>
+    <tr><td>Leopard Dimsum Bag Charcoal</td><td>119,000</td><td>124,862</td><td>-4.7%</td></tr>
+    <tr><td>26 SS 01 신상 가방군 (Glaze, Butter, Cream Puff 등)</td><td>119,200</td><td>119,200</td><td>0%</td></tr>
+    <tr><td>Lace Inner Shorts White</td><td>29,000</td><td>20,512</td><td style="color:var(--green)">+41.4%</td></tr>
+  </table>
+  <div class="note">Charm Holder Backpack 시리즈에서 ~28% 큰 폭 인하가 보임. Dimsum 가방군은 -4~7% 가벼운 할인 적용 추정. 26 SS 01 신상 가방은 정가 유지.</div>
+</div>
+
+<h2>5. 최근 4일 매출 기여 TOP 10</h2>
+<div class="card">
+  <table>
+    <tr><th>상품</th><th>판매 수량</th><th>매출 기여</th><th>시즌</th></tr>
+    <tr><td>Washed Leopard Dimsum Bag Pink</td><td>23</td><td>2,737,000</td><td>25 FW 가방 1차</td></tr>
+    <tr><td>Leopard Dimsum Bag Charcoal</td><td>14</td><td>1,666,000</td><td>25 FW 가방 1차</td></tr>
+    <tr><td>Mini Washed Leopard Dimsum Bag Pink</td><td>12</td><td>1,068,000</td><td>26 VT</td></tr>
+    <tr><td>Glaze Vanilla Dimsum Bag</td><td>6</td><td>715,200</td><td>26 SS 01</td></tr>
+    <tr><td>Mori Dimsum Bag Brown</td><td>6</td><td>714,000</td><td>25 FW 가방 1차</td></tr>
+    <tr><td>Butter Dimsum Bag</td><td>3</td><td>357,600</td><td>26 SS 01</td></tr>
+    <tr><td>Chocolate Blush Mori Dimsum Bag</td><td>2</td><td>249,600</td><td>26 SS 01</td></tr>
+    <tr><td>Glaze Pearl Gray Dimsum Bag</td><td>2</td><td>238,400</td><td>26 SS 01</td></tr>
+    <tr><td>Cream Puff Dimsum Bag</td><td>2</td><td>238,400</td><td>26 SS 01</td></tr>
+    <tr><td>Washed Leopard Dimsum Bag Purple</td><td>2</td><td>238,000</td><td>26 SS 01</td></tr>
+  </table>
+  <div class="note">TOP 10 모두 가방. 의류 단품은 결제금액이 작아 객단가를 끌어내리는 구조.</div>
+</div>
+
+<div class="takeaway">
+  <h2>제안</h2>
+  <div class="kbox"><b>1. 객단가 회복이 우선과제.</b> 신규 고객 유입(주문건수)보다 ‘바스켓 사이즈’ 회복이 더 큰 레버. 가방+의류 묶음 추천, 가방 구매시 이너/액세서리 할인 묶음 등 크로스셀링 강화.</div>
+  <div class="kbox"><b>2. 26 SS·VT 가방 라인업 확대 또는 노출 강화.</b> 26 신상 가방은 정가 유지하면서도 잘 팔리는 구간(일 93만원)이라 푸시 가치가 큼. 25 FW 가방 1차에 의존하는 구조에서 신상 가방으로 전환을 가속.</div>
+  <div class="kbox"><b>3. 25 FW 가방 1차는 캐시카우 보호.</b> 누적 5.4억으로 압도적 1위, 최근 4일 일평균 128만원 기여. -4~7% 가벼운 할인으로 유지 중인데 더 큰 인하는 마진만 깎고 매출 회복 효과 약함. 컬러·재고 관점에서 매대 노출 우선.</div>
+  <div class="kbox"><b>4. Charm Holder Backpack 시리즈 점검.</b> -22~28% 큰 폭 인하 적용 중인데 최근 4일 1~2개 판매에 그침. 추가 할인보다 단종/소진 또는 컬러 리뉴얼 검토.</div>
+  <div class="kbox"><b>5. 의류 신상 출시 일정 점검.</b> 24~25 시즌 의류가 4월 들어 사실상 멈춤. 26 SS 의류 라인 출시 일정이 늦어지면 객단가 하락이 5월에도 지속될 가능성 높음.</div>
+</div>
+
+<div class="note" style="margin-top:18px">분석 기준 데이터 — 60일 일자별: 01_일별매출현황.csv · 결제금액 분포: 03_주문원본.csv · 시즌/상품별 변화: 02_상품별판매현황.csv (현재 5/11) vs archive(5/7).</div>
+
+<script>
+const w = [{"week_label":"01/19","매출":39836364,"주문":284,"객단가":140269,"일평균":5690909},{"week_label":"01/26","매출":24979881,"주문":193,"객단가":129429,"일평균":3568554},{"week_label":"02/02","매출":31181420,"주문":224,"객단가":139203,"일평균":4454489},{"week_label":"02/09","매출":24232698,"주문":188,"객단가":128897,"일평균":3461814},{"week_label":"02/16","매출":26063359,"주문":193,"객단가":135043,"일평균":3723337},{"week_label":"02/23","매출":26122563,"주문":205,"객단가":127427,"일평균":3731795},{"week_label":"03/02","매출":42835562,"주문":282,"객단가":151899,"일평균":6119366},{"week_label":"03/09","매출":32754628,"주문":255,"객단가":128450,"일평균":4679233},{"week_label":"03/16","매출":27120708,"주문":206,"객단가":131654,"일평균":3874387},{"week_label":"03/23","매출":18662068,"주문":167,"객단가":111749,"일평균":2666010},{"week_label":"03/30","매출":23773206,"주문":206,"객단가":115404,"일평균":3396172},{"week_label":"04/06","매출":31187899,"주문":287,"객단가":108669,"일평균":4455414},{"week_label":"04/13","매출":33710799,"주문":309,"객단가":109096,"일평균":4815828},{"week_label":"04/20","매출":22508964,"주문":232,"객단가":97021,"일평균":3215566},{"week_label":"04/27","매출":20233443,"주문":171,"객단가":118324,"일평균":2890492},{"week_label":"05/04","매출":20688019,"주문":166,"객단가":124627,"일평균":2955431}];
+
+new Chart(document.getElementById('weekly').getContext('2d'), {
+  data: {
+    labels: w.map(x=>x.week_label),
+    datasets:[
+      {type:'bar', label:'주간 매출 (M ₩)', data:w.map(x=>x.매출/1e6), yAxisID:'y', backgroundColor:'rgba(29,29,27,0.85)', borderRadius:3, order:2},
+      {type:'line', label:'객단가 (₩)', data:w.map(x=>x.객단가), yAxisID:'y1', borderColor:'#c44438', backgroundColor:'#c44438', borderWidth:2, tension:.25, pointRadius:3, order:1},
+      {type:'line', label:'주문건수', data:w.map(x=>x.주문), yAxisID:'y2', borderColor:'#3a7d44', borderDash:[5,4], borderWidth:2, tension:.25, pointRadius:3, order:1}
+    ]
+  },
+  options: {
+    responsive:true,
+    plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},tooltip:{callbacks:{label:c=>{const v=c.parsed.y; if(c.dataset.yAxisID==='y') return c.dataset.label+': '+v.toFixed(2)+'M ₩'; return c.dataset.label+': '+v.toLocaleString()+(c.dataset.yAxisID==='y1'?' ₩':'건');}}}},
+    scales:{
+      y:{position:'left',title:{display:true,text:'매출 (M ₩)',font:{size:11}},grid:{color:'#eee'}},
+      y1:{position:'right',title:{display:true,text:'객단가 ₩',font:{size:11}},grid:{display:false},ticks:{callback:v=>v.toLocaleString()}},
+      y2:{display:false}
+    }
+  }
+});
+</script>
+</body></html>

@@ -1,0 +1,40 @@
+{
+  "date": "2026-06-10",
+  "baseline": "6.8 close",
+  "urgent_count": 25,
+  "urgent_top": [
+    "Charm Holder Backpack Patchwork",
+    "Mini Chocolate Blush Mori Dimsum Bag",
+    "Rush Drapey Snap One Shoulder Top Ivory"
+  ],
+  "refill_count": 8,
+  "refill_top": [
+    {
+      "product": "Washed Leopard Dimsum Bag Purple",
+      "days_left": 7.2
+    },
+    {
+      "product": "Washed Leopard Dimsum Bag Pink",
+      "days_left": 10.1
+    },
+    {
+      "product": "Leopard Dimsum Bag Charcoal",
+      "days_left": 10.3
+    }
+  ],
+  "spike_count": 8,
+  "spike_top": [
+    {
+      "product": "Rush Drapey Snap One Shoulder Top Ivory",
+      "ratio": 4.7
+    },
+    {
+      "product": "Ink Dimsum Bag",
+      "ratio": 4.2
+    }
+  ],
+  "incoming_planned_count": 5,
+  "yd_in_count": 2,
+  "yd_top_count": 15,
+  "zero_stock_count": 72
+}

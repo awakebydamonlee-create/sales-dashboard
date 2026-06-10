@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<title>국내 자사몰 30일 매출 분석 · Mori 중심 · 2026-05-11</title>
+<style>
+:root{color-scheme:light;--bg:#fafaf7;--card:#fff;--bd:#e6e3dc;--ink:#1d1d1b;--mute:#6b6b66;--red:#c44438;--green:#3a7d44;--accent:#1d1d1b}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;line-height:1.55}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+h2{font-size:16px;margin:24px 0 10px;letter-spacing:-.2px;border-bottom:1px solid var(--bd);padding-bottom:6px}
+h3{font-size:14px;margin:14px 0 6px;color:var(--mute);font-weight:600}
+.sub{color:var(--mute);font-size:13px;margin-bottom:18px}
+.grid{display:grid;gap:14px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+@media (max-width:780px){.g3,.g2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.kpi{font-size:11px;letter-spacing:.05em;color:var(--mute);text-transform:uppercase}
+.val{font-size:24px;font-weight:700;margin-top:4px}
+.delta{font-size:13px;margin-top:2px;color:var(--mute)}
+.delta.neg{color:var(--red)}.delta.pos{color:var(--green)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600;color:var(--mute);font-size:11px;letter-spacing:.04em;text-transform:uppercase;background:#f3f1ec}
+tr.mori{background:#fff7e0}
+tr.dead{color:var(--red)}
+tr.ok{color:var(--green)}
+.kbox{padding:10px 12px;background:#f3f1ec;border-left:3px solid #1d1d1b;border-radius:6px;margin:6px 0}
+.takeaway{background:#fff7e0;border:1px solid #f0d780;border-radius:8px;padding:14px;margin-top:18px}
+.takeaway h2{border:0;margin:0 0 8px}
+.alert{background:#ffe8e5;border:1px solid #f1a59a;border-radius:8px;padding:14px;margin:14px 0}
+.alert h2{border:0;margin:0 0 8px;color:var(--red)}
+canvas{max-width:100%}
+.note{font-size:11px;color:var(--mute);margin-top:6px}
+.bar{height:14px;background:#eee5d8;border-radius:3px;overflow:hidden;display:inline-block;width:100px;vertical-align:middle}
+.bar>span{display:block;height:100%;background:#1d1d1b}
+.bar.neg>span{background:var(--red)}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+</head>
+<body>
+
+<h1>국내 자사몰 30일 매출 분석 — Mori 시리즈 중심</h1>
+<div class="sub">분석 기준일 2026-05-11 · 최근 30일(4/11–5/10) vs 직전 30일(3/12–4/10) vs 60일전 30일(2/10–3/11)</div>
+
+<div class="alert">
+  <h2>대표님 직관 검증: Mori 시리즈 붕괴가 핵심 원인</h2>
+  <b>Mori 6종 시리즈 합계 일평균 매출이 1,183,718원 → 240,900원 (-79.6%)으로 사실상 무너졌습니다.</b>
+  Brown(메인)이 -74%, Black/Mini Mori 3종이 -100%(완전 정지), Mini Chocolate Blush Mori도 -100%.
+  단독 시리즈 손실액이 일 94만원 → <b>30일 환산 약 2,830만원 매출 손실</b>입니다.
+  같은 시즌의 Washed Leopard Pink(-8%)·Leopard Charcoal(+10%)은 안정적이라
+  Mori 시리즈만 골라서 빠진 구조 — 가격이 아니라 <b>재고 소진 또는 컬러 피로</b>가 의심됩니다.
+</div>
+
+<h2>1. 30일 단위 추이 — 매출은 안정, 객단가는 계속 하락</h2>
+<div class="grid g3">
+  <div class="card">
+    <div class="kpi">최근 30일 (4/11–5/10)</div>
+    <div class="val">106.2<span style="font-size:14px;color:var(--mute)">M ₩</span></div>
+    <div class="delta neg">▼ 2.4% (직전 30일 대비)</div>
+    <div class="note">일평균 3,539,232 ₩</div>
+  </div>
+  <div class="card">
+    <div class="kpi">직전 30일 (3/12–4/10)</div>
+    <div class="val">108.8<span style="font-size:14px;color:var(--mute)">M ₩</span></div>
+    <div class="delta neg">▼ 18.0% (60일전 30일 대비)</div>
+    <div class="note">일평균 3,626,194 ₩</div>
+  </div>
+  <div class="card">
+    <div class="kpi">60일전 30일 (2/10–3/11)</div>
+    <div class="val">132.7<span style="font-size:14px;color:var(--mute)">M ₩</span></div>
+    <div class="delta">기준선</div>
+    <div class="note">일평균 4,423,747 ₩</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3>주별 추이 (최근 12주)</h3>
+  <canvas id="weekly" height="110"></canvas>
+  <div class="note">변곡점은 <b>3월 셋째 주(3/16~)</b>. 매출은 6.1M/일 → 2.6M/일로 한 단계 떨어진 후 4월 내내 회복하지 못함. 객단가도 같은 주차에 13.1만원 → 11.1만원으로 하락 시작.</div>
+</div>
+
+<h2>2. 30일 매출 변화 — 미세 감소처럼 보이는데 실은 두 가지 흐름이 상쇄</h2>
+<div class="card">
+  <table>
+    <tr><th>요인</th><th>30일 변화</th><th>해석</th></tr>
+    <tr><td>주문건수</td><td style="color:var(--green)">+40건 (+4.3%)</td><td>저가 단품(이너·티) 늘어 건수는 증가</td></tr>
+    <tr><td>객단가</td><td style="color:var(--red)">-7,618 ₩ (-6.5%)</td><td>Mori 등 가방 비중 빠지고 의류 단품으로 대체</td></tr>
+    <tr><td>매출</td><td style="color:var(--red)">-2.6M (-2.4%)</td><td>주문 증가 효과를 객단가 하락이 상쇄</td></tr>
+  </table>
+  <div class="note">"주문은 늘었는데 매출은 줄었다" — 가방 한 점 사주던 손님이 의류 단품 한 두 점만 사고 있다는 신호.</div>
+</div>
+
+<h2>3. Mori 시리즈 매출 진단 (핵심)</h2>
+<div class="card">
+  <h3>Mori 6종 일평균 매출 변화 (시즌 시작~5/7 누적평균 vs 5/7→5/11 4일평균)</h3>
+  <table>
+    <tr><th>상품</th><th>시즌</th><th>판매시작</th><th>누적 일평균</th><th>최근 4일 일평균</th><th>변화율</th><th>시각</th></tr>
+    <tr class="mori"><td><b>Mori Dimsum Bag Brown</b></td><td>25 FW 가방 1차</td><td>9/7</td><td>690,166 ₩</td><td>178,500 ₩</td><td style="color:var(--red)"><b>-74%</b></td><td><div class="bar neg"><span style="width:74%"></span></div></td></tr>
+    <tr class="mori"><td>Mori Dimsum Bag Black</td><td>25 FW 02</td><td>12/13</td><td>111,780 ₩</td><td>0 ₩</td><td style="color:var(--red)"><b>-100%</b></td><td><div class="bar neg"><span style="width:100%"></span></div></td></tr>
+    <tr class="mori"><td>Mini Mori Dimsum Bag Brown</td><td>25 FW 02</td><td>12/13</td><td>94,150 ₩</td><td>0 ₩</td><td style="color:var(--red)"><b>-100%</b></td><td><div class="bar neg"><span style="width:100%"></span></div></td></tr>
+    <tr class="mori"><td>Mini Mori Dimsum Bag Black</td><td>25 FW 02</td><td>12/12</td><td>76,422 ₩</td><td>0 ₩</td><td style="color:var(--red)"><b>-100%</b></td><td><div class="bar neg"><span style="width:100%"></span></div></td></tr>
+    <tr class="mori"><td>Mini Chocolate Blush Mori Dimsum Bag</td><td>26 SS 01</td><td>4/11</td><td>124,800 ₩</td><td>0 ₩</td><td style="color:var(--red)"><b>-100%</b></td><td><div class="bar neg"><span style="width:100%"></span></div></td></tr>
+    <tr class="mori"><td>Chocolate Blush Mori Dimsum Bag</td><td>26 SS 01</td><td>4/11</td><td>86,400 ₩</td><td>62,400 ₩</td><td style="color:var(--red)">-28%</td><td><div class="bar neg"><span style="width:28%"></span></div></td></tr>
+    <tr style="background:#1d1d1b;color:#fff"><th style="color:#fff">Mori 6종 합계</th><th></th><th></th><th>1,183,718 ₩</th><th>240,900 ₩</th><th>-79.6%</th><th>30일 ≒ <b>-2,830만원</b></th></tr>
+  </table>
+  <div class="note">Mini Chocolate Blush Mori는 4/11 출시 후 한 달 누적 124,800/일 — 신상으로 들어왔지만 4일간 0원이라 신상 판매도 멈춤 상태. 전 컬러 라인업이 동시에 멈춘 패턴.</div>
+</div>
+
+<h2>4. 가방 TOP 15 — 어떤 SKU가 살아있고 어떤 게 죽었나</h2>
+<div class="card">
+  <table>
+    <tr><th>상품</th><th>시즌</th><th>누적매출(5/7기준)</th><th>누적 일평균</th><th>최근 4일 일평균</th><th>변화율</th></tr>
+    <tr><td><b>Washed Leopard Dimsum Bag Pink</b></td><td>25 FW 가방 1차</td><td>179.7M</td><td>745,755</td><td>684,250</td><td style="color:var(--green)">-1%</td></tr>
+    <tr class="mori"><td><b>Mori Dimsum Bag Brown</b></td><td>25 FW 가방 1차</td><td>167.0M</td><td>690,167</td><td>178,500</td><td style="color:var(--red)"><b>-74%</b></td></tr>
+    <tr class="ok"><td>Leopard Dimsum Bag Charcoal</td><td>25 FW 가방 1차</td><td>91.4M</td><td>377,682</td><td>416,500</td><td style="color:var(--green)">+10%</td></tr>
+    <tr class="dead"><td>Patchwork Buttons Pillow Bag Navy</td><td>25 FW 02</td><td>57.6M</td><td>394,182</td><td>0</td><td>-100%</td></tr>
+    <tr><td>Mini Washed Leopard Dimsum Bag Pink</td><td>26 VT</td><td>41.5M</td><td>455,953</td><td>267,000</td><td style="color:var(--red)">-41%</td></tr>
+    <tr class="dead"><td>Wool Leopard Pillow Bag Beige</td><td>25 FW 가방 1차</td><td>39.9M</td><td>164,837</td><td>0</td><td>-100%</td></tr>
+    <tr><td>Dot Cozy Dumpling Bag Gray</td><td>25 SS 02</td><td>26.5M</td><td>74,666</td><td>27,000</td><td style="color:var(--red)">-64%</td></tr>
+    <tr class="dead"><td>Suede Bao Bag Brown</td><td>24 08 FW</td><td>22.7M</td><td>46,164</td><td>0</td><td>-100%</td></tr>
+    <tr class="dead"><td>Dot Cozy Bao Bag Gray</td><td>25 SS 02</td><td>19.7M</td><td>55,521</td><td>0</td><td>-100%</td></tr>
+    <tr class="dead"><td>Suede Bao Bag Camel</td><td>24 홀리데이</td><td>19.0M</td><td>38,747</td><td>0</td><td>-100%</td></tr>
+    <tr class="dead"><td>Dot Cozy Dumpling Bag Navy</td><td>25 SS 03</td><td>17.4M</td><td>54,061</td><td>0</td><td>-100%</td></tr>
+    <tr><td>Washed Leopard Dimsum Bag Purple</td><td>26 SS 01</td><td>17.3M</td><td>80,204</td><td>59,500</td><td style="color:var(--red)">-26%</td></tr>
+    <tr class="dead mori"><td>Mori Dimsum Bag Black</td><td>25 FW 02</td><td>16.2M</td><td>111,780</td><td>0</td><td>-100%</td></tr>
+    <tr class="dead"><td>Dot Cozy Bao Bag Navy</td><td>25 SS 03</td><td>14.7M</td><td>45,768</td><td>0</td><td>-100%</td></tr>
+    <tr class="dead mori"><td>Mini Mori Dimsum Bag Brown</td><td>25 FW 02</td><td>13.7M</td><td>94,150</td><td>0</td><td>-100%</td></tr>
+  </table>
+  <div class="note">노란색 = Mori, 빨강 = 완전 정지(-100%), 초록 = 안정 또는 성장.<br>
+  최근 4일 살아있는 SKU는 사실상 <b>Washed Leopard Pink, Leopard Charcoal, Mori Brown(약화), Mini Washed Leopard Pink</b> 4종뿐. 나머지 가방은 거의 정지.</div>
+</div>
+
+<h2>5. 매출 손실 기여도 (일평균 매출 감소 큰 순)</h2>
+<div class="card">
+  <table>
+    <tr><th>상품</th><th>일평균 손실</th><th>30일 환산 손실</th><th>비고</th></tr>
+    <tr class="mori"><td>Mori Dimsum Bag Brown</td><td>-511,667 ₩</td><td><b>-15.3M ₩</b></td><td>가장 큰 단일 손실</td></tr>
+    <tr><td>Patchwork Buttons Pillow Bag Navy</td><td>-394,182 ₩</td><td>-11.8M ₩</td><td>완전 정지</td></tr>
+    <tr><td>Mini Washed Leopard Dimsum Bag Pink</td><td>-188,953 ₩</td><td>-5.7M ₩</td><td>-41%</td></tr>
+    <tr><td>Wool Leopard Pillow Bag Beige</td><td>-164,837 ₩</td><td>-4.9M ₩</td><td>완전 정지</td></tr>
+    <tr class="mori"><td>Mini Chocolate Blush Mori</td><td>-124,800 ₩</td><td>-3.7M ₩</td><td>신상 출시 후 한 달만에 정지</td></tr>
+    <tr class="mori"><td>Mori Dimsum Bag Black</td><td>-111,780 ₩</td><td>-3.4M ₩</td><td>완전 정지</td></tr>
+    <tr class="mori"><td>Mini Mori Dimsum Bag Brown</td><td>-94,150 ₩</td><td>-2.8M ₩</td><td>완전 정지</td></tr>
+    <tr class="mori"><td>Mini Mori Dimsum Bag Black</td><td>-76,422 ₩</td><td>-2.3M ₩</td><td>완전 정지</td></tr>
+    <tr><td>Dot Cozy Dumpling Bag Gray</td><td>-47,666 ₩</td><td>-1.4M ₩</td><td>-64%</td></tr>
+  </table>
+  <div class="note">Mori 4종(노란색)만 합쳐도 30일 환산 -27.5M, 일평균 -91.9만원.</div>
+</div>
+
+<h2>6. 가설 — 왜 Mori만 빠졌나</h2>
+<div class="card">
+  <div class="kbox"><b>가설 A. 재고 소진 (가장 유력)</b><br>
+  Mori Dimsum Brown 누적 1,342개 판매 (가방 SKU 1위), Mori Black/Mini 3종도 5개월간 100~130개씩 판매 후 동시 정지. 동일 시즌 Washed Leopard Pink는 계속 살아있으므로 재고 발주 차이로 보임. 즉시 확인 필요: <b>현재 재고 수량 / 추가 발주 일정</b>.</div>
+  <div class="kbox"><b>가설 B. 컬러 피로 (보조 가설)</b><br>
+  Brown/Black 톤이 봄(4월 이후) 시즌 부적합. Pink/Charcoal/Purple은 봄에도 잘 팔리고 있어 시즌 부적합 가능성. 다만 Mini Chocolate Blush Mori(신상·핑크톤)도 4일간 0원이라 단순 시즌성만으론 설명 부족.</div>
+  <div class="kbox"><b>가설 C. 진열·노출 변경</b><br>
+  카페24 메인/배너에서 Mori 시리즈 노출이 최근 빠졌다면 동시 정지 패턴 설명 가능. 진열 페이지 점검 필요.</div>
+</div>
+
+<div class="takeaway">
+  <h2>대표님께 우선 처방</h2>
+  <div class="kbox"><b>1. Mori 시리즈 재고/발주 즉시 점검 (1순위)</b> — Brown 외 5종이 동시에 0이 된 건 이례적. 단순 컬러 피로보다 재고 소진 가능성이 높음. 현재 재고와 다음 입고 일정 확인 후, 입고 가능하면 가능한 한 빠르게 보충.</div>
+  <div class="kbox"><b>2. Mori Brown은 캐시카우 보호 — 추가 할인 없이 노출 우선</b> 119,000원 할인가에서 일 1.5개로 떨어진 건 가격 문제 아님. 메인 배너·신상 추천에 다시 노출.</div>
+  <div class="kbox"><b>3. Mini Chocolate Blush Mori 신상 푸시</b> — 4/11 출시 후 한 달만 일 1개 → 0개. 출시 화제성이 빠진 시점이라 SNS·상세페이지 리프레시 검토.</div>
+  <div class="kbox"><b>4. Patchwork/Wool/Suede Pillow·Bao 시리즈는 단종/소진 처리 명확화</b> — 누적 매출은 컸지만 모두 -100%. 아카이브 처리하고 메인 진열 빼서 살아있는 SKU에 자리 양보.</div>
+  <div class="kbox"><b>5. Mini Washed Leopard Pink (-41%) 모니터링</b> — 26 VT 신상이지만 빠르게 약화 중. Mori 다음 위험 SKU.</div>
+  <div class="kbox"><b>6. 가방 신상 보충 우선순위 정리 필요</b> — 26 SS 01 Glaze/Butter/Cream Puff 등은 정가 119,200원 유지하며 일 1.5~6개 수준. 살아있는 신상이지만 절대 규모가 작아 보강이 필요.</div>
+</div>
+
+<div class="note" style="margin-top:18px">데이터 한계 — 02_상품별판매현황.csv는 누적 데이터이고 일자별 분포가 없어 'archive(5/7)와 현재(5/11) 4일 차이'로 최근 일평균을 산출함. 표본이 4일이라 변동성이 있으나, Mori 6종이 동시에 떨어진 패턴은 통계적 우연으로 보기 어려움. 재고/발주 데이터가 있으면 가설 A 검증이 명확해짐.</div>
+
+<script>
+const w = [{"week_label":"02/16","매출":26063359,"객단가":135043,"일평균":3723337,"주문":193},{"week_label":"02/23","매출":26122563,"객단가":127427,"일평균":3731795,"주문":205},{"week_label":"03/02","매출":42835562,"객단가":151899,"일평균":6119366,"주문":282},{"week_label":"03/09","매출":32754628,"객단가":128450,"일평균":4679233,"주문":255},{"week_label":"03/16","매출":27120708,"객단가":131654,"일평균":3874387,"주문":206},{"week_label":"03/23","매출":18662068,"객단가":111749,"일평균":2666010,"주문":167},{"week_label":"03/30","매출":23773206,"객단가":115404,"일평균":3396172,"주문":206},{"week_label":"04/06","매출":31187899,"객단가":108669,"일평균":4455414,"주문":287},{"week_label":"04/13","매출":33710799,"객단가":109096,"일평균":4815828,"주문":309},{"week_label":"04/20","매출":22508964,"객단가":97021,"일평균":3215566,"주문":232},{"week_label":"04/27","매출":20233443,"객단가":118324,"일평균":2890492,"주문":171},{"week_label":"05/04","매출":20688019,"객단가":124627,"일평균":2955431,"주문":166}];
+new Chart(document.getElementById('weekly'),{
+  data:{labels:w.map(x=>x.week_label),datasets:[
+    {type:'bar',label:'주간 매출 (M ₩)',data:w.map(x=>x.매출/1e6),yAxisID:'y',backgroundColor:'rgba(29,29,27,0.85)',borderRadius:3,order:2},
+    {type:'line',label:'객단가 ₩',data:w.map(x=>x.객단가),yAxisID:'y1',borderColor:'#c44438',borderWidth:2,tension:.25,pointRadius:3,order:1},
+    {type:'line',label:'주문건수',data:w.map(x=>x.주문),yAxisID:'y2',borderColor:'#3a7d44',borderDash:[5,4],borderWidth:2,tension:.25,pointRadius:3,order:1}
+  ]},
+  options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},tooltip:{callbacks:{label:c=>{const v=c.parsed.y;if(c.dataset.yAxisID==='y')return c.dataset.label+': '+v.toFixed(2)+'M ₩';return c.dataset.label+': '+v.toLocaleString()+(c.dataset.yAxisID==='y1'?' ₩':'건');}}}},scales:{y:{position:'left',title:{display:true,text:'매출 (M ₩)'},grid:{color:'#eee'}},y1:{position:'right',title:{display:true,text:'객단가 ₩'},grid:{display:false},ticks:{callback:v=>v.toLocaleString()}},y2:{display:false}}}
+});
+</script>
+</body></html>

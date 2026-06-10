@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<title>국내 자사몰 2주 매출 분석 · 2026-05-11</title>
+<style>
+:root{color-scheme:light;--bg:#fafaf7;--card:#fff;--bd:#e6e3dc;--ink:#1d1d1b;--mute:#6b6b66;--red:#c44438;--green:#3a7d44;--accent:#1d1d1b;--blue:#2b5687}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;line-height:1.55}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+h2{font-size:16px;margin:24px 0 10px;letter-spacing:-.2px;border-bottom:1px solid var(--bd);padding-bottom:6px}
+h3{font-size:14px;margin:14px 0 6px;color:var(--mute);font-weight:600}
+.sub{color:var(--mute);font-size:13px;margin-bottom:18px}
+.grid{display:grid;gap:14px}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+@media (max-width:780px){.g3,.g2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.kpi{font-size:11px;letter-spacing:.05em;color:var(--mute);text-transform:uppercase}
+.val{font-size:24px;font-weight:700;margin-top:4px}
+.delta{font-size:13px;margin-top:2px;color:var(--mute)}
+.delta.neg{color:var(--red)}.delta.pos{color:var(--green)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600;color:var(--mute);font-size:11px;letter-spacing:.04em;text-transform:uppercase;background:#f3f1ec}
+tr.hi{background:#fff7e0}
+tr.dead{color:var(--red)}
+tr.ok{color:var(--green)}
+tr.cloth{background:#ffe8e5}
+tr.bag{background:#e6f0e8}
+.kbox{padding:10px 12px;background:#f3f1ec;border-left:3px solid #1d1d1b;border-radius:6px;margin:6px 0}
+.takeaway{background:#fff7e0;border:1px solid #f0d780;border-radius:8px;padding:14px;margin-top:18px}
+.takeaway h2{border:0;margin:0 0 8px}
+.alert{background:#ffe8e5;border:1px solid #f1a59a;border-radius:8px;padding:14px;margin:14px 0}
+.alert h2{border:0;margin:0 0 8px;color:var(--red)}
+.flip{background:#e6f0e8;border:1px solid #8ec39c;border-radius:8px;padding:14px;margin:14px 0}
+.flip h2{border:0;margin:0 0 8px;color:var(--green)}
+canvas{max-width:100%}
+.note{font-size:11px;color:var(--mute);margin-top:6px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+</head>
+<body>
+
+<h1>국내 자사몰 2주 매출 분석</h1>
+<div class="sub">기준일 2026-05-11 · 최근 2주(4/27–5/10) vs 직전 2주(4/13–4/26) · 2주 단위 6개 구간 추이</div>
+
+<div class="alert">
+  <h2>핵심 발견: 가방이 아니라 의류가 무너졌다</h2>
+  <b>최근 2주 매출 -27.2% 폭락의 원인은 의류 단품 주문 -70%(-147건).</b>
+  같은 기간 가방 단품(Dimsum 119~130k)은 +8건, Mini 가방(89k)은 +16건으로 오히려 늘었습니다.
+  객단가는 +17% 올라갔지만 좋은 신호가 아니라 <b>"의류 손님이 사라져서 가방 손님 비중만 남은 결과"</b>입니다.
+  <br><br>
+  앞선 30일 분석에서 보였던 <b>Mori 시리즈 -79% 패턴은 4일 표본의 변동성</b>일 가능성이 큽니다 — 2주 단위로 보면 Dimsum 가방 단품 주문은 일평균 7.5→8.1건으로 안정적입니다.
+  진짜 1순위 처방은 <b>26 SS 의류 신상 출시</b>입니다.
+</div>
+
+<h2>1. 2주 단위 추이 (최근 12주, 6개 구간)</h2>
+<div class="card">
+  <canvas id="biweek" height="120"></canvas>
+  <table style="margin-top:14px">
+    <tr><th>구간</th><th>매출</th><th>주문</th><th>객단가</th><th>일평균 매출</th></tr>
+    <tr><td>02/16~03/01</td><td>52.2M</td><td>398</td><td>131,120</td><td>3.7M</td></tr>
+    <tr style="background:#fff7e0"><td><b>03/02~03/15 (피크)</b></td><td><b>75.6M</b></td><td><b>537</b></td><td><b>140,764</b></td><td><b>5.4M</b></td></tr>
+    <tr style="color:var(--red)"><td>03/16~03/29 (1차 변곡점)</td><td>45.8M</td><td>373</td><td>122,742</td><td>3.3M (-39%)</td></tr>
+    <tr><td>03/30~04/12</td><td>55.0M</td><td>493</td><td>111,483</td><td>3.9M</td></tr>
+    <tr><td>04/13~04/26 (직전 2주)</td><td>56.2M</td><td>541</td><td>103,918</td><td>4.0M</td></tr>
+    <tr style="color:var(--red)"><td><b>04/27~05/10 (최근 2주, 2차 변곡점)</b></td><td><b>40.9M</b></td><td><b>337</b></td><td><b>121,429</b></td><td><b>2.9M (-27%)</b></td></tr>
+  </table>
+  <div class="note">3월 둘째 주 5.4M/일 정점 → 1차 하락(3월 셋째 주, -39%) → 4월 4.0M/일 회복 → <b>2차 하락(4월말~5월초, -27%)</b>으로 두 단계에 걸쳐 떨어졌습니다.</div>
+</div>
+
+<h2>2. 매출 -27.2% 분해</h2>
+<div class="grid g2">
+  <div class="card">
+    <h3>요인별 기여</h3>
+    <table>
+      <tr><th>요인</th><th>기여액</th><th>비중</th></tr>
+      <tr><td>주문건수 감소 (-204건)</td><td>-21.2M ₩</td><td>139%</td></tr>
+      <tr><td>객단가 상승 (+17,511 ₩)</td><td>+9.5M ₩</td><td>-62%</td></tr>
+      <tr><td>교차효과</td><td>-3.6M ₩</td><td>23%</td></tr>
+      <tr><th>총 변동</th><th>-15.3M ₩</th><th>100%</th></tr>
+    </table>
+    <div class="note">앞선 30일 분석과 패턴이 정반대 — 30일은 객단가 하락이 주범, 최근 2주는 <b>주문건수 폭락</b>이 주범.</div>
+  </div>
+  <div class="card">
+    <h3>주문건수가 어디서 빠졌나</h3>
+    <table>
+      <tr><th>구간(결제금액)</th><th>직전 2주</th><th>최근 2주</th><th>변화</th></tr>
+      <tr><td>5만원 미만</td><td>57</td><td>28</td><td style="color:var(--red)">-29 (-51%)</td></tr>
+      <tr><td>5~10만원</td><td>195</td><td>82</td><td style="color:var(--red)">-113 (-58%)</td></tr>
+      <tr style="background:#e6f0e8"><td><b>10~15만원 (가방 1점대)</b></td><td>239</td><td>195</td><td>-44 (-18%)</td></tr>
+      <tr><td>15~20만원</td><td>31</td><td>13</td><td>-18</td></tr>
+      <tr><td>20~30만원</td><td>8</td><td>10</td><td style="color:var(--green)">+2</td></tr>
+      <tr><td>30~50만원</td><td>9</td><td>5</td><td>-4</td></tr>
+      <tr><td>50만원+</td><td>2</td><td>4</td><td style="color:var(--green)">+2</td></tr>
+    </table>
+    <div class="note">10만원 미만 주문(의류·소액)이 252→110건으로 <b>-142건 (-56%)</b> 폭락. 가방대(10~15만)는 -18%로 비교적 안정.</div>
+  </div>
+</div>
+
+<h2>3. 카테고리별 주문 변화 (핵심 표)</h2>
+<div class="card">
+  <table>
+    <tr><th>카테고리</th><th>직전 2주 건</th><th>최근 2주 건</th><th>건수 변화</th><th>매출 변화</th></tr>
+    <tr class="bag"><td>가방 단품 (Dimsum 119~130k)</td><td>105</td><td>113</td><td style="color:var(--green)"><b>+8 (+8%)</b></td><td>+0.6M ₩</td></tr>
+    <tr class="bag"><td>Mini 가방류 (89k 단품)</td><td>23</td><td>39</td><td style="color:var(--green)"><b>+16 (+70%)</b></td><td>+1.4M ₩</td></tr>
+    <tr class="cloth"><td><b>의류 단품 1점 (10만원 미만)</b></td><td>211</td><td>64</td><td style="color:var(--red)"><b>-147 (-70%)</b></td><td><b>-9.2M ₩</b></td></tr>
+    <tr><td>소액 묶음 (15만 미만)</td><td>152</td><td>89</td><td style="color:var(--red)">-63 (-41%)</td><td>-6.9M ₩</td></tr>
+    <tr><td>대형 묶음 (15만 이상)</td><td>49</td><td>32</td><td>-17 (-35%)</td><td>-1.0M ₩</td></tr>
+    <tr><td>고가 가방/세트 (15만+ 단품)</td><td>1</td><td>0</td><td>-1</td><td>-0.2M ₩</td></tr>
+  </table>
+  <div class="note">초록 = 가방류 (안정/성장), 빨강 = 의류 (붕괴). 매출 -15.3M 중 의류 단품 1점 카테고리만 -9.2M (60%) 기여.</div>
+</div>
+
+<h2>4. 일자별 카테고리 흐름 (최근 28일)</h2>
+<div class="card">
+  <canvas id="daily" height="160"></canvas>
+  <div class="note">의류 단품(빨강선)이 4월 중순 일 10~30건에서 5월 들어 일 0~7건으로 급락. 가방 단품(검정선)은 일 5~12건 유지. <b>5월 시즌 전환기에 의류 신상 공백이 그대로 매출 공백으로</b>.</div>
+</div>
+
+<h2>5. Mori 시리즈 재해석</h2>
+<div class="card">
+  <h3>2주 단위로 보면 Dimsum 가방 단품 주문은 안정적</h3>
+  <table>
+    <tr><th>2주 구간</th><th>Dimsum 단품 주문 (119~130k)</th><th>일평균</th></tr>
+    <tr><td>3/12~3/25 (60~46일전)</td><td>124건</td><td>8.9건/일</td></tr>
+    <tr><td>3/26~4/8 (46~32일전)</td><td>110건</td><td>7.9건/일</td></tr>
+    <tr><td>4/13~4/26 (32~14일전)</td><td>105건</td><td>7.5건/일</td></tr>
+    <tr><td><b>4/27~5/10 (최근 14일)</b></td><td><b>113건</b></td><td><b>8.1건/일</b></td></tr>
+  </table>
+  <div class="note">앞선 30일 분석에서 Mori 시리즈 -79% 패턴은 archive(5/7) vs 현재(5/11) <b>4일 차이</b>로 추정한 값. 4일 표본은 변동성이 큽니다. 2주 단위로 보면 가방 단품 매출은 안정적이라, Mori 시리즈가 정말 무너진 건지 4일 노이즈인지는 정확히 분리하기 어렵습니다. <br><b>다만 Mini Mori Brown/Black 등 일부 SKU는 archive 시점 기준으로 5개월간 꾸준히 팔리다 동시에 멈춘 패턴이라 재고 점검은 여전히 권장</b>합니다.</div>
+</div>
+
+<div class="flip">
+  <h2>의류 단품 -70% 폭락의 진짜 원인 (가설)</h2>
+  <div class="kbox"><b>가설 1. 봄 시즌 의류 신상 공백</b> (가장 유력) — 24 08 FW, 24 홀리데이, 25 FW 01·02, 25 SS 01·03 등 작년~겨울 의류 시즌이 4~5월에 사실상 종료. 26 SS 의류 신상이 적시에 안 들어오면서 살 게 없어진 상황.</div>
+  <div class="kbox"><b>가설 2. 5월 GW 연휴 영향</b> — 5/5(어린이날), 5/6(대체) 등 휴일 효과가 일부 있을 수 있으나, 일자별 의류 단품 카운트가 5월 전반에 걸쳐 0~7건으로 평이하게 낮아 단순 휴일 영향만으로 설명 부족.</div>
+  <div class="kbox"><b>가설 3. 봄 의류는 자사몰보다 백화점/오프라인 채널로 이동</b> — 자사몰 의류 단가가 너무 낮아 마진이 안 나오는 SKU만 남았을 가능성. 살아있는 의류 SKU 진단 필요.</div>
+</div>
+
+<div class="takeaway">
+  <h2>대표님께 우선순위 처방 (수정판)</h2>
+  <div class="kbox"><b>1순위. 26 SS 의류 신상 출시 가속화</b> — 매출 회복의 가장 큰 레버. 이게 들어와야 의류 단품 주문 +147건/2주가 회복됨. 마진 좋은 SKU부터.</div>
+  <div class="kbox"><b>2순위. 살아있는 의류 SKU 노출 강화</b> — 26 SS 의류 출시까지 시간차가 있다면, 26 VT(이너 류) 또는 살아있는 25 SS 02 의류 SKU를 메인에 노출. 의류 단품 손님이 살 게 있어야 함.</div>
+  <div class="kbox"><b>3순위. 가방 캐시카우는 유지</b> — 가방 매출은 안정적. 추가 할인이나 큰 변경 불필요. Washed Leopard Pink·Leopard Charcoal·Mori Brown 노출 우선만 유지.</div>
+  <div class="kbox"><b>4순위. Mori Mini Brown/Black 재고만 점검</b> — 5개월 꾸준히 팔리던 SKU가 동시에 멈춘 건 사실. 30일 분석에서 짚었던 재고/발주 점검은 그대로 진행하시되, '시급한 매출 회복 레버'는 아니라는 점을 같이 보세요.</div>
+  <div class="kbox"><b>5순위. 가방+의류 묶음 주문 회복</b> — 대형 묶음(15만+) 49→32건. 의류가 들어와야 자연 회복됨.</div>
+</div>
+
+<div class="note" style="margin-top:18px">데이터: 03_주문원본.csv 결제금액 패턴으로 카테고리 분류 (가방 단품 119~130k, Mini 89k, 의류 단품 &lt;100k, 묶음=상품수≥2 또는 단품 &gt;15만) · 일자별 매출 01_일별매출현황.csv · 시즌 정보 02_상품별판매현황.csv. <br>분석 한계: 결제금액 기반 카테고리 분류는 근사치. 정확한 SKU별 일자 데이터는 카페24 상품별 export 갱신 필요.</div>
+
+<script>
+const bw = [
+  {l:"02/16~03/01",rev:52.2,ord:398,aov:131120,daily:3.73},
+  {l:"03/02~03/15",rev:75.6,ord:537,aov:140764,daily:5.40},
+  {l:"03/16~03/29",rev:45.8,ord:373,aov:122742,daily:3.27},
+  {l:"03/30~04/12",rev:55.0,ord:493,aov:111483,daily:3.93},
+  {l:"04/13~04/26",rev:56.2,ord:541,aov:103918,daily:4.02},
+  {l:"04/27~05/10",rev:40.9,ord:337,aov:121429,daily:2.92}
+];
+new Chart(document.getElementById('biweek'),{
+  data:{labels:bw.map(x=>x.l),datasets:[
+    {type:'bar',label:'2주 매출 (M ₩)',data:bw.map(x=>x.rev),yAxisID:'y',backgroundColor:'rgba(29,29,27,0.85)',borderRadius:3,order:2},
+    {type:'line',label:'객단가 ₩',data:bw.map(x=>x.aov),yAxisID:'y1',borderColor:'#c44438',borderWidth:2,tension:.25,pointRadius:3,order:1},
+    {type:'line',label:'주문건수',data:bw.map(x=>x.ord),yAxisID:'y2',borderColor:'#3a7d44',borderDash:[5,4],borderWidth:2,tension:.25,pointRadius:3,order:1}
+  ]},
+  options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}},scales:{y:{position:'left',title:{display:true,text:'매출 (M ₩)'}},y1:{position:'right',title:{display:true,text:'객단가 ₩'},grid:{display:false},ticks:{callback:v=>v.toLocaleString()}},y2:{display:false}}}
+});
+
+const dailyData = [
+{d:"04/13",bag:8,mini:2,cloth:15,bundle_s:13,bundle_l:5},{d:"04/14",bag:6,mini:0,cloth:17,bundle_s:20,bundle_l:5},
+{d:"04/15",bag:7,mini:0,cloth:29,bundle_s:10,bundle_l:6},{d:"04/16",bag:8,mini:1,cloth:20,bundle_s:10,bundle_l:4},
+{d:"04/17",bag:5,mini:1,cloth:8,bundle_s:16,bundle_l:3},{d:"04/18",bag:7,mini:4,cloth:20,bundle_s:13,bundle_l:5},
+{d:"04/19",bag:9,mini:1,cloth:11,bundle_s:10,bundle_l:9},{d:"04/20",bag:9,mini:2,cloth:10,bundle_s:11,bundle_l:2},
+{d:"04/21",bag:8,mini:2,cloth:10,bundle_s:9,bundle_l:2},{d:"04/22",bag:10,mini:4,cloth:14,bundle_s:9,bundle_l:3},
+{d:"04/23",bag:8,mini:4,cloth:14,bundle_s:11,bundle_l:0},{d:"04/24",bag:10,mini:1,cloth:18,bundle_s:5,bundle_l:4},
+{d:"04/25",bag:4,mini:1,cloth:14,bundle_s:6,bundle_l:1},{d:"04/26",bag:6,mini:0,cloth:11,bundle_s:9,bundle_l:0},
+{d:"04/27",bag:4,mini:0,cloth:12,bundle_s:10,bundle_l:3},{d:"04/28",bag:6,mini:2,cloth:7,bundle_s:12,bundle_l:1},
+{d:"04/29",bag:8,mini:2,cloth:6,bundle_s:7,bundle_l:1},{d:"04/30",bag:5,mini:5,cloth:6,bundle_s:2,bundle_l:2},
+{d:"05/01",bag:8,mini:1,cloth:6,bundle_s:8,bundle_l:4},{d:"05/02",bag:12,mini:2,cloth:2,bundle_s:2,bundle_l:4},
+{d:"05/03",bag:12,mini:4,cloth:2,bundle_s:3,bundle_l:0},{d:"05/04",bag:10,mini:4,cloth:5,bundle_s:6,bundle_l:4},
+{d:"05/05",bag:5,mini:1,cloth:2,bundle_s:9,bundle_l:5},{d:"05/06",bag:10,mini:2,cloth:5,bundle_s:9,bundle_l:5},
+{d:"05/07",bag:8,mini:3,cloth:2,bundle_s:4,bundle_l:0},{d:"05/08",bag:8,mini:5,cloth:5,bundle_s:6,bundle_l:2},
+{d:"05/09",bag:10,mini:3,cloth:0,bundle_s:6,bundle_l:1},{d:"05/10",bag:7,mini:5,cloth:4,bundle_s:5,bundle_l:0}
+];
+new Chart(document.getElementById('daily'),{
+  data:{labels:dailyData.map(x=>x.d),datasets:[
+    {label:'의류 단품 (1점 <10만)',data:dailyData.map(x=>x.cloth),borderColor:'#c44438',backgroundColor:'rgba(196,68,56,0.15)',tension:.3,fill:true,pointRadius:2,borderWidth:2.5},
+    {label:'가방 단품 (Dimsum 119~130k)',data:dailyData.map(x=>x.bag),borderColor:'#1d1d1b',backgroundColor:'transparent',tension:.3,pointRadius:2,borderWidth:2},
+    {label:'Mini 가방 (89k)',data:dailyData.map(x=>x.mini),borderColor:'#3a7d44',backgroundColor:'transparent',tension:.3,pointRadius:2,borderWidth:1.5,borderDash:[4,3]},
+    {label:'소액 묶음 (<15만)',data:dailyData.map(x=>x.bundle_s),borderColor:'#888',backgroundColor:'transparent',tension:.3,pointRadius:2,borderWidth:1.5},
+    {label:'대형 묶음 (15만+)',data:dailyData.map(x=>x.bundle_l),borderColor:'#2b5687',backgroundColor:'transparent',tension:.3,pointRadius:2,borderWidth:1.5,borderDash:[2,2]}
+  ]},
+  options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}},scales:{y:{title:{display:true,text:'주문 건수'},beginAtZero:true}}}
+});
+</script>
+</body></html>

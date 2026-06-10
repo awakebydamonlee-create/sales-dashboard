@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2주 매출 보고서 | 5/18~5/31</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;color:#1e293b;font-size:13px}
+  .header{background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);color:white;padding:28px 32px 24px}
+  .header-title{font-size:22px;font-weight:800;letter-spacing:-0.3px}
+  .header-sub{font-size:13px;color:#94a3b8;margin-top:4px}
+  .section{padding:24px 32px 0}
+  .section-title{font-size:14px;font-weight:700;color:#0f3460;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+  .section-title::before{content:'';display:block;width:3px;height:16px;background:#0f3460;border-radius:2px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:0}
+  .kpi{background:white;border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .kpi-label{font-size:11px;color:#64748b;font-weight:600;margin-bottom:4px}
+  .kpi-value{font-size:20px;font-weight:800;color:#0f3460;line-height:1.1}
+  .kpi-sub{font-size:11px;color:#64748b;margin-top:3px}
+  .kpi-badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:700;margin-left:4px}
+  .up{background:#dcfce7;color:#16a34a}
+  .down{background:#fee2e2;color:#dc2626}
+  .neutral{background:#f1f5f9;color:#64748b}
+
+  .chart-row{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:0}
+  .card{background:white;border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .card-title{font-size:12px;font-weight:700;color:#475569;margin-bottom:12px}
+  .chart-wrap{position:relative;height:200px}
+
+  .insights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .insight-card{background:white;border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .insight-title{font-size:11px;font-weight:700;color:#64748b;margin-bottom:8px}
+  .insight-main{font-size:14px;font-weight:800;color:#0f3460;margin-bottom:4px}
+  .insight-desc{font-size:11px;color:#475569;line-height:1.5}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;margin-right:3px;margin-bottom:3px}
+  .tag-red{background:#fee2e2;color:#dc2626}
+  .tag-green{background:#dcfce7;color:#16a34a}
+  .tag-blue{background:#dbeafe;color:#1d4ed8}
+  .tag-orange{background:#ffedd5;color:#ea580c}
+
+  table{width:100%;border-collapse:collapse}
+  th{font-size:11px;font-weight:700;color:#64748b;text-align:left;padding:8px 10px;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+  td{font-size:12px;padding:8px 10px;border-bottom:1px solid #f1f5f9;color:#374151}
+  tr:hover td{background:#f8fafc}
+  .rank{font-size:11px;font-weight:800;color:#94a3b8;width:24px}
+  .prod-name{font-weight:600;color:#0f3460;max-width:200px}
+  .bar-wrap{width:100px;background:#f1f5f9;border-radius:4px;height:6px;display:inline-block;vertical-align:middle}
+  .bar-fill{height:6px;border-radius:4px;background:linear-gradient(90deg,#0f3460,#3b82f6)}
+  .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:#f1f5f9;color:#475569;white-space:nowrap}
+  .num{text-align:right;font-feature-settings:'tnum'}
+  .wow-up{color:#16a34a;font-weight:700}
+  .wow-down{color:#dc2626;font-weight:700}
+
+  .wow-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .wow-col{background:#f8fafc;border-radius:8px;padding:12px 14px}
+  .wow-week{font-size:10px;color:#94a3b8;font-weight:600;margin-bottom:4px}
+  .wow-val{font-size:16px;font-weight:800;color:#0f3460}
+  .wow-sub{font-size:11px;color:#64748b;margin-top:2px}
+
+  .price-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .price-label{font-size:11px;color:#475569;width:56px;flex-shrink:0}
+  .price-bar-bg{flex:1;background:#f1f5f9;border-radius:4px;height:14px;position:relative}
+  .price-bar{height:14px;border-radius:4px;background:linear-gradient(90deg,#0f3460,#3b82f6);display:flex;align-items:center;padding-left:6px}
+  .price-bar-val{font-size:10px;font-weight:700;color:white}
+
+  .footer{padding:20px 32px;font-size:11px;color:#94a3b8;border-top:1px solid #e2e8f0;margin-top:24px;background:white}
+
+  .alert-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px 14px;margin-bottom:0}
+  .alert-title{font-size:12px;font-weight:700;color:#ea580c;margin-bottom:4px}
+  .alert-desc{font-size:11px;color:#7c3aed;line-height:1.6;color:#78350f}
+
+  .section-gap{height:16px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">📊 2주 매출 보고서</div>
+  <div class="header-sub">2026년 5월 18일 ~ 5월 31일 (14일) · 국내자사몰 + 해외자사몰</div>
+</div>
+
+<!-- KPI -->
+<div class="section" style="padding-top:20px">
+  <div class="section-title">핵심 지표</div>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">2주 통합 매출</div>
+      <div class="kpi-value">₩103.5M</div>
+      <div class="kpi-sub">YoY <span class="kpi-badge up">+64.2%</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">총 주문 건수</div>
+      <div class="kpi-value">668건</div>
+      <div class="kpi-sub">국내 396 · 해외 272</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">국내 AOV</div>
+      <div class="kpi-value">₩105,603</div>
+      <div class="kpi-sub">전월 대비 <span class="kpi-badge down">▼3.1%</span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">해외 AOV</div>
+      <div class="kpi-value">$156.3</div>
+      <div class="kpi-sub">₩226,661 환산</div>
+    </div>
+  </div>
+</div>
+
+<!-- 채널 비중 + WoW -->
+<div class="section-gap"></div>
+<div class="section">
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-title">일별 매출 추이 (원화 환산)</div>
+      <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">채널 비중</div>
+      <div class="chart-wrap"><canvas id="channelChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- WoW 비교 -->
+<div class="section-gap"></div>
+<div class="section">
+  <div class="section-title">주차별 비교 (WoW)</div>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">1주차 (5/18~24) 매출</div>
+      <div class="kpi-value">₩51.4M</div>
+      <div class="kpi-sub">국내 ₩23.9M · 해외 ₩27.5M</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">2주차 (5/25~31) 매출</div>
+      <div class="kpi-value">₩52.1M</div>
+      <div class="kpi-sub">국내 ₩17.9M · 해외 ₩34.2M</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">국내 WoW</div>
+      <div class="kpi-value" style="color:#dc2626">▼25.4%</div>
+      <div class="kpi-sub">국내 주문 218→178건</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">해외 WoW</div>
+      <div class="kpi-value" style="color:#16a34a">▲24.6%</div>
+      <div class="kpi-sub">해외 주문 124→148건</div>
+    </div>
+  </div>
+</div>
+
+<!-- 국내 매출 저조 분석 -->
+<div class="section-gap"></div>
+<div class="section">
+  <div class="section-title">⚠️ 국내 매출 저조 원인 분석</div>
+  <div class="insights-grid">
+    <div class="insight-card">
+      <div class="insight-title">① 채널 믹스 구조 변화</div>
+      <div class="insight-main">국내 비중 40%</div>
+      <div class="insight-desc">
+        전년 동기 국내 91% → 올해 40%.<br>
+        해외가 +1,045% 급성장하면서 전체 매출은 +64% 성장했지만, <strong>국내 절대액은 YoY -27.4%</strong>.<br><br>
+        <span class="tag tag-orange">구조적 변화</span> 해외 비중이 매월 증가 추세 (1월 54% → 5월 60%)
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">② 국내 객단가 하락</div>
+      <div class="insight-main">AOV ₩105,603 (역대 최저)</div>
+      <div class="insight-desc">
+        1월 ₩142,071 → 4월 ₩108,140 → 5월 ₩105,603으로 꾸준히 하락.<br><br>
+        <strong>원인: 여름 상품 가격대 낮음</strong><br>
+        Jelly Bag (₩120~130K) + 의류 (₩30~90K) 비중 증가.<br>
+        <span class="tag tag-red">가격 믹스 문제</span>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">③ 국내 가격대 분포 (2주)</div>
+      <div class="insight-main">10~15만원대가 45.5%</div>
+      <div class="insight-desc">
+        <div class="price-row"><span class="price-label">~5만</span><div class="price-bar-bg"><div class="price-bar" style="width:8%"><span class="price-bar-val">32건</span></div></div></div>
+        <div class="price-row"><span class="price-label">5~10만</span><div class="price-bar-bg"><div class="price-bar" style="width:38%"><span class="price-bar-val">151건</span></div></div></div>
+        <div class="price-row"><span class="price-label">10~15만</span><div class="price-bar-bg"><div class="price-bar" style="width:46%"><span class="price-bar-val">182건</span></div></div></div>
+        <div class="price-row"><span class="price-label">15~20만</span><div class="price-bar-bg"><div class="price-bar" style="width:4%"><span class="price-bar-val">14건</span></div></div></div>
+        <div class="price-row"><span class="price-label">20만+</span><div class="price-bar-bg"><div class="price-bar" style="width:4%"><span class="price-bar-val">17건</span></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 상품 Top15 -->
+<div class="section-gap"></div>
+<div class="section">
+  <div class="section-title">Top 15 상품 (2주 합산 매출 기준)</div>
+  <div class="card" style="padding:0 0 8px">
+    <table>
+      <thead>
+        <tr>
+          <th class="rank">#</th>
+          <th>상품명</th>
+          <th>시즌</th>
+          <th class="num">판매량</th>
+          <th class="num">매출</th>
+          <th style="width:100px">국내/해외 비중</th>
+          <th class="num">국내</th>
+          <th class="num">해외</th>
+        </tr>
+      </thead>
+      <tbody id="top15-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 시즌별 + 가방 vs 의류 -->
+<div class="section-gap"></div>
+<div class="section">
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-title">시즌별 매출 분포</div>
+      <div class="chart-wrap"><canvas id="seasonChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">카테고리 비교 (가방 vs 의류)</div>
+      <div style="padding-top:10px">
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">가방</div>
+          <div style="font-size:20px;font-weight:800;color:#0f3460">₩64.7M <span style="font-size:13px;font-weight:400;color:#64748b">468개</span></div>
+          <div style="height:8px;background:#dbeafe;border-radius:4px;margin-top:6px">
+            <div style="height:8px;width:91.7%;background:#0f3460;border-radius:4px"></div>
+          </div>
+          <div style="font-size:10px;color:#64748b;margin-top:3px">전체 매출의 91.7%</div>
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">의류</div>
+          <div style="font-size:20px;font-weight:800;color:#3b82f6">₩5.8M <span style="font-size:13px;font-weight:400;color:#64748b">98개</span></div>
+          <div style="height:8px;background:#dbeafe;border-radius:4px;margin-top:6px">
+            <div style="height:8px;width:8.3%;background:#3b82f6;border-radius:4px"></div>
+          </div>
+          <div style="font-size:10px;color:#64748b;margin-top:3px">전체 매출의 8.3%</div>
+        </div>
+        <div class="alert-box" style="margin-top:8px">
+          <div class="alert-title">의류 비중 8.3%</div>
+          <div class="alert-desc">SS 시즌 의류가 아직 트랙션 없음. 가방 의존도 매우 높은 구조.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 가방 상품별 트렌드 분석 -->
+<div class="section-gap"></div>
+<div class="section">
+  <div class="section-title">가방 판매 트렌드 분석</div>
+  <div class="insights-grid">
+    <div class="insight-card">
+      <div class="insight-title">🔥 상승 중인 상품</div>
+      <div class="insight-desc" style="font-size:12px;line-height:1.8">
+        <strong>Jelly Dimsum Bag Mint</strong> — 48개<br>
+        <span class="tag tag-green">1주→2주 +WoW</span> 핫썸머 라인 중 최다<br><br>
+        <strong>Mini Washed Leopard Pink</strong> — 54개<br>
+        <span class="tag tag-green">국내+해외 균형</span> 2주 연속 Top3<br><br>
+        <strong>Mini Choco Blush Mori</strong> — 27개<br>
+        <span class="tag tag-blue">해외 강세</span> 해외 비중 63%
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">📊 베스트셀러 현황</div>
+      <div class="insight-desc" style="font-size:12px;line-height:1.8">
+        <strong>Mori Dimsum Bag Brown</strong> — 65개, ₩10.5M<br>
+        <span class="tag tag-blue">국내+해외 균형</span> 국내28 / 해외37<br>
+        2주 누적 매출 1위 유지 중<br><br>
+        <strong>Washed Leopard Pink</strong> — 60개, ₩8.9M<br>
+        국내 36 / 해외 24<br>
+        <span class="tag tag-orange">FW 시즌이지만 SS에도 지속 판매</span>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">❗ 주의 신호</div>
+      <div class="insight-desc" style="font-size:12px;line-height:1.8">
+        <strong>Jelly Bag Lemon</strong> — 국내 33 vs 해외 5<br>
+        <span class="tag tag-red">해외 반응 없음</span> 국내 특화 색상<br><br>
+        <strong>전반적 FW 가방 의존</strong><br>
+        매출 Top2가 모두 25 FW 가방 1차.<br>
+        26 SS/VT 신상은 아직 볼륨 부족.<br><br>
+        <span class="tag tag-red">SS 신상 트랙션 저조</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-gap"></div>
+<div class="footer">
+  데이터 기준: 2026-05-31 · 국내자사몰 + 해외자사몰 (카페24) · 취소/반품 제외 · 환율 $1=₩1,450 적용
+</div>
+
+<script>
+// ── 데이터 ──
+const DAILY = [
+  {date:"05/18",total:6785778,dom:2713671,ovs:4072107,orders:45,dom_ord:26,ovs_ord:19},
+  {date:"05/19",total:6637895,dom:3345119,ovs:3292776,orders:39,dom_ord:23,ovs_ord:16},
+  {date:"05/20",total:7199831,dom:3165003,ovs:4034828,orders:48,dom_ord:31,ovs_ord:17},
+  {date:"05/21",total:7745652,dom:3211691,ovs:4533961,orders:50,dom_ord:29,ovs_ord:21},
+  {date:"05/22",total:8551483,dom:4189361,ovs:4362122,orders:62,dom_ord:43,ovs_ord:19},
+  {date:"05/23",total:7674117,dom:4655681,ovs:3018436,orders:57,dom_ord:42,ovs_ord:15},
+  {date:"05/24",total:6809139,dom:2669374,ovs:4139765,orders:41,dom_ord:24,ovs_ord:17},
+  {date:"05/25",total:9270641,dom:4040651,ovs:5229990,orders:61,dom_ord:41,ovs_ord:20},
+  {date:"05/26",total:6066048,dom:2345218,ovs:3720830,orders:43,dom_ord:25,ovs_ord:18},
+  {date:"05/27",total:6960734,dom:2066593,ovs:4894141,orders:40,dom_ord:18,ovs_ord:22},
+  {date:"05/28",total:6565187,dom:1981215,ovs:4583972,orders:40,dom_ord:20,ovs_ord:20},
+  {date:"05/29",total:7533355,dom:2101800,ovs:5431555,orders:45,dom_ord:20,ovs_ord:25},
+  {date:"05/30",total:7716558,dom:2266008,ovs:5450550,orders:45,dom_ord:23,ovs_ord:22},
+  {date:"05/31",total:7954491,dom:3067657,ovs:4886834,orders:52,dom_ord:31,ovs_ord:21},
+];
+
+const TOP15 = [
+  {name:"Mori Dimsum Bag Brown",season:"25 FW 가방 1차",qty:65,rev:10459199,dom_qty:28,ovs_qty:37,dom_rev:3477600,ovs_rev:6981599},
+  {name:"Washed Leopard Dimsum Bag Pink",season:"25 FW 가방 1차",qty:60,rev:8891230,dom_qty:36,ovs_qty:24,dom_rev:5292000,ovs_rev:3599230},
+  {name:"Mini Washed Leopard Dimsum Bag Pink",season:"26 VT",qty:54,rev:6256898,dom_qty:33,ovs_qty:21,dom_rev:3928500,ovs_rev:2328398},
+  {name:"Jelly Dimsum Bag Mint",season:"26 HS 핫썸머",qty:48,rev:6180802,dom_qty:28,ovs_qty:20,dom_rev:3528000,ovs_rev:2652802},
+  {name:"Leopard Dimsum Bag Charcoal",season:"25 FW 가방 1차",qty:41,rev:5901307,dom_qty:22,ovs_qty:19,dom_rev:3234000,ovs_rev:2667307},
+  {name:"Jelly Dimsum Bag Lemon",season:"26 HS 핫썸머",qty:38,rev:4232050,dom_qty:33,ovs_qty:5,dom_rev:4092000,ovs_rev:140050},
+  {name:"Mini Chocolate Blush Mori Dimsum Bag",season:"26 SS 01",qty:27,rev:3982352,dom_qty:10,ovs_qty:17,dom_rev:1450000,ovs_rev:2532352},
+  {name:"Mini Washed Leopard Dimsum Bag Purple",season:"26 VT",qty:22,rev:2672981,dom_qty:10,ovs_qty:12,dom_rev:1190000,ovs_rev:1482981},
+  {name:"Jelly Dimsum Bag Peach",season:"26 HS 핫썸머",qty:20,rev:2614039,dom_qty:10,ovs_qty:10,dom_rev:1290000,ovs_rev:1324039},
+  {name:"Washed Leopard Dimsum Bag Purple",season:"26 SS 01",qty:16,rev:2580440,dom_qty:6,ovs_qty:10,dom_rev:930000,ovs_rev:1650440},
+  {name:"Chocolate Blush Mori Dimsum Bag",season:"26 SS 01",qty:15,rev:2568350,dom_qty:4,ovs_qty:11,dom_rev:580000,ovs_rev:1988350},
+  {name:"Glaze Vanilla Dimsum Bag",season:"26 SS 01",qty:17,rev:2287321,dom_qty:12,ovs_qty:5,dom_rev:1620000,ovs_rev:667321},
+  {name:"Dot Cozy Dumpling Bag Gray",season:"25 SS 02",qty:17,rev:2279556,dom_qty:10,ovs_qty:7,dom_rev:1330000,ovs_rev:949556},
+  {name:"Glaze Pearl Gray Dimsum Bag",season:"26 SS 01",qty:9,rev:1259124,dom_qty:6,ovs_qty:3,dom_rev:852000,ovs_rev:407124},
+  {name:"Ink Dimsum Bag",season:"26 SS 01",qty:8,rev:1256484,dom_qty:3,ovs_qty:5,dom_rev:435000,ovs_rev:821484},
+];
+
+const SEASONS = [
+  {season:"25 FW 가방 1차",rev:25251736,qty:166},
+  {season:"26 SS 01",rev:18048007,qty:145},
+  {season:"26 HS 핫썸머",rev:13026891,qty:106},
+  {season:"26 VT",rev:9773384,qty:90},
+  {season:"25 SS 02",rev:3714497,qty:49},
+  {season:"25 FW 02",rev:2464364,qty:22},
+  {season:"기타",rev:1466045,qty:25},
+];
+
+// ── 일별 차트 ──
+new Chart(document.getElementById('dailyChart'), {
+  type: 'bar',
+  data: {
+    labels: DAILY.map(r=>r.date),
+    datasets: [
+      {label:'국내',data:DAILY.map(r=>r.dom),backgroundColor:'#3b82f6',stack:'s',borderRadius:3},
+      {label:'해외',data:DAILY.map(r=>r.ovs),backgroundColor:'#0f3460',stack:'s',borderRadius:3},
+      {label:'주문수',data:DAILY.map(r=>r.orders),type:'line',yAxisID:'y2',
+       borderColor:'#f97316',backgroundColor:'transparent',pointRadius:3,pointBackgroundColor:'#f97316',
+       borderWidth:2,tension:0.3}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}}},
+    scales:{
+      y:{stacked:true,ticks:{font:{size:9},callback:v=>v>=1000000?'₩'+(v/1000000).toFixed(1)+'M':'₩'+v.toLocaleString()},grid:{color:'#f1f5f9'}},
+      y2:{position:'right',ticks:{font:{size:9}},grid:{display:false}},
+      x:{ticks:{font:{size:9}},grid:{display:false}}
+    }
+  }
+});
+
+// ── 채널 파이 ──
+new Chart(document.getElementById('channelChart'), {
+  type:'doughnut',
+  data:{
+    labels:['국내 매출','해외 매출'],
+    datasets:[{data:[41819042,61651868],backgroundColor:['#3b82f6','#0f3460'],borderWidth:0,hoverOffset:4}]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,cutout:'65%',
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}},
+      tooltip:{callbacks:{label:c=>{const t=103470910;return c.label+': ₩'+(c.raw/1000000).toFixed(1)+'M ('+((c.raw/t)*100).toFixed(0)+'%)'}}}
+    }
+  }
+});
+
+// ── 시즌 차트 ──
+new Chart(document.getElementById('seasonChart'), {
+  type:'bar',
+  data:{
+    labels:SEASONS.map(r=>r.season),
+    datasets:[{data:SEASONS.map(r=>r.rev),backgroundColor:['#0f3460','#3b82f6','#06b6d4','#8b5cf6','#94a3b8','#cbd5e1','#e2e8f0'],borderRadius:4}]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'₩'+(c.raw/1000000).toFixed(1)+'M ('+c.dataset.data[c.dataIndex].toLocaleString()+'원)'}}},
+    scales:{
+      x:{ticks:{font:{size:9},callback:v=>'₩'+(v/1000000).toFixed(0)+'M'},grid:{color:'#f1f5f9'}},
+      y:{ticks:{font:{size:9}},grid:{display:false}}
+    }
+  }
+});
+
+// ── Top15 테이블 ──
+const maxRev = TOP15[0].rev;
+const tbody = document.getElementById('top15-body');
+TOP15.forEach((p,i)=>{
+  const domPct = Math.round(p.dom_qty/(p.dom_qty+p.ovs_qty)*100);
+  const ovsPct = 100-domPct;
+  const barW = Math.round(p.rev/maxRev*100);
+  const seasonColor = p.season.includes('FW') ? '#1d4ed8' : p.season.includes('HS') ? '#ea580c' : p.season.includes('VT') ? '#7c3aed' : '#0f766e';
+  tbody.innerHTML += `<tr>
+    <td class="rank">${i+1}</td>
+    <td class="prod-name">${p.name}</td>
+    <td><span class="pill" style="color:${seasonColor}">${p.season}</span></td>
+    <td class="num">${p.qty}개</td>
+    <td class="num">
+      <div>₩${(p.rev/1000000).toFixed(1)}M</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${barW}%"></div></div>
+    </td>
+    <td>
+      <div style="display:flex;align-items:center;gap:3px;font-size:10px">
+        <div style="width:${domPct}%;background:#3b82f6;height:8px;border-radius:2px 0 0 2px;min-width:2px"></div>
+        <div style="width:${ovsPct}%;background:#0f3460;height:8px;border-radius:0 2px 2px 0;min-width:2px"></div>
+      </div>
+      <div style="font-size:10px;color:#94a3b8;margin-top:2px">국내${domPct}% 해외${ovsPct}%</div>
+    </td>
+    <td class="num">${p.dom_qty}개</td>
+    <td class="num">${p.ovs_qty}개</td>
+  </tr>`;
+});
+</script>
+</body>
+</html>

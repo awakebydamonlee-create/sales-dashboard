@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<title>Jelly Dimsum Bag — 국내/해외 수요 상세</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif; background: #fafafa; color: #1a1a1a; padding: 32px; }
+.container { max-width: 1200px; margin: 0 auto; }
+h1 { font-size: 28px; margin-bottom: 8px; }
+.subtitle { color: #666; margin-bottom: 32px; font-size: 14px; }
+.section-title { font-size: 18px; font-weight: 700; margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+.section-title .accent { color: #667eea; }
+.hero { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.hero-card { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.hero-label { font-size: 11px; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.hero-value { font-size: 22px; font-weight: 700; }
+.hero-sub { font-size: 11px; color: #888; margin-top: 4px; }
+.dom-color { color: #4a90e2; }
+.int-color { color: #e74c3c; }
+.channel-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+.channel-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border-top: 4px solid; }
+.channel-card.dom { border-color: #4a90e2; }
+.channel-card.int { border-color: #e74c3c; }
+.channel-card h3 { font-size: 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.channel-stat { display: flex; justify-content: space-between; padding: 10px 0; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+.channel-stat:last-child { border-bottom: none; }
+.channel-stat b { font-weight: 600; }
+.color-detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+.color-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border-top: 4px solid; }
+.lemon { border-color: #ffd84a; }
+.mint { border-color: #7dd3a8; }
+.peach { border-color: #ffb380; }
+.color-name { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.color-share-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 16px; background: #f0f0f0; }
+.share-dom { background: #4a90e2; transition: width 0.3s; }
+.share-int { background: #e74c3c; transition: width 0.3s; }
+.share-labels { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-bottom: 16px; margin-top: -10px; }
+.metric-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; }
+.metric-row:last-child { border-bottom: none; }
+.metric { display: flex; flex-direction: column; }
+.metric-label { font-size: 11px; color: #888; text-transform: uppercase; }
+.metric-value { font-size: 16px; font-weight: 600; margin-top: 2px; }
+.metric.dom .metric-value { color: #4a90e2; }
+.metric.int .metric-value { color: #e74c3c; }
+.daily-trend { display: flex; gap: 4px; margin-top: 8px; align-items: end; height: 50px; }
+.daily-bar { flex: 1; background: linear-gradient(180deg, #88a8e8, #5a82d1); border-radius: 3px 3px 0 0; position: relative; min-height: 4px; }
+.daily-bar.int-bar { background: linear-gradient(180deg, #ff9988, #e74c3c); }
+.daily-bar::after { content: attr(data-v); position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 600; }
+.daily-labels { display: flex; gap: 4px; margin-top: 4px; }
+.daily-label { flex: 1; text-align: center; font-size: 10px; color: #888; }
+.reorder-table { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+.reorder-table th, .reorder-table td { padding: 14px 16px; text-align: left; font-size: 14px; }
+.reorder-table th { background: #f8f8f8; font-weight: 600; color: #555; font-size: 12px; text-transform: uppercase; }
+.reorder-table td { border-top: 1px solid #f0f0f0; vertical-align: middle; }
+.reorder-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.reorder-table .reorder-final { font-weight: 700; font-size: 16px; color: #667eea; }
+.tag-dom { background: #e8f0fc; color: #4a90e2; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.tag-int { background: #fde8e6; color: #e74c3c; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.priority { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+.p1 { background: #ff4444; color: white; }
+.p2 { background: #ff9944; color: white; }
+.p3 { background: #66bb66; color: white; }
+.country-pill { display: inline-block; background: #f4f6f9; padding: 4px 10px; border-radius: 12px; font-size: 12px; margin-right: 6px; margin-top: 4px; }
+.country-pill b { color: #4a90e2; }
+.note { background: white; border-left: 4px solid #667eea; padding: 20px; margin-top: 24px; border-radius: 8px; font-size: 14px; line-height: 1.7; color: #333; }
+.note b { color: #1a1a1a; }
+.alert { background: #fff8e1; border-left: 4px solid #ffa726; padding: 20px; margin-top: 24px; border-radius: 8px; font-size: 14px; line-height: 1.7; }
+</style></head><body><div class="container">
+<h1>🍬 Jelly Dimsum Bag — 국내/해외 수요 상세</h1>
+<p class="subtitle">발매 2026-05-11 · 분석 5/11 ~ 5/13 (3일차) · 초도 100개 × 3색 = 300개</p>
+
+<div class="hero">
+  <div class="hero-card">
+    <div class="hero-label">전체 판매</div>
+    <div class="hero-value">54개</div>
+    <div class="hero-sub">/ 300개 (18.0%)</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label dom-color">국내 판매</div>
+    <div class="hero-value dom-color">39개</div>
+    <div class="hero-sub">72% 비중</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label int-color">해외 판매</div>
+    <div class="hero-value int-color">15개</div>
+    <div class="hero-sub">28% 비중</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">잔여 재고</div>
+    <div class="hero-value">246개</div>
+    <div class="hero-sub">3색 합계</div>
+  </div>
+</div>
+<h3 class="section-title"><span class="accent">📊</span> 채널별 종합</h3>
+<div class="channel-split">
+  <div class="channel-card dom">
+    <h3>📍 국내자사몰</h3>
+    <div class="channel-stat"><span>판매수량</span><b>39개</b></div>
+    <div class="channel-stat"><span>매출</span><b>4,095,000원</b></div>
+    <div class="channel-stat"><span>주문건수</span><b>39건</b></div>
+    <div class="channel-stat"><span>평균 단가</span><b>105,000원</b></div>
+    <div class="channel-stat"><span>건당 평균</span><b>1.0개</b></div>
+    <div class="channel-stat"><span>일평균 (3일)</span><b>13.0개</b></div>
+  </div>
+  <div class="channel-card int">
+    <h3>🌐 해외자사몰</h3>
+    <div class="channel-stat"><span>판매수량</span><b>15개</b></div>
+    <div class="channel-stat"><span>매출</span><b>$1880.90 (2,727,305원)</b></div>
+    <div class="channel-stat"><span>주문건수</span><b>15건</b></div>
+    <div class="channel-stat"><span>평균 단가</span><b>$125</b></div>
+    <div class="channel-stat"><span>건당 평균</span><b>1.0개</b></div>
+    <div class="channel-stat"><span>일평균 (3일)</span><b>5.0개</b></div>
+  </div>
+</div><h3 class="section-title"><span class="accent">🎨</span> 색상별 채널 분해</h3><div class="color-detail-grid">
+  <div class="color-card lemon">
+    <div class="color-name">Lemon</div>
+    <div style="font-size:13px;color:#666;margin-bottom:10px;">총 20개 · 잔여 <b style="color:#e74c3c;">80개</b></div>
+    <div class="color-share-bar">
+      <div class="share-dom" style="width:90.0%"></div>
+      <div class="share-int" style="width:10.0%"></div>
+    </div>
+    <div class="share-labels"><span><span class="tag-dom">국내 90%</span></span><span><span class="tag-int">해외 10%</span></span></div>
+    
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 판매</span>
+        <span class="metric-value">18개</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 판매</span>
+        <span class="metric-value">2개</span>
+      </div>
+    </div>
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 매출</span>
+        <span class="metric-value">1,890,000원</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 매출</span>
+        <span class="metric-value">$246</span>
+      </div>
+    </div>
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 일평균</span>
+        <span class="metric-value">6.0개</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 일평균</span>
+        <span class="metric-value">0.7개</span>
+      </div>
+    </div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">국내 일별 추세</div>
+    <div class="daily-trend"><div class="daily-bar" data-v="8" style="height:48.0px"></div><div class="daily-bar" data-v="7" style="height:43.0px"></div><div class="daily-bar" data-v="3" style="height:23.0px"></div></div>
+    <div class="daily-labels"><span class="daily-label">5/11</span><span class="daily-label">5/12</span><span class="daily-label">5/13</span></div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">해외 일별 추세</div>
+    <div class="daily-trend"><div class="daily-bar int-bar" data-v="0" style="height:8.0px"></div><div class="daily-bar int-bar" data-v="0" style="height:8.0px"></div><div class="daily-bar int-bar" data-v="2" style="height:48.0px"></div></div>
+    <div class="daily-labels"><span class="daily-label">5/11</span><span class="daily-label">5/12</span><span class="daily-label">5/13</span></div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">해외 국가 분포</div>
+    <div style="margin-top:6px;"><span class="country-pill">US <b>1개</b></span><span class="country-pill">JP <b>1개</b></span></div>
+  </div>
+  <div class="color-card mint">
+    <div class="color-name">Mint</div>
+    <div style="font-size:13px;color:#666;margin-bottom:10px;">총 23개 · 잔여 <b style="color:#e74c3c;">77개</b></div>
+    <div class="color-share-bar">
+      <div class="share-dom" style="width:65.21739130434783%"></div>
+      <div class="share-int" style="width:34.78260869565217%"></div>
+    </div>
+    <div class="share-labels"><span><span class="tag-dom">국내 65%</span></span><span><span class="tag-int">해외 35%</span></span></div>
+    
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 판매</span>
+        <span class="metric-value">15개</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 판매</span>
+        <span class="metric-value">8개</span>
+      </div>
+    </div>
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 매출</span>
+        <span class="metric-value">1,575,000원</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 매출</span>
+        <span class="metric-value">$1024</span>
+      </div>
+    </div>
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 일평균</span>
+        <span class="metric-value">5.0개</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 일평균</span>
+        <span class="metric-value">2.7개</span>
+      </div>
+    </div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">국내 일별 추세</div>
+    <div class="daily-trend"><div class="daily-bar" data-v="6" style="height:38.0px"></div><div class="daily-bar" data-v="8" style="height:48.0px"></div><div class="daily-bar" data-v="1" style="height:13.0px"></div></div>
+    <div class="daily-labels"><span class="daily-label">5/11</span><span class="daily-label">5/12</span><span class="daily-label">5/13</span></div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">해외 일별 추세</div>
+    <div class="daily-trend"><div class="daily-bar int-bar" data-v="1" style="height:18.0px"></div><div class="daily-bar int-bar" data-v="4" style="height:48.0px"></div><div class="daily-bar int-bar" data-v="3" style="height:38.0px"></div></div>
+    <div class="daily-labels"><span class="daily-label">5/11</span><span class="daily-label">5/12</span><span class="daily-label">5/13</span></div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">해외 국가 분포</div>
+    <div style="margin-top:6px;"><span class="country-pill">US <b>6개</b></span><span class="country-pill">JP <b>2개</b></span></div>
+  </div>
+  <div class="color-card peach">
+    <div class="color-name">Peach</div>
+    <div style="font-size:13px;color:#666;margin-bottom:10px;">총 11개 · 잔여 <b style="color:#e74c3c;">89개</b></div>
+    <div class="color-share-bar">
+      <div class="share-dom" style="width:54.54545454545454%"></div>
+      <div class="share-int" style="width:45.45454545454545%"></div>
+    </div>
+    <div class="share-labels"><span><span class="tag-dom">국내 55%</span></span><span><span class="tag-int">해외 45%</span></span></div>
+    
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 판매</span>
+        <span class="metric-value">6개</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 판매</span>
+        <span class="metric-value">5개</span>
+      </div>
+    </div>
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 매출</span>
+        <span class="metric-value">630,000원</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 매출</span>
+        <span class="metric-value">$611</span>
+      </div>
+    </div>
+    <div class="metric-row">
+      <div class="metric dom">
+        <span class="metric-label">국내 일평균</span>
+        <span class="metric-value">2.0개</span>
+      </div>
+      <div class="metric int">
+        <span class="metric-label">해외 일평균</span>
+        <span class="metric-value">1.7개</span>
+      </div>
+    </div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">국내 일별 추세</div>
+    <div class="daily-trend"><div class="daily-bar" data-v="2" style="height:28.0px"></div><div class="daily-bar" data-v="4" style="height:48.0px"></div><div class="daily-bar" data-v="0" style="height:8.0px"></div></div>
+    <div class="daily-labels"><span class="daily-label">5/11</span><span class="daily-label">5/12</span><span class="daily-label">5/13</span></div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">해외 일별 추세</div>
+    <div class="daily-trend"><div class="daily-bar int-bar" data-v="1" style="height:28.0px"></div><div class="daily-bar int-bar" data-v="2" style="height:48.0px"></div><div class="daily-bar int-bar" data-v="2" style="height:48.0px"></div></div>
+    <div class="daily-labels"><span class="daily-label">5/11</span><span class="daily-label">5/12</span><span class="daily-label">5/13</span></div>
+    
+    <div style="margin-top:16px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;">해외 국가 분포</div>
+    <div style="margin-top:6px;"><span class="country-pill">US <b>4개</b></span><span class="country-pill">AU <b>1개</b></span></div>
+  </div></div>
+<h3 class="section-title"><span class="accent">🎯</span> 채널별 리오더 의사결정 표</h3>
+<table class="reorder-table">
+  <thead>
+    <tr>
+      <th>색상</th>
+      <th class="num">국내<br>일평균</th>
+      <th class="num">해외<br>일평균</th>
+      <th class="num">국내<br>30일 추정</th>
+      <th class="num">해외<br>30일 추정</th>
+      <th class="num">잔여<br>재고</th>
+      <th class="num">부족분<br>(30일)</th>
+      <th class="num">안전재고<br>(10일치)</th>
+      <th class="num">리오더<br>권장</th>
+      <th>우선순위</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>Lemon</b></td>
+      <td class="num">6.0</td>
+      <td class="num">0.7</td>
+      <td class="num">125</td>
+      <td class="num">14</td>
+      <td class="num">80</td>
+      <td class="num">59</td>
+      <td class="num">+67</td>
+      <td class="num reorder-final">126개</td>
+      <td><span class="priority p2">2순위</span></td>
+    </tr>
+    <tr>
+      <td><b>Mint</b></td>
+      <td class="num">5.0</td>
+      <td class="num">2.7</td>
+      <td class="num">104</td>
+      <td class="num">55</td>
+      <td class="num">77</td>
+      <td class="num">82</td>
+      <td class="num">+77</td>
+      <td class="num reorder-final">159개</td>
+      <td><span class="priority p1">1순위</span></td>
+    </tr>
+    <tr>
+      <td><b>Peach</b></td>
+      <td class="num">2.0</td>
+      <td class="num">1.7</td>
+      <td class="num">42</td>
+      <td class="num">35</td>
+      <td class="num">89</td>
+      <td class="num">0</td>
+      <td class="num">+37</td>
+      <td class="num reorder-final">37개</td>
+      <td><span class="priority p3">3순위</span></td>
+    </tr>
+  </tbody>
+</table>
+<div class="alert">
+  <b>⚠️ 채널별 수요 비대칭 — 채널 맞춤 발주가 필요</b><br><br>
+  현재 색상마다 국내/해외 비중이 다릅니다:<br>
+  • <b>Lemon</b>: 국내 90% : 해외 10% — <b>국내 위주 발주</b><br>
+  • <b>Mint</b>: 국내 65% : 해외 35% — <b>균형 발주, 해외 영업 강화 가치 있음</b><br>
+  • <b>Peach</b>: 국내 55% : 해외 45% — <b>해외 의존도 가장 높음</b><br><br>
+  특히 <b>Peach는 국내 5/13 판매 0개</b> — 국내 수요 약화 신호. 해외 마케팅으로 살리는 게 우선.
+</div>
+
+<div class="note">
+  <b>📌 채널별 리오더 권장 요약</b><br><br>
+  
+  <b>1순위 — Mint (159개)</b><br>
+  → 일평균 7.7개 (국내 5.0 + 해외 2.7) · 잔여 77개로 약 10일치만 남음<br>
+  → 글로벌 수요 확인됨 (US 6, JP 2). 리드타임 고려 즉시 발주 권장<br><br>
+  
+  <b>2순위 — Lemon (126개)</b><br>
+  → 국내 일평균 6.0개로 안정적, 해외는 5/13 첫 발생(US, JP 각 1)<br>
+  → 국내 위주 발주하되, 해외 노출 후 추세 1주 더 보고 결정 가능<br><br>
+  
+  <b>3순위 — Peach (37개)</b><br>
+  → 잔여 89개로 약 24일치 = 30일 보수추정 76개도 충당 가능<br>
+  → 안전재고 (37개) 정도만 발주. 국내 매력 재검토 + 해외 마케팅 강화 우선<br><br>
+  
+  <b>총 권장 발주량: 322개</b> (Mint 159 + Lemon 126 + Peach 37)<br><br>
+  
+  <b>📝 추정 방법론</b><br>
+  • 일평균 = 3일 누적 판매량 ÷ 3<br>
+  • 30일 보수추정 = 일평균 × 7일 (피크) + 일평균 × 0.6 × 23일 (정상화)<br>
+  • 안전재고 = (국내+해외 일평균) × 10일<br>
+  • 발매 직후 수요 피크가 둔화되는 일반 패턴 반영. 1주 뒤 재계산 권장
+</div>
+
+<p style="text-align:center;margin-top:40px;color:#888;font-size:12px;">📊 분석 2026-05-13 · USD-KRW 1,450 환산</p>
+</div></body></html>

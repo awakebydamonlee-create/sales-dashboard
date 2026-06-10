@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<title>7일간 매출·출고 분석 (5/12~5/18)</title>
+<style>
+body{font-family:-apple-system,'Segoe UI',sans-serif;background:#f8fafc;color:#1e293b;margin:0;padding:24px;}
+h1{margin:0 0 4px;font-size:24px;}
+.sub{color:#64748b;font-size:13px;margin-bottom:24px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px;}
+.card{background:white;border-radius:12px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.card .lbl{color:#64748b;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
+.card .v{font-size:24px;font-weight:700;margin-top:6px;color:#0f172a;}
+.card .s{color:#64748b;font-size:12px;margin-top:4px;}
+.section{background:white;border-radius:12px;padding:22px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.section h2{margin:0 0 14px;font-size:18px;display:flex;align-items:center;gap:8px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid #f1f5f9;}
+th{background:#f8fafc;font-weight:600;color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:0.3px;}
+.r{text-align:right;}
+.b{font-weight:600;}
+.muted{color:#94a3b8;}
+.small{font-size:11px;}
+.dow{color:#64748b;font-size:11px;}
+.sb{background:#f1f5f9;border-radius:5px;padding:2px 7px;font-size:11px;color:#475569;}
+.badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:600;}
+.badge.red{background:#fee2e2;color:#b91c1c;}
+.badge.orange{background:#fed7aa;color:#c2410c;}
+.badge.green{background:#d1fae5;color:#047857;}
+.badge.gray{background:#e2e8f0;color:#475569;}
+.bar{background:#f1f5f9;border-radius:4px;height:8px;overflow:hidden;}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);}
+.ship-cell{background:rgba(251,191,36,0.05);}
+.summary{background:linear-gradient(135deg,#eef2ff,#f0f9ff);padding:18px;border-radius:10px;border-left:4px solid #6366f1;margin-bottom:18px;}
+.summary h3{margin:0 0 8px;font-size:14px;color:#3730a3;}
+.summary ul{margin:6px 0 0;padding-left:20px;line-height:1.7;font-size:13px;color:#1e293b;}
+.summary li b{color:#dc2626;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:880px){.grid2{grid-template-columns:1fr;}}
+</style></head>
+<body>
+<h1>📊 7일간 매출 · 출고 분석</h1>
+<p class="sub">기간: 2026-05-12 (화) ~ 2026-05-18 (월) · 매출 7일 + 출고 5영업일 (5/16 토·5/17 일 출고 휴무)</p>
+
+<div class="cards">
+  <div class="card"><div class="lbl">통합 매출</div><div class="v">62,188,654원</div><div class="s">7일 누적 · 402건</div></div>
+  <div class="card"><div class="lbl">국내 자사몰</div><div class="v">26,600,927원</div><div class="s">248건 · 일평균 3,800,132원</div></div>
+  <div class="card"><div class="lbl">해외 자사몰</div><div class="v">$24,543</div><div class="s">154건 · ≈₩35,587,727</div></div>
+  <div class="card"><div class="lbl">총 출고</div><div class="v">422건</div><div class="s">5영업일 · 55개 SKU</div></div>
+</div>
+
+<div class="section">
+  <h2>🔑 핵심 인사이트</h2>
+  <div class="summary">
+    <h3>1. 출고 0 → 즉시 입고/재고 보강 시급 (5개 상품)</h3>
+    <ul>
+      <li><b>판매는 발생했으나 7일간 단 1건도 출고되지 못한 상품</b>: 누적 판매 <b>70개 / 9,911,479원</b>의 발송 지연 또는 예약 누적 발생 추정</li>
+      <li>대표 SKU: <b>Glaze Vanilla Dimsum Bag</b> (23개), <b>Chocolate Blush Mori Dimsum Bag</b> (17개), <b>Mini Chocolate Blush</b> (15개), <b>Dot Cozy Dumpling Bag Gray</b> (8개), <b>Doze Lace Sleeveless Neo Dot</b> (7개)</li>
+    </ul>
+  </div>
+  <div class="summary" style="background:linear-gradient(135deg,#fff7ed,#fef3c7);border-left-color:#f59e0b;">
+    <h3>2. 백오더 누적 (판매 &gt; 출고)</h3>
+    <ul>
+      <li><b>Jelly Dimsum Bag Mint</b> +10, <b>Mori Dimsum Bag Brown</b> +10, <b>Jelly Dimsum Bag Peach</b> +8, <b>Lemon</b> +6 — Jelly·Mori 라인이 출고 캐파를 초과해 큐가 매일 쌓이고 있음</li>
+      <li>7일 누적 백오더 약 <b>107개</b> — 출고 캐파(주중 약 84개/일) 대비 평일 평균 판매 57개이지만 특정 SKU 쏠림이 큐를 만듦</li>
+    </ul>
+  </div>
+  <div class="summary" style="background:linear-gradient(135deg,#ecfdf5,#dbeafe);border-left-color:#10b981;">
+    <h3>3. 시즌별 매출 구조 (TOP3가 88%)</h3>
+    <ul>
+      <li><b>25 FW 가방 1차</b> 1,903만원 (31%) · <b>26 HS 핫썸머</b>(Jelly 시리즈) 1,708만원 (27%) · <b>26 SS 01</b> 1,547만원 (25%)</li>
+      <li>Jelly 시리즈가 출시 첫 7일에 핫썸머 단일 시즌으로만 1,700만원 — 가방 1차에 거의 근접한 폭발적 성과</li>
+    </ul>
+  </div>
+</div>
+
+<div class="grid2">
+<div class="section">
+  <h2>📅 일별 매출 vs 출고</h2>
+  <table>
+    <thead><tr><th>날짜</th><th class="r">통합매출</th><th class="r">주문</th><th class="r">국내</th><th class="r">해외</th><th class="r">출고</th></tr></thead>
+    <tbody><tr>
+      <td><b>2026-05-12</b> <span class="dow">(화)</span></td>
+      <td class="r">8,549,153</td>
+      <td class="r">57건</td>
+      <td class="r">4,033,853</td>
+      <td class="r">$3,114 / 19건</td>
+      <td class="r ship-cell">106건</td>
+    </tr><tr>
+      <td><b>2026-05-13</b> <span class="dow">(수)</span></td>
+      <td class="r">9,466,631</td>
+      <td class="r">66건</td>
+      <td class="r">3,901,676</td>
+      <td class="r">$3,838 / 27건</td>
+      <td class="r ship-cell">35건</td>
+    </tr><tr>
+      <td><b>2026-05-14</b> <span class="dow">(목)</span></td>
+      <td class="r">10,227,436</td>
+      <td class="r">64건</td>
+      <td class="r">4,995,488</td>
+      <td class="r">$3,608 / 21건</td>
+      <td class="r ship-cell">94건</td>
+    </tr><tr>
+      <td><b>2026-05-15</b> <span class="dow">(금)</span></td>
+      <td class="r">9,021,844</td>
+      <td class="r">58건</td>
+      <td class="r">3,874,286</td>
+      <td class="r">$3,550 / 20건</td>
+      <td class="r ship-cell">76건</td>
+    </tr><tr>
+      <td><b>2026-05-16</b> <span class="dow">(토)</span></td>
+      <td class="r">9,634,562</td>
+      <td class="r">56건</td>
+      <td class="r">2,751,630</td>
+      <td class="r">$4,747 / 29건</td>
+      <td class="r ship-cell"><span class="muted">—</span></td>
+    </tr><tr>
+      <td><b>2026-05-17</b> <span class="dow">(일)</span></td>
+      <td class="r">8,503,249</td>
+      <td class="r">56건</td>
+      <td class="r">4,330,323</td>
+      <td class="r">$2,878 / 19건</td>
+      <td class="r ship-cell"><span class="muted">—</span></td>
+    </tr><tr>
+      <td><b>2026-05-18</b> <span class="dow">(월)</span></td>
+      <td class="r">6,785,778</td>
+      <td class="r">45건</td>
+      <td class="r">2,713,671</td>
+      <td class="r">$2,808 / 19건</td>
+      <td class="r ship-cell">111건</td>
+    </tr></tbody>
+  </table>
+  <p class="muted small" style="margin-top:8px;">* 5/16 토·5/17 일은 출고 휴무이지만 매출은 발생 — 월요일(5/18) 출고 큐로 이월</p>
+</div>
+
+<div class="section">
+  <h2>📊 시즌별 매출 비중</h2>
+  <table>
+    <thead><tr><th>시즌</th><th class="r">상품</th><th class="r">수량</th><th class="r">매출</th><th class="r">비중</th><th></th></tr></thead>
+    <tbody><tr>
+      <td><span class="sb">25 FW 가방 1차</span></td>
+      <td class="r">3</td>
+      <td class="r">121개</td>
+      <td class="r">19,033,743</td>
+      <td class="r">29.9%</td>
+      <td><div class="bar"><span style="width:44.8655895155004%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">26 HS 핫썸머</span></td>
+      <td class="r">3</td>
+      <td class="r">135개</td>
+      <td class="r">17,080,138</td>
+      <td class="r">26.8%</td>
+      <td><div class="bar"><span style="width:40.26062873582458%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">26 SS 01</span></td>
+      <td class="r">22</td>
+      <td class="r">121개</td>
+      <td class="r">15,465,962</td>
+      <td class="r">24.3%</td>
+      <td><div class="bar"><span style="width:36.45575662938854%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">26 VT</span></td>
+      <td class="r">7</td>
+      <td class="r">67개</td>
+      <td class="r">6,881,004</td>
+      <td class="r">10.8%</td>
+      <td><div class="bar"><span style="width:16.219631678252476%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">25 FW 02</span></td>
+      <td class="r">7</td>
+      <td class="r">17개</td>
+      <td class="r">1,941,985</td>
+      <td class="r">3.1%</td>
+      <td><div class="bar"><span style="width:4.57757057323192%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">25 SS 02</span></td>
+      <td class="r">6</td>
+      <td class="r">18개</td>
+      <td class="r">1,647,304</td>
+      <td class="r">2.6%</td>
+      <td><div class="bar"><span style="width:3.882960123568017%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">25 FW 01</span></td>
+      <td class="r">3</td>
+      <td class="r">4개</td>
+      <td class="r">552,842</td>
+      <td class="r">0.9%</td>
+      <td><div class="bar"><span style="width:1.3031373933612675%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">24 08 FW</span></td>
+      <td class="r">2</td>
+      <td class="r">3개</td>
+      <td class="r">290,084</td>
+      <td class="r">0.5%</td>
+      <td><div class="bar"><span style="width:0.6837745822781373%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">SHOP SEOUL</span></td>
+      <td class="r">3</td>
+      <td class="r">4개</td>
+      <td class="r">289,240</td>
+      <td class="r">0.5%</td>
+      <td><div class="bar"><span style="width:0.6817851387119884%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">25 SS 01</span></td>
+      <td class="r">3</td>
+      <td class="r">3개</td>
+      <td class="r">237,759</td>
+      <td class="r">0.4%</td>
+      <td><div class="bar"><span style="width:0.5604361526587734%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">배드베어</span></td>
+      <td class="r">2</td>
+      <td class="r">2개</td>
+      <td class="r">118,818</td>
+      <td class="r">0.2%</td>
+      <td><div class="bar"><span style="width:0.2800731109510477%"></span></div></td>
+    </tr><tr>
+      <td><span class="sb">25 SS 03</span></td>
+      <td class="r">1</td>
+      <td class="r">1개</td>
+      <td class="r">97,005</td>
+      <td class="r">0.2%</td>
+      <td><div class="bar"><span style="width:0.22865636627284064%"></span></div></td>
+    </tr></tbody>
+  </table>
+</div>
+</div>
+
+<div class="section">
+  <h2>🏆 매출 TOP 10 상품</h2>
+  <table>
+    <thead><tr><th class="r">순위</th><th>상품명</th><th>시즌</th><th class="r">판매수량</th><th class="r">통합매출</th></tr></thead>
+    <tbody><tr>
+      <td class="r">1</td>
+      <td>Mori Dimsum Bag Brown</td>
+      <td><span class="sb">25 FW 가방 1차</span></td>
+      <td class="r">46개 <span class="muted small">(국 17/해 29)</span></td>
+      <td class="r b">7,532,798</td>
+    </tr><tr>
+      <td class="r">2</td>
+      <td>Jelly Dimsum Bag Mint</td>
+      <td><span class="sb">26 HS 핫썸머</span></td>
+      <td class="r">53개 <span class="muted small">(국 36/해 17)</span></td>
+      <td class="r b">6,754,892</td>
+    </tr><tr>
+      <td class="r">3</td>
+      <td>Jelly Dimsum Bag Lemon</td>
+      <td><span class="sb">26 HS 핫썸머</span></td>
+      <td class="r">55개 <span class="muted small">(국 42/해 13)</span></td>
+      <td class="r b">6,614,604</td>
+    </tr><tr>
+      <td class="r">4</td>
+      <td>Washed Leopard Dimsum Bag Pink</td>
+      <td><span class="sb">25 FW 가방 1차</span></td>
+      <td class="r">43개 <span class="muted small">(국 24/해 19)</span></td>
+      <td class="r b">6,531,228</td>
+    </tr><tr>
+      <td class="r">5</td>
+      <td>Leopard Dimsum Bag Charcoal</td>
+      <td><span class="sb">25 FW 가방 1차</span></td>
+      <td class="r">32개 <span class="muted small">(국 18/해 14)</span></td>
+      <td class="r b">4,969,717</td>
+    </tr><tr>
+      <td class="r">6</td>
+      <td>Mini Washed Leopard Dimsum Bag Pink</td>
+      <td><span class="sb">26 VT</span></td>
+      <td class="r">34개 <span class="muted small">(국 21/해 13)</span></td>
+      <td class="r b">4,111,208</td>
+    </tr><tr>
+      <td class="r">7</td>
+      <td>Jelly Dimsum Bag Peach</td>
+      <td><span class="sb">26 HS 핫썸머</span></td>
+      <td class="r">27개 <span class="muted small">(국 12/해 15)</span></td>
+      <td class="r b">3,710,642</td>
+    </tr><tr>
+      <td class="r">8</td>
+      <td>Glaze Vanilla Dimsum Bag</td>
+      <td><span class="sb">26 SS 01</span></td>
+      <td class="r">23개 <span class="muted small">(국 17/해 6)</span></td>
+      <td class="r b">3,199,856</td>
+    </tr><tr>
+      <td class="r">9</td>
+      <td>Chocolate Blush Mori Dimsum Bag</td>
+      <td><span class="sb">26 SS 01</span></td>
+      <td class="r">17개 <span class="muted small">(국 6/해 11)</span></td>
+      <td class="r b">3,004,130</td>
+    </tr><tr>
+      <td class="r">10</td>
+      <td>Mini Chocolate Blush Mori Dimsum Bag</td>
+      <td><span class="sb">26 SS 01</span></td>
+      <td class="r">15개 <span class="muted small">(국 4/해 11)</span></td>
+      <td class="r b">2,308,337</td>
+    </tr></tbody>
+  </table>
+</div>
+
+<div class="grid2">
+<div class="section">
+  <h2>📦 출고 TOP 10 상품</h2>
+  <table>
+    <thead><tr><th class="r">순위</th><th>상품명</th><th class="r">출고수량</th></tr></thead>
+    <tbody><tr>
+      <td class="r">1</td>
+      <td>Washed Leopard Dimsum Bag Pink</td>
+      <td class="r b">53개</td>
+    </tr><tr>
+      <td class="r">2</td>
+      <td>Jelly Dimsum Bag Lemon</td>
+      <td class="r b">49개</td>
+    </tr><tr>
+      <td class="r">3</td>
+      <td>Jelly Dimsum Bag Mint</td>
+      <td class="r b">43개</td>
+    </tr><tr>
+      <td class="r">4</td>
+      <td>Leopard Dimsum Bag Charcoal</td>
+      <td class="r b">39개</td>
+    </tr><tr>
+      <td class="r">5</td>
+      <td>Mini Washed Leopard Dimsum Bag Pink</td>
+      <td class="r b">37개</td>
+    </tr><tr>
+      <td class="r">6</td>
+      <td>Mori Dimsum Bag Brown</td>
+      <td class="r b">36개</td>
+    </tr><tr>
+      <td class="r">7</td>
+      <td>Jelly Dimsum Bag Peach</td>
+      <td class="r b">19개</td>
+    </tr><tr>
+      <td class="r">8</td>
+      <td>Love Message One Shoulder L/S Ivory</td>
+      <td class="r b">13개</td>
+    </tr><tr>
+      <td class="r">9</td>
+      <td>Washed Leopard Dimsum Bag Purple</td>
+      <td class="r b">12개</td>
+    </tr><tr>
+      <td class="r">10</td>
+      <td>Mini Washed Leopard Dimsum Bag Purple</td>
+      <td class="r b">11개</td>
+    </tr></tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h2>⚖️ 판매 vs 출고 매칭 (TOP 15)</h2>
+  <table>
+    <thead><tr><th>상품</th><th class="r">판매</th><th class="r">출고</th><th>상태</th><th class="r">판매액</th></tr></thead>
+    <tbody><tr>
+      <td>Jelly Dimsum Bag Lemon</td>
+      <td class="r">55</td>
+      <td class="r">49</td>
+      <td><span class="badge orange">백오더 +6</span></td>
+      <td class="r">6,614,604</td>
+    </tr><tr>
+      <td>Jelly Dimsum Bag Mint</td>
+      <td class="r">53</td>
+      <td class="r">43</td>
+      <td><span class="badge orange">백오더 +10</span></td>
+      <td class="r">6,754,892</td>
+    </tr><tr>
+      <td>Mori Dimsum Bag Brown</td>
+      <td class="r">46</td>
+      <td class="r">36</td>
+      <td><span class="badge orange">백오더 +10</span></td>
+      <td class="r">7,532,798</td>
+    </tr><tr>
+      <td>Washed Leopard Dimsum Bag Pink</td>
+      <td class="r">43</td>
+      <td class="r">53</td>
+      <td><span class="badge green">큐 소화 -10</span></td>
+      <td class="r">6,531,228</td>
+    </tr><tr>
+      <td>Mini Washed Leopard Dimsum Bag Pink</td>
+      <td class="r">34</td>
+      <td class="r">37</td>
+      <td><span class="badge green">큐 소화 -3</span></td>
+      <td class="r">4,111,208</td>
+    </tr><tr>
+      <td>Leopard Dimsum Bag Charcoal</td>
+      <td class="r">32</td>
+      <td class="r">39</td>
+      <td><span class="badge green">큐 소화 -7</span></td>
+      <td class="r">4,969,717</td>
+    </tr><tr>
+      <td>Jelly Dimsum Bag Peach</td>
+      <td class="r">27</td>
+      <td class="r">19</td>
+      <td><span class="badge orange">백오더 +8</span></td>
+      <td class="r">3,710,642</td>
+    </tr><tr>
+      <td>Glaze Vanilla Dimsum Bag</td>
+      <td class="r">23</td>
+      <td class="r">0</td>
+      <td><span class="badge red">⚠ 출고 0 (입고/재고 시급)</span></td>
+      <td class="r">3,199,856</td>
+    </tr><tr>
+      <td>Chocolate Blush Mori Dimsum Bag</td>
+      <td class="r">17</td>
+      <td class="r">0</td>
+      <td><span class="badge red">⚠ 출고 0 (입고/재고 시급)</span></td>
+      <td class="r">3,004,130</td>
+    </tr><tr>
+      <td>Mini Chocolate Blush Mori Dimsum Bag</td>
+      <td class="r">15</td>
+      <td class="r">0</td>
+      <td><span class="badge red">⚠ 출고 0 (입고/재고 시급)</span></td>
+      <td class="r">2,308,337</td>
+    </tr><tr>
+      <td>Mini Washed Leopard Dimsum Bag Purple</td>
+      <td class="r">13</td>
+      <td class="r">11</td>
+      <td><span class="badge orange">백오더 +2</span></td>
+      <td class="r">1,633,785</td>
+    </tr><tr>
+      <td>Love Message One Shoulder L/S Ivory</td>
+      <td class="r">10</td>
+      <td class="r">13</td>
+      <td><span class="badge green">큐 소화 -3</span></td>
+      <td class="r">400,000</td>
+    </tr><tr>
+      <td>Dot Cozy Dumpling Bag Gray</td>
+      <td class="r">8</td>
+      <td class="r">0</td>
+      <td><span class="badge red">⚠ 출고 0 (입고/재고 시급)</span></td>
+      <td class="r">1,113,206</td>
+    </tr><tr>
+      <td>Charm Holder Backpack Patchwork</td>
+      <td class="r">7</td>
+      <td class="r">6</td>
+      <td><span class="badge orange">백오더 +1</span></td>
+      <td class="r">812,796</td>
+    </tr><tr>
+      <td>Doze Lace Sleeveless Neo Dot</td>
+      <td class="r">7</td>
+      <td class="r">0</td>
+      <td><span class="badge red">⚠ 출고 0 (입고/재고 시급)</span></td>
+      <td class="r">285,950</td>
+    </tr></tbody>
+  </table>
+</div>
+</div>
+
+<p class="muted small" style="text-align:center;margin-top:20px;">📅 생성: 2026-05-19 · 데이터 출처: 카페24 주문/상품 · 배드블루_출고내역</p>
+</body></html>
