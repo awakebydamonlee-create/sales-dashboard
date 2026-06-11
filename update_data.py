@@ -29,6 +29,30 @@ CC_NAME = {
     "CL":"Chile","IL":"Israel","PR":"Puerto Rico","GU":"Guam",
 }
 
+# 26HS 핫썸머 시즌 상품명 목록 (신규 상품 자동 시즌 분류용, _26HS 상세가이드 기준)
+SEASON_26HS_NAMES = {
+    "Rope Kiko Doule Botton Shorts Khaki","Rope Kiko Doule Botton Shorts Mint",
+    "Ring Buoy Bermuda Pants","Strawberry Mlik Punch Mini Dress","Turquoise Wave Lace Mini Dress",
+    "Coconut Stripe Sleeveless","Strawberry Mlik Punch Sleeveless","Fruit Mlik Punch Sleeveless",
+    "Holo Dot Botton Half Shirts","Holo Stripe Botton Half Shirts","Sailing Stripe Lace-up Half Shirts",
+    "Sailing Dot Lace-up Half Shirts","Strawberry Milk Vacation Cardigan","Fruit Milk Vacation Cardigan",
+    "Jelly Lemon Dimsum Bag","Jelly Mint Dimsum Bag","Jelly Peach Dimsum Bag",
+    "Jelly Leomon Dumpling Bag","Jelly Mint Dumpling Bag","Jelly Peach Dumpling Bag",
+    "Rattan Beige Dimsum Bag","Rattan Pistachio Dimsum Bag","Rattan Black Dimsum Bag",
+    "Mini Glaze Lemon Dimsum Bag","Mini Glaze Pistachio Dimsum Bag","Mini Glaze Night Dimsum Bag",
+    "Sunset Beach Dumpling Bag","Ocean Blue Dumpling Bag",
+    "Mini Jelly Lemon Dimsum Bag","Mini Jelly Mint Dimsum Bag","Mini Jelly Peach Dimsum Bag",
+}
+SEASON_26HS_NAMES_STRIP = {n.strip() for n in SEASON_26HS_NAMES}
+
+def season_for_new_product(nm, season_map):
+    """기존 시즌맵에 없는 신규 상품의 시즌을 결정. 26HS 가이드에 있으면 26 HS 핫썸머, 아니면 기타."""
+    se = season_map.get(nm)
+    if se: return se
+    if str(nm).strip() in SEASON_26HS_NAMES_STRIP:
+        return "26 HS 핫썸머"
+    return "기타"
+
 errors   = []
 warnings = []
 
@@ -158,7 +182,7 @@ def update_products(dom_prod, ovs_prod, dom_ord, ovs_ord):
                 idx.at[nm,"평균단가_KRW"] = int(idx.at[nm,"통합매출_KRW"] / tq)
         else:
             new_cnt += 1
-            se = season_map.get(nm, "기타")
+            se = season_for_new_product(nm, season_map)
             tq = row["통합판매수량"]
             avg = int(row["통합매출_KRW"]/tq) if tq > 0 else 0
             all_d = pd.concat([
@@ -451,7 +475,7 @@ def _update_product_analytics(dom_prod, ovs_prod, season_map):
         dq=("수량","sum"), dr=("상품별 결제 금액","sum"), do=("주문번호","nunique")).reset_index()
     for _, r in dom_pa.iterrows():
         if r["날짜"] in existing_dates: continue
-        nm = r["상품 이름"]; se = season_map.get(nm,"기타")
+        nm = r["상품 이름"]; se = season_for_new_product(nm, season_map)
         pa_rows.append({"d":r["날짜"],"s":"dom","n":str(nm),"se":se,
             "dq":int(r["dq"]),"oq":0,"dr":int(r["dr"]),"or":0,"do":int(r["do"]),"oo":0})
 
@@ -459,7 +483,7 @@ def _update_product_analytics(dom_prod, ovs_prod, season_map):
         oq=("수량","sum"), or_krw=("상품별_KRW","sum"), oo=("주문번호","nunique")).reset_index()
     for _, r in ovs_pa.iterrows():
         if r["날짜"] in existing_dates: continue
-        nm = r["상품 이름"]; se = season_map.get(nm,"기타")
+        nm = r["상품 이름"]; se = season_for_new_product(nm, season_map)
         found = [x for x in pa_rows if x["d"]==r["날짜"] and x["n"]==nm]
         if found:
             found[0]["oq"]=int(r["oq"]); found[0]["or"]=int(round(r["or_krw"])); found[0]["oo"]=int(r["oo"])
