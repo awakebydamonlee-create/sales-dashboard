@@ -470,8 +470,42 @@ def _update_product_analytics(dom_prod, ovs_prod, season_map):
     if pa_rows:
         pa_rows.sort(key=lambda x: x["d"])
         new_str = ","+",".join(json.dumps(r, ensure_ascii=False) for r in pa_rows)
-        c = re.sub(r'(const DATA\s*=\s*\{"rows":\[)(.*?)(\]\})',
-                   lambda m: m.group(1)+m.group(2)+new_str+m.group(3), c, flags=re.DOTALL)
+        # bracket-matching: re.sub의 비탐욕(.*?) 매칭이 JSON 내부의 첫 ']}'에서
+        # 잘못 멈추는 버그를 방지하기 위해 직접 괄호 깊이를 추적해 rows 배열의
+        # 진짜 끝 위치를 찾는다.
+        marker = 'const DATA = {"rows":['
+        start = c.index(marker)
+        arr_start = start + len(marker) - 1  # '[' 위치
+        depth = 0
+        in_str = False
+        esc = False
+        end = None
+        for i in range(arr_start, len(c)):
+            ch = c[i]
+            if in_str:
+                if esc:
+                    esc = False
+                elif ch == '\\':
+                    esc = True
+                elif ch == '"':
+                    in_str = False
+                continue
+            if ch == '"':
+                in_str = True
+            elif ch == '[':
+                depth += 1
+            elif ch == ']':
+                depth -= 1
+                if depth == 0:
+                    end = i
+                    break
+        if end is None:
+            err("product_analytics.html: DATA.rows 배열의 끝을 찾지 못함")
+        else:
+            c = c[:end] + new_str + c[end:]
+
+    # date_max 필드 갱신
+    c = re.sub(r'("date_max"\s*:\s*")\d{4}-\d{2}-\d{2}(")', rf"\g<1>{max_date_global}\g<2>", c)
 
     # 정적 텍스트
     c = re.sub(r"2025-01-01 ~ \d{4}-\d{2}-\d{2}", f"2025-01-01 ~ {max_date_global}", c)
