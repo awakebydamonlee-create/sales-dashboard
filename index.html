@@ -2,49 +2,106 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>매출 트레킹 - 인덱스</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>매출 트레킹</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;background:#0f1823;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center}
-.wrap{max-width:900px;padding:40px}
-h1{font-size:28px;margin-bottom:10px}
-.sub{color:#94a3b8;margin-bottom:30px;font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.card{background:#1e293b;padding:24px;border-radius:12px;text-decoration:none;color:#fff;transition:transform 0.15s, background 0.15s}
-.card:hover{background:#334155;transform:translateY(-2px)}
-.card .icon{font-size:32px;margin-bottom:10px}
-.card .title{font-size:18px;font-weight:700;margin-bottom:4px}
-.card .desc{font-size:13px;color:#94a3b8}
-.footer{color:#64748b;font-size:12px;text-align:center;margin-top:30px}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #1a1a2e;
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .container { max-width: 900px; width: 100%; }
+  .header { margin-bottom: 36px; }
+  .title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .title-icon { font-size: 36px; }
+  .meta {
+    font-size: 14px;
+    color: #94a3b8;
+    letter-spacing: 0.01em;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: #16213e;
+    border-radius: 16px;
+    padding: 36px 32px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.18s, transform 0.18s;
+    display: block;
+  }
+  .card:hover {
+    background: #1e2d50;
+    transform: translateY(-2px);
+  }
+  .card-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .card-desc { font-size: 13px; color: #94a3b8; }
+  .footer {
+    text-align: center;
+    font-size: 13px;
+    color: #475569;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-<h1>📊 매출 트레킹</h1>
-<div class="sub">기간: 2025-01-01 ~ 2026-04-22 · 국내+해외 · 16개월 · 321개 상품 · 20,832주문</div>
-<div class="grid">
-  <a href="sales_dashboard.html" class="card">
-    <div class="icon">📊</div>
-    <div class="title">매출 대시보드</div>
-    <div class="desc">일별/월별 매출 추이, 채널별 비중</div>
-  </a>
-  <a href="product_analytics.html" class="card">
-    <div class="icon">🛍️</div>
-    <div class="title">상품 분석</div>
-    <div class="desc">상품 랭킹, 카테고리 분포, 필터링</div>
-  </a>
-  <a href="product_report.html" class="card">
-    <div class="icon">📦</div>
-    <div class="title">상품 리포트</div>
-    <div class="desc">상품별 월별 판매 상세 드릴다운</div>
-  </a>
-  <a href="insights.html" class="card">
-    <div class="icon">🔎</div>
-    <div class="title">인사이트</div>
-    <div class="desc">국가별, 요일별, 재구매 분석</div>
-  </a>
-</div>
-<div class="footer">업데이트: 2026-04-22</div>
+<div class="container">
+  <div class="header">
+    <div class="title">
+      <span class="title-icon">📊</span>
+      <span>매출 트레킹</span>
+    </div>
+    <div class="meta">기간: 2025-01-01 ~ 2026-06-23 · 국내+해외 · 18개월 · 350개 상품 · 24,034주문</div>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="sales_dashboard.html">
+      <span class="card-icon">📊</span>
+      <div class="card-title">매출 대시보드</div>
+      <div class="card-desc">일별/월별 매출 추이, 채널별 비중</div>
+    </a>
+    <a class="card" href="product_analytics.html">
+      <span class="card-icon">🛍️</span>
+      <div class="card-title">상품 분석</div>
+      <div class="card-desc">상품 랭킹, 카테고리 분포, 필터링</div>
+    </a>
+    <a class="card" href="product_report.html">
+      <span class="card-icon">📦</span>
+      <div class="card-title">상품 리포트</div>
+      <div class="card-desc">상품별 월별 판매 상세 드릴다운</div>
+    </a>
+    <a class="card" href="insights.html">
+      <span class="card-icon">🔎</span>
+      <div class="card-title">인사이트</div>
+      <div class="card-desc">국가별, 요일별, 재구매 분석</div>
+    </a>
+  </div>
+
+  <div class="footer">업데이트: 2026-06-23</div>
 </div>
 </body>
 </html>
