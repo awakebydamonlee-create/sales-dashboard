@@ -442,7 +442,7 @@ table.rt tbody tr:hover{background:#fafbff}
 <div class="sec">
   <div class="card">
     <div class="ct">🏆 주력 상품 TOP 10 · 최근 4주 성과 <span style="font-size:11px;font-weight:400;color:#94a3b8" id="top10-range">· 선택 기간 말일 기준 역산 4주</span></div>
-    <div class="cs">판매수량 TOP 10 · 기존 베스트셀러의 최근 흐름 (신상품 런칭표와 대칭 구조)</div>
+    <div class="cs">판매수량 TOP 10 기본 표시 · 더 보기로 최대 40위까지 확장 가능 · 기존 베스트셀러의 최근 흐름</div>
     <div style="overflow-x:auto;margin-top:10px">
       <table style="width:100%;border-collapse:collapse;font-size:12px">
         <thead>
@@ -462,6 +462,7 @@ table.rt tbody tr:hover{background:#fafbff}
         <tbody id="top10Body"><tr><td colspan="10" style="padding:14px;text-align:center;color:#94a3b8">계산 중…</td></tr></tbody>
       </table>
     </div>
+    <div id="top10-expand-wrap"></div>
     <div class="abox" id="top10-note">-</div>
   </div>
 </div>
@@ -1570,7 +1571,9 @@ function renderTopProductsWeekly(){
     document.getElementById('top10Body').innerHTML = '<tr><td colspan="10" style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">데이터 없음</td></tr>';
     return;
   }
-  const top10 = prods.slice(0, 10);  // 이미 total_qty 내림차순
+  const TOP_INIT = 10;
+  const TOP_MAX = 40;
+  const topProds = prods.slice(0, TOP_MAX);  // 최대 40개
   const endD = ek();                 // 필터 종료일
   // 최근 4주(역순): w4=가장 오래, w1=가장 최근
   function addDays(dStr, n) { const d = new Date(dStr+'T12:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
@@ -1587,7 +1590,7 @@ function renderTopProductsWeekly(){
   if (rl) rl.textContent = `· ${weeks[0].from} ~ ${weeks[3].to} (말일 기준 역산 4주)`;
 
   // 상품별 주차 수량
-  const results = top10.map((p, idx) => {
+  const results = topProds.map((p, idx) => {
     const weekQty = weeks.map(w => {
       let q = 0;
       for (let r of ROWS) {
@@ -1614,7 +1617,7 @@ function renderTopProductsWeekly(){
   // 테이블 렌더
   const body = document.getElementById('top10Body');
   const sparkMax = Math.max(1, ...results.flatMap(r => r.weekQty));
-  body.innerHTML = results.map(p => {
+  body.innerHTML = results.map((p, idx) => {
     const catBg = (p.cat === '가방/기타') ? '#e0f2fe' : '#fef3c7';
     const spark = `<div style="display:flex;align-items:flex-end;gap:2px;height:26px;width:90px;margin:0 auto">${
       p.weekQty.map((v, i) => {
@@ -1626,7 +1629,8 @@ function renderTopProductsWeekly(){
       }).join('')
     }</div>`;
     const rankColor = p.rank <= 3 ? '#f59e0b' : '#64748b';
-    return `<tr style="border-bottom:1px solid #f1f5f9">
+    const extraAttr = idx >= TOP_INIT ? ' class="top10-extra" style="display:none;border-bottom:1px solid #f1f5f9"' : ' style="border-bottom:1px solid #f1f5f9"';
+    return `<tr${extraAttr}>
       <td style="text-align:center;padding:7px 6px;font-size:13px;font-weight:800;color:${rankColor}">${p.rank}</td>
       <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.35;min-width:220px;white-space:normal;word-break:keep-all" title="${p.name}">${p.name}<div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:3px"><span style="padding:1px 6px;background:${catBg};border-radius:4px">${p.cat}</span></div></td>
       <td style="text-align:right;padding:7px 9px;font-weight:600;color:#475569">${p.totalQty.toLocaleString()}</td>
@@ -1640,13 +1644,23 @@ function renderTopProductsWeekly(){
     </tr>`;
   }).join('');
 
+  // 더 보기 버튼
+  const wrap = document.getElementById('top10-expand-wrap');
+  if (wrap) {
+    if (results.length > TOP_INIT) {
+      wrap.innerHTML = `<button id="top10ExpandBtn" onclick="toggleTop10Extra(this, ${results.length - TOP_INIT})" style="width:100%;margin-top:6px;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;font-size:11px;color:#475569;cursor:pointer;font-weight:600;transition:background 0.15s">▼ 더 보기 · 나머지 ${results.length - TOP_INIT}개 상품</button>`;
+    } else {
+      wrap.innerHTML = '';
+    }
+  }
+
   // 요약 인사이트
   const rising = results.filter(r => r.trend.includes('상승')).length;
   const dropping = results.filter(r => r.trend.includes('감소') || r.trend.includes('급하락')).length;
   const top1 = results[0];
   const note = document.getElementById('top10-note');
   if (note) {
-    note.innerHTML = `💡 주력 TOP 10 중 상승세 <strong>${rising}종</strong> · 하락세 <strong>${dropping}종</strong>. 1위 <strong>${top1.name.slice(0,28)}</strong>는 최근 1주 ${top1.weekQty[3]}개 (이전 3주 평균 ${((top1.weekQty[0]+top1.weekQty[1]+top1.weekQty[2])/3).toFixed(1)}개 대비 ${top1.delta>=0?'+':''}${top1.delta.toFixed(0)}%). <br><span style="font-size:10px;color:#94a3b8">📌 스파크라인 파란 막대 = 과거 3주 / 진한 네이비 = 최근 주. 선택 기간 말일 기준으로 역산됩니다.</span>`;
+    note.innerHTML = `💡 주력 TOP ${results.length}종 중 상승세 <strong>${rising}종</strong> · 하락세 <strong>${dropping}종</strong>. 1위 <strong>${top1.name.slice(0,28)}</strong>는 최근 1주 ${top1.weekQty[3]}개 (이전 3주 평균 ${((top1.weekQty[0]+top1.weekQty[1]+top1.weekQty[2])/3).toFixed(1)}개 대비 ${top1.delta>=0?'+':''}${top1.delta.toFixed(0)}%). <br><span style="font-size:10px;color:#94a3b8">📌 스파크라인 파란 막대 = 과거 3주 / 진한 네이비 = 최근 주. 선택 기간 말일 기준으로 역산됩니다.</span>`;
   }
 }
 
@@ -1787,6 +1801,15 @@ function renderLaunchPerf(){
 
 function toggleLaunchExtra(btn, count) {
   const rows = document.querySelectorAll('tr.launch-extra');
+  const expanded = rows.length && rows[0].style.display !== 'none';
+  rows.forEach(r => { r.style.display = expanded ? 'none' : ''; });
+  if (btn) btn.innerHTML = expanded
+    ? `▼ 더 보기 · 나머지 ${count}개 상품`
+    : `▲ 접기`;
+}
+
+function toggleTop10Extra(btn, count) {
+  const rows = document.querySelectorAll('tr.top10-extra');
   const expanded = rows.length && rows[0].style.display !== 'none';
   rows.forEach(r => { r.style.display = expanded ? 'none' : ''; });
   if (btn) btn.innerHTML = expanded
