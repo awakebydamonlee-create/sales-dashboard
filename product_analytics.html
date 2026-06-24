@@ -490,6 +490,7 @@ table.rt tbody tr:hover{background:#fafbff}
         <tbody id="launchBody"><tr><td colspan="10" style="padding:14px;text-align:center;color:#94a3b8">계산 중…</td></tr></tbody>
       </table>
     </div>
+    <div id="launch-expand-wrap"></div>
     <div class="abox" id="launch-note">-</div>
   </div>
   <div class="card">
@@ -1704,15 +1705,15 @@ function renderLaunchPerf(){
   });
   // 주평균 기준 정렬 (경과 주차 다른 상품들 공평 비교)
   results.sort((a,b) => b.weeklyAvg - a.weeklyAvg);
-  const top = results.slice(0, 8);
+  const LAUNCH_INIT = 8;
 
   const body = document.getElementById('launchBody');
-  if (!top.length) {
+  if (!results.length) {
     body.innerHTML = '<tr><td colspan="10" style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">선택 기간 내 신규 출시 상품이 없습니다.</td></tr>';
   } else {
-    // 스파크라인용 전역 max (모든 TOP 8 상품의 주차별 수량 중 최대)
-    const sparkMax = Math.max(1, ...top.flatMap(p => p.weekSales));
-    body.innerHTML = top.map(p => {
+    // 스파크라인용 전역 max (전체 상품 기준)
+    const sparkMax = Math.max(1, ...results.flatMap(p => p.weekSales));
+    body.innerHTML = results.map((p, idx) => {
       const catBg = (p.cat === '가방/기타') ? '#e0f2fe' : '#fef3c7';
       // 경과 표시: 4주+ 이면 "4주+", 아니면 소수점 1자리
       const elapsedTxt = p.elapsedWeeks >= 4 ? '4주+' : `${p.elapsedWeeks.toFixed(1)}주`;
@@ -1743,8 +1744,14 @@ function renderLaunchPerf(){
           return `<div title="${wi+1}주차: ${v}개${done?'':' (진행중)'}" style="flex:1;height:${h}px;background:${color};border-radius:2px 2px 0 0"></div>`;
         }).join('')
       }</div>`;
-      return `<tr style="border-bottom:1px solid #f1f5f9">
-        <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.35;min-width:220px;white-space:normal;word-break:keep-all" title="${p.name}">${p.name}<div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:3px"><span style="padding:1px 6px;background:${catBg};border-radius:4px">${p.cat}</span></div></td>
+      // 순위 뱃지
+      const rankColors = ['#f59e0b','#94a3b8','#cd7c2f'];
+      const rankBg = idx < 3 ? rankColors[idx] : '#e2e8f0';
+      const rankFg = idx < 3 ? '#fff' : '#94a3b8';
+      const rankBadge = `<span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:${rankBg};color:${rankFg};font-size:9px;font-weight:700;line-height:16px;text-align:center;margin-right:5px;flex-shrink:0">${idx+1}</span>`;
+      const extraAttr = idx >= LAUNCH_INIT ? ' class="launch-extra" style="display:none;border-bottom:1px solid #f1f5f9"' : ' style="border-bottom:1px solid #f1f5f9"';
+      return `<tr${extraAttr}>
+        <td style="padding:7px 9px;font-size:11px;font-weight:600;line-height:1.35;min-width:220px;white-space:normal;word-break:keep-all" title="${p.name}"><span style="display:flex;align-items:flex-start">${rankBadge}<span>${p.name}<div style="font-size:10px;color:#94a3b8;font-weight:400;margin-top:3px"><span style="padding:1px 6px;background:${catBg};border-radius:4px">${p.cat}</span></div></span></span></td>
         <td style="text-align:center;padding:7px 9px;font-size:10px;color:#64748b">${p.fd.slice(5)}</td>
         <td style="text-align:center;padding:7px 9px;font-size:10px;font-weight:600;color:${p.elapsedWeeks<2?'#059669':(p.elapsedWeeks<4?'#0891b2':'#64748b')}">${elapsedTxt}</td>
         ${wkCell(0)}${wkCell(1)}${wkCell(2)}${wkCell(3)}
@@ -1753,19 +1760,38 @@ function renderLaunchPerf(){
         <td style="text-align:center;padding:7px 9px;font-size:11px;font-weight:700;color:${p.lifeColor}">${p.life}</td>
       </tr>`;
     }).join('');
+
+    // 더 보기 버튼
+    const wrap = document.getElementById('launch-expand-wrap');
+    if (wrap) {
+      if (results.length > LAUNCH_INIT) {
+        wrap.innerHTML = `<button id="launchExpandBtn" onclick="toggleLaunchExtra(this, ${results.length - LAUNCH_INIT})" style="width:100%;margin-top:6px;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;font-size:11px;color:#475569;cursor:pointer;font-weight:600;transition:background 0.15s">▼ 더 보기 · 나머지 ${results.length - LAUNCH_INIT}개 상품</button>`;
+      } else {
+        wrap.innerHTML = '';
+      }
+    }
   }
 
   // 요약 인사이트
-  const best = top[0];
+  const best = results[0];
   const growing = results.filter(r => r.life.includes('성장') || r.life.includes('급상승')).length;
   const early = results.filter(r => r.life.includes('초기')).length;
   const declining = results.filter(r => r.life.includes('감소')).length;
   const note = document.getElementById('launch-note');
-  if (!top.length) {
+  if (!results.length) {
     note.innerHTML = '💡 선택 기간 내 신상품 데이터가 없어 런칭 성과를 계산할 수 없습니다.';
   } else {
     note.innerHTML = `💡 신상품 ${results.length}종 · 주평균 1위 <strong>${best.name.slice(0,28)}</strong> (주 ${best.weeklyAvg.toFixed(1)}개, ${best.elapsedWeeks.toFixed(1)}주 경과). 🌱 초기 ${early}종 · 성장세 ${growing}종 · 감소세 ${declining}종.<br><span style="font-size:10px;color:#94a3b8">📌 주차별 열의 노란색(●) = 진행 중 주, 회색(—) = 아직 도달 안 한 주차. 스파크라인: 파란 막대 완료/주황 막대 진행중.</span>`;
   }
+}
+
+function toggleLaunchExtra(btn, count) {
+  const rows = document.querySelectorAll('tr.launch-extra');
+  const expanded = rows.length && rows[0].style.display !== 'none';
+  rows.forEach(r => { r.style.display = expanded ? 'none' : ''; });
+  if (btn) btn.innerHTML = expanded
+    ? `▼ 더 보기 · 나머지 ${count}개 상품`
+    : `▲ 접기`;
 }
 
 function renderCombos(data,elId,cnt){
