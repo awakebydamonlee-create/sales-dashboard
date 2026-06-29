@@ -408,7 +408,7 @@
 <div class="top-header">
   <div class="top-left">
     <h1 class="top-title">📊 매출</h1>
-    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-06-24</p>
+    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-06-28</p>
   </div>
   <div class="top-nav">
     <span class="top-btn active">📊 매출</span>
@@ -437,9 +437,9 @@
 <div class="filter-bar">
   <span class="filter-label">기간 설정</span>
   <div class="date-group">
-    <input type="date" class="date-input" id="startDate" value="2025-01-01" max="2026-06-24">
+    <input type="date" class="date-input" id="startDate" value="2025-01-01" max="2026-06-28">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-06-24" max="2026-06-24">
+    <input type="date" class="date-input" id="endDate" value="2026-06-28" max="2026-06-28">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)" title="전체 기간 (2025-01-01 ~ 최신)">전체</button>
@@ -646,37 +646,6 @@
   </div>
 </div>
 
-<!-- UPLOAD SCHEDULE GUIDE -->
-<div class="upload-guide">
-  <div class="upload-guide-header">
-    <span class="icon">📅</span>
-    <h3>데이터 업로드 스케줄 가이드</h3>
-  </div>
-  <div class="schedule-grid">
-    <div class="schedule-item current">
-      <div class="sched-label">현재 데이터</div>
-      <div class="sched-period">2026년 4월 1일 ~ 15일</div>
-      <div class="sched-note">국내 570건 · 해외 260건 업로드 완료</div>
-      <span class="sched-status done">✓ 완료</span>
-    </div>
-    <div class="schedule-item next">
-      <div class="sched-label">다음 업로드 (권장)</div>
-      <div class="sched-period">2026년 4월 16일 ~ 30일</div>
-      <div class="sched-note">4월 30일 이후 → 국내·해외 각 파일 다운로드 후 제공</div>
-      <span class="sched-status pending">⏳ 대기</span>
-    </div>
-    <div class="schedule-item future">
-      <div class="sched-label">그 다음 업로드</div>
-      <div class="sched-period">2026년 5월 1일 ~ 15일</div>
-      <div class="sched-note">5월 15일 이후 업로드 예정</div>
-      <span class="sched-status future">예정</span>
-    </div>
-  </div>
-  <div style="margin-top:16px;padding:14px;background:#f8fafc;border-radius:10px;font-size:13px;color:#475569;line-height:1.6;">
-    💡 <b>업로드 방법:</b> 각 자사몰 관리자 > 주문 > 주문별 상세검색 > 기간 설정 후 엑셀 다운로드<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;국내몰과 해외몰 파일을 <b>각각 별도로</b> 내려받아 함께 제공해 주세요.
-  </div>
-</div>
 
 <script>
 // ===== DATA =====
@@ -1222,7 +1191,11 @@ const DOMESTIC = [
   { date: '2026-06-21', orders: 31, revenue: 2955203 },
   { date: '2026-06-22', orders: 27, revenue: 2869184 },
   { date: '2026-06-23', orders: 25, revenue: 2744868 },
-  { date: '2026-06-24', orders: 31, revenue: 3656160 },];
+  { date: '2026-06-24', orders: 31, revenue: 3656160 },
+  { date: '2026-06-25', orders: 29, revenue: 2920406 },
+  { date: '2026-06-26', orders: 33, revenue: 3606392 },
+  { date: '2026-06-27', orders: 15, revenue: 1287423 },
+  { date: '2026-06-28', orders: 20, revenue: 2093695 },];
 
 const OVERSEAS = [
 
@@ -1707,7 +1680,11 @@ const OVERSEAS = [
   { date: '2026-06-21', orders: 19, revenue_usd: 2753.44, revenue_krw: 3992488 },
   { date: '2026-06-22', orders: 20, revenue_usd: 3215.02, revenue_krw: 4661779 },
   { date: '2026-06-23', orders: 22, revenue_usd: 3504.6, revenue_krw: 5081670 },
-  { date: '2026-06-24', orders: 26, revenue_usd: 4124.26, revenue_krw: 5980177 },];
+  { date: '2026-06-24', orders: 26, revenue_usd: 4124.26, revenue_krw: 5980177 },
+  { date: '2026-06-25', orders: 17, revenue_usd: 2589.2, revenue_krw: 3754340 },
+  { date: '2026-06-26', orders: 30, revenue_usd: 4774.62, revenue_krw: 6923199 },
+  { date: '2026-06-27', orders: 18, revenue_usd: 2620.84, revenue_krw: 3800218 },
+  { date: '2026-06-28', orders: 20, revenue_usd: 2875.6, revenue_krw: 4169620 },];
 
 let lineChart = null;
 let donutChart = null;
