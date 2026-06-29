@@ -455,7 +455,86 @@ def _update_product_report(dom_prod, ovs_prod, df_products, season_map, max_date
     # 정적 텍스트 날짜
     c = re.sub(r"2025-01-01 ~ \d{4}-\d{2}-\d{2}", f"2025-01-01 ~ {max_date}", c)
 
+    # MONTHLY 재계산 (DAILY로부터) — 월별 상세 정확도 보장
+    c = _recompute_monthly_from_daily(c)
+
     with open(path,"w") as f: f.write(c)
+
+def _recompute_monthly_from_daily(c):
+    """DAILY 배열을 월별로 집계해 MONTHLY 오브젝트 전체를 재생성"""
+    idx_d = c.find('const DAILY = ')
+    idx_m = c.find('const MONTHLY = ', idx_d)
+    if idx_d < 0 or idx_m < 0:
+        warn("MONTHLY 재계산 실패: DAILY/MONTHLY 위치 못 찾음")
+        return c
+    # DAILY 파싱 (bracket-depth로 정확한 끝 위치 탐색)
+    arr_start = idx_d + len('const DAILY = ')
+    depth = in_str = esc = 0
+    end_d = None
+    for i in range(arr_start, len(c)):
+        ch = c[i]
+        if in_str:
+            esc = (ch == '\\' and not esc)
+            if ch == '"' and not esc: in_str = False
+            continue
+        if ch == '"': in_str = True
+        elif ch in '{[': depth += 1
+        elif ch in '}]':
+            depth -= 1
+            if depth == 0: end_d = i+1; break
+    if end_d is None:
+        warn("MONTHLY 재계산 실패: DAILY 끝 못 찾음")
+        return c
+    try:
+        daily = json.loads(c[arr_start:end_d])
+    except Exception as e:
+        warn(f"MONTHLY 재계산 실패: DAILY JSON 파싱 오류 — {e}")
+        return c
+
+    monthly = {}
+    for pname, d in daily.items():
+        by_m = {}
+        for i, date in enumerate(d.get('d', [])):
+            m = date[:7]
+            if m not in by_m:
+                by_m[m] = [0, 0, 0, 0]
+            by_m[m][0] += d['dq'][i] if i < len(d.get('dq',[])) else 0
+            by_m[m][1] += d['oq'][i] if i < len(d.get('oq',[])) else 0
+            by_m[m][2] += d['dr'][i] if i < len(d.get('dr',[])) else 0
+            by_m[m][3] += d['or'][i] if i < len(d.get('or',[])) else 0
+        ms = sorted(by_m)
+        monthly[pname] = {
+            'months': ms,
+            'dom_qty': [by_m[m][0] for m in ms],
+            'os_qty':  [by_m[m][1] for m in ms],
+            'dom_rev': [by_m[m][2] for m in ms],
+            'os_rev':  [by_m[m][3] for m in ms],
+        }
+
+    # MONTHLY 오브젝트 교체
+    m_json = json.dumps(monthly, ensure_ascii=False, separators=(',', ':'))
+    # 끝 위치 탐색
+    arr_start_m = idx_m + len('const MONTHLY = ')
+    depth = in_str = esc = 0
+    end_m = None
+    for i in range(arr_start_m, len(c)):
+        ch = c[i]
+        if in_str:
+            esc = (ch == '\\' and not esc)
+            if ch == '"' and not esc: in_str = False
+            continue
+        if ch == '"': in_str = True
+        elif ch in '{[': depth += 1
+        elif ch in '}]':
+            depth -= 1
+            if depth == 0: end_m = i+1; break
+    if end_m is None:
+        warn("MONTHLY 재계산 실패: MONTHLY 끝 못 찾음")
+        return c
+
+    c = c[:arr_start_m] + m_json + c[end_m:]
+    log(f"  MONTHLY 재계산 완료 ({len(monthly)}개 상품)")
+    return c
 
 def _update_product_analytics(dom_prod, ovs_prod, season_map):
     path = os.path.join(BASE_DIR, "product_analytics.html")
