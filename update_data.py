@@ -12,7 +12,7 @@ from openpyxl import load_workbook
 from datetime import datetime
 
 # ── 설정 ────────────────────────────────────────────────────────────────────
-USD_TO_KRW   = 1450
+USD_TO_KRW   = 1500
 BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 MIN_DATE     = "2025-01-01"
 CANCEL_STATUS = {"취소 완료","반품 완료","반품 요청","입금 대기","교환 완료"}
