@@ -12,7 +12,11 @@ from openpyxl import load_workbook
 from datetime import datetime
 
 # ── 설정 ────────────────────────────────────────────────────────────────────
-USD_TO_KRW   = 1500
+USD_TO_KRW   = 1500  # fallback (2026년 이후 기본값)
+
+def fx_rate(date_str):
+    """연도별 환율: 2025년=1450 고정, 2026년 이후=1500 고정 (2026-07-06 대표님 확정 정책)"""
+    return 1450 if str(date_str)[:4] == "2025" else 1500
 BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 MIN_DATE     = "2025-01-01"
 CANCEL_STATUS = {"취소 완료","반품 완료","반품 요청","입금 대기","교환 완료"}
@@ -131,7 +135,7 @@ def update_daily(dom_ord, ovs_ord, max_date_in_csv):
         dom_cnt = int(dr["국내주문건수"].values[0])   if len(dr) else 0
         ovs_usd = float(or_["해외매출_USD"].values[0]) if len(or_) else 0.0
         ovs_cnt = int(or_["해외주문건수"].values[0])   if len(or_) else 0
-        ovs_krw = round(ovs_usd * USD_TO_KRW, 0)
+        ovs_krw = round(ovs_usd * fx_rate(d), 0)
         rows.append({"날짜":d,"월":d[:7],
             "통합매출_KRW":dom_rev+ovs_krw,"통합주문건수":float(dom_cnt+ovs_cnt),
             "국내매출_KRW":dom_rev,"국내주문건수":dom_cnt,
@@ -152,7 +156,7 @@ def update_products(dom_prod, ovs_prod, dom_ord, ovs_ord):
     dom_agg = dom_prod.groupby("상품 이름").agg(
         국내판매수량=("수량","sum"), 국내매출_KRW=("상품별 결제 금액","sum"),
         국내주문건수=("주문번호","nunique")).reset_index().rename(columns={"상품 이름":"상품명"})
-    ovs_prod["상품별_KRW"] = ovs_prod["상품별 결제 금액"].fillna(0) * USD_TO_KRW
+    ovs_prod["상품별_KRW"] = ovs_prod["상품별 결제 금액"].fillna(0) * ovs_prod["날짜"].apply(fx_rate)
     ovs_agg = ovs_prod.groupby("상품 이름").agg(
         해외판매수량=("수량","sum"), 해외매출_KRW환산=("상품별_KRW","sum"),
         해외주문건수=("주문번호","nunique")).reset_index().rename(columns={"상품 이름":"상품명"})
@@ -220,7 +224,7 @@ def update_raw(dom_ord, ovs_ord, max_date_in_csv):
         if r["날짜"] > max_date_in_csv:
             usd = float(r["결제 금액"])
             rows.append({"날짜":r["날짜"],"월":r["날짜"][:7],"채널":"해외자사몰",
-                "결제금액_KRW":round(usd*USD_TO_KRW,0),"결제금액_USD":usd,
+                "결제금액_KRW":round(usd*fx_rate(r["날짜"]),0),"결제금액_USD":usd,
                 "상품수":int(r["주문 품목 개수"]) if pd.notna(r.get("주문 품목 개수")) else 1})
 
     if not rows:
@@ -251,7 +255,7 @@ def update_overseas_db(ovs_ord, ovs_prod, max_date_in_csv):
         usd = float(r["결제 금액"])
         rows.append({"날짜":r["날짜"],"월":r["날짜"][:7],"주문번호":r["주문번호"],
             "국가코드":cc,"국가명":CC_NAME.get(cc,"기타"),
-            "결제금액(USD)":usd,"결제금액(KRW)":round(usd*USD_TO_KRW,0),
+            "결제금액(USD)":usd,"결제금액(KRW)":round(usd*fx_rate(r["날짜"]),0),
             "상품수":int(r.get("주문 품목 개수",1)) if pd.notna(r.get("주문 품목 개수")) else 1,
             "상품명":order_products.get(r["주문번호"],"")})
 
@@ -309,7 +313,7 @@ def _update_sales_dashboard(dom_ok, ovs_ok):
 
     dom_g = dom_ok.groupby("날짜").agg(orders=("주문번호","count"), revenue=("결제 금액","sum")).reset_index()
     ovs_g = ovs_ok.groupby("날짜").agg(orders=("주문번호","count"), revenue_usd=("결제 금액","sum")).reset_index()
-    ovs_g["revenue_krw"] = (ovs_g["revenue_usd"]*USD_TO_KRW).round(0).astype(int)
+    ovs_g["revenue_krw"] = (ovs_g["revenue_usd"]*ovs_g["날짜"].apply(fx_rate)).round(0).astype(int)
 
     # 이미 있는 날짜 skip
     existing = set(re.findall(r"date: '(\d{4}-\d{2}-\d{2})'", c))
@@ -390,7 +394,7 @@ def _update_product_report(dom_prod, ovs_prod, df_products, season_map, max_date
     # DAILY 배열 — 상품별 일자 데이터 추가
     dom_prod["날짜"] = pd.to_datetime(dom_prod["주문 일자"], errors="coerce").dt.date.astype(str)
     ovs_prod["날짜"] = pd.to_datetime(ovs_prod["주문 일자"], errors="coerce").dt.date.astype(str)
-    ovs_prod["상품별_KRW"] = ovs_prod["상품별 결제 금액"].fillna(0) * USD_TO_KRW
+    ovs_prod["상품별_KRW"] = ovs_prod["상품별 결제 금액"].fillna(0) * ovs_prod["날짜"].apply(fx_rate)
 
     existing_daily_dates = {}  # product -> set of dates already in DAILY
     m_daily = re.search(r"const DAILY\s*=\s*(\{.*?\});", c, re.DOTALL)
@@ -544,7 +548,7 @@ def _update_product_analytics(dom_prod, ovs_prod, season_map):
     ovs_prod = ovs_prod.copy()
     dom_prod["날짜"] = pd.to_datetime(dom_prod["주문 일자"], errors="coerce").dt.date.astype(str)
     ovs_prod["날짜"] = pd.to_datetime(ovs_prod["주문 일자"], errors="coerce").dt.date.astype(str)
-    ovs_prod["상품별_KRW"] = ovs_prod["상품별 결제 금액"].fillna(0) * USD_TO_KRW
+    ovs_prod["상품별_KRW"] = ovs_prod["상품별 결제 금액"].fillna(0) * ovs_prod["날짜"].apply(fx_rate)
 
     # 이미 있는 날짜
     existing_dates = set(re.findall(r'"d":"(\d{4}-\d{2}-\d{2})"', c))
