@@ -408,7 +408,7 @@
 <div class="top-header">
   <div class="top-left">
     <h1 class="top-title">📊 매출</h1>
-    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-07-21</p>
+    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-07-27</p>
   </div>
   <div class="top-nav">
     <span class="top-btn active">📊 매출</span>
@@ -437,9 +437,9 @@
 <div class="filter-bar">
   <span class="filter-label">기간 설정</span>
   <div class="date-group">
-    <input type="date" class="date-input" id="startDate" value="2025-01-01" max="2026-07-21">
+    <input type="date" class="date-input" id="startDate" value="2025-01-01" max="2026-07-27">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-07-21" max="2026-07-21">
+    <input type="date" class="date-input" id="endDate" value="2026-07-27" max="2026-07-27">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)" title="전체 기간 (2025-01-01 ~ 최신)">전체</button>
@@ -1218,7 +1218,13 @@ const DOMESTIC = [
   { date: '2026-07-18', orders: 20, revenue: 1915202 },
   { date: '2026-07-19', orders: 18, revenue: 1982757 },
   { date: '2026-07-20', orders: 13, revenue: 1389967 },
-  { date: '2026-07-21', orders: 26, revenue: 2579508 },];
+  { date: '2026-07-21', orders: 26, revenue: 2579508 },
+  { date: '2026-07-22', orders: 17, revenue: 1772257 },
+  { date: '2026-07-23', orders: 15, revenue: 1493371 },
+  { date: '2026-07-24', orders: 16, revenue: 1527786 },
+  { date: '2026-07-25', orders: 15, revenue: 1550680 },
+  { date: '2026-07-26', orders: 11, revenue: 1366899 },
+  { date: '2026-07-27', orders: 19, revenue: 2125408 },];
 
 const OVERSEAS = [
 
@@ -1724,13 +1730,19 @@ const OVERSEAS = [
   { date: '2026-07-12', orders: 19, revenue_usd: 2834.17, revenue_krw: 4251255 },
   { date: '2026-07-13', orders: 30, revenue_usd: 4451.02, revenue_krw: 6676530 },
   { date: '2026-07-14', orders: 16, revenue_usd: 2566.05, revenue_krw: 3849075 },
-  { date: '2026-07-15', orders: 22, revenue_usd: 3962.08, revenue_krw: 5943120 },
-  { date: '2026-07-16', orders: 31, revenue_usd: 4582.7, revenue_krw: 6874050 },
-  { date: '2026-07-17', orders: 23, revenue_usd: 3396.15, revenue_krw: 5094225 },
-  { date: '2026-07-18', orders: 26, revenue_usd: 4143.6, revenue_krw: 6215400 },
-  { date: '2026-07-19', orders: 27, revenue_usd: 4310.3, revenue_krw: 6465450 },
-  { date: '2026-07-20', orders: 21, revenue_usd: 3159.55, revenue_krw: 4739325 },
-  { date: '2026-07-21', orders: 28, revenue_usd: 4123.2, revenue_krw: 6184800 },];
+  { date: '2026-07-15', orders: 22, revenue_usd: 3962.08, revenue_krw: 5784637 },
+  { date: '2026-07-16', orders: 31, revenue_usd: 4582.7, revenue_krw: 6690742 },
+  { date: '2026-07-17', orders: 23, revenue_usd: 3396.15, revenue_krw: 4958379 },
+  { date: '2026-07-18', orders: 26, revenue_usd: 4143.6, revenue_krw: 6049656 },
+  { date: '2026-07-19', orders: 27, revenue_usd: 4310.3, revenue_krw: 6293038 },
+  { date: '2026-07-20', orders: 21, revenue_usd: 3159.55, revenue_krw: 4612943 },
+  { date: '2026-07-21', orders: 28, revenue_usd: 4123.2, revenue_krw: 6019872 },
+  { date: '2026-07-22', orders: 22, revenue_usd: 3195.05, revenue_krw: 4664773 },
+  { date: '2026-07-23', orders: 24, revenue_usd: 3615.95, revenue_krw: 5279287 },
+  { date: '2026-07-24', orders: 22, revenue_usd: 3546.17, revenue_krw: 5177408 },
+  { date: '2026-07-25', orders: 17, revenue_usd: 2392.6, revenue_krw: 3493196 },
+  { date: '2026-07-26', orders: 23, revenue_usd: 3014.1, revenue_krw: 4400586 },
+  { date: '2026-07-27', orders: 24, revenue_usd: 3573.48, revenue_krw: 5217281 },];
 
 let lineChart = null;
 let donutChart = null;

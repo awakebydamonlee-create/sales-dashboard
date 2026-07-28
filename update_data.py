@@ -12,11 +12,17 @@ from openpyxl import load_workbook
 from datetime import datetime
 
 # ── 설정 ────────────────────────────────────────────────────────────────────
-USD_TO_KRW   = 1500  # fallback (2026년 이후 기본값)
+USD_TO_KRW   = 1460  # fallback (2026-07-15 이후 기본값)
 
 def fx_rate(date_str):
-    """연도별 환율: 2025년=1450 고정, 2026년 이후=1500 고정 (2026-07-06 대표님 확정 정책)"""
-    return 1450 if str(date_str)[:4] == "2025" else 1500
+    """구간별 환율: 2025년=1450 고정, 2026-01-01~2026-07-14=1500 고정,
+    2026-07-15 이후=1460 (2026-07-28 대표님 확정, 실제 환율 1500원 붕괴 반영)"""
+    ds = str(date_str)
+    if ds[:4] == "2025":
+        return 1450
+    if ds >= "2026-07-15":
+        return 1460
+    return 1500
 BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 MIN_DATE     = "2025-01-01"
 CANCEL_STATUS = {"취소 완료","반품 완료","반품 요청","입금 대기","교환 완료"}
@@ -371,6 +377,15 @@ def _update_insights(ovs_prod_cc, ovs_ok):
     c = re.sub(r"(I_MAX=\(\(\)=>\{.*?return ds\.length\?ds\[ds\.length-1\]:\')[\d-]+(\';\}\)\(\))",
                rf"\g<1>{max_date_global}\g<2>", c)
 
+    # hsub 초기 문구 (JS가 로드 시 덮어쓰지만 순간적으로 stale 값이 보이는 것 방지)
+    try:
+        d01 = pd.read_csv(os.path.join(BASE_DIR, "01_일별매출현황.csv"))
+        dom_cnt = int(d01["국내주문건수"].sum()); ovs_cnt = int(d01["해외주문건수"].sum())
+        c = re.sub(r'(id="hsub">전체 · 국내 )[\d,]+(건 · 해외 )[\d,]+(건)',
+                   rf"\g<1>{dom_cnt:,}\g<2>{ovs_cnt:,}\g<3>", c)
+    except Exception as e:
+        warn(f"insights hsub 갱신 실패: {e}")
+
     with open(path,"w") as f: f.write(c)
 
 def _update_product_report(dom_prod, ovs_prod, df_products, season_map, max_date):
@@ -458,11 +473,41 @@ def _update_product_report(dom_prod, ovs_prod, df_products, season_map, max_date
 
     # 정적 텍스트 날짜
     c = re.sub(r"2025-01-01 ~ \d{4}-\d{2}-\d{2}", f"2025-01-01 ~ {max_date}", c)
+    # 하단 푸터 (2026-07-28 이전엔 누락되어 SUM.period_end와 함께 stale 되던 버그 수정)
+    c = re.sub(r"📅 업데이트 \d{4}-\d{2}-\d{2}", f"📅 업데이트 {max_date}", c)
 
     # MONTHLY 재계산 (DAILY로부터) — 월별 상세 정확도 보장
     c = _recompute_monthly_from_daily(c)
 
+    # SUM 오브젝트 재계산 (01/02 CSV 기준 — 2026-07-28 이전엔 이 스텝이 아예 없어서 SUM.period_end가 오래 stale된 채 방치됐음)
+    c = _recompute_sum(c, df_products, max_date)
+
     with open(path,"w") as f: f.write(c)
+
+def _recompute_sum(c, df_products, max_date):
+    d01 = pd.read_csv(os.path.join(BASE_DIR, "01_일별매출현황.csv"))
+    os_usd = float(d01["해외매출_USD"].sum())
+    os_krw = float(d01["해외매출_KRW환산"].sum())
+    sum_obj = {
+        "period_start": MIN_DATE, "period_end": max_date,
+        "total_revenue_krw": float(d01["통합매출_KRW"].sum()),
+        "total_orders": int(d01["통합주문건수"].sum()),
+        "total_qty": int(df_products["통합판매수량"].sum()),
+        "dom_revenue_krw": float(d01["국내매출_KRW"].sum()),
+        "dom_orders": int(d01["국내주문건수"].sum()),
+        "dom_qty": int(df_products["국내판매수량"].sum()),
+        "os_revenue_usd": round(os_usd, 2), "os_revenue_krw": os_krw,
+        "os_orders": int(d01["해외주문건수"].sum()),
+        "os_qty": int(df_products["해외판매수량"].sum()),
+        "num_products": int(len(df_products)),
+        "usd_to_krw": round(os_krw / os_usd) if os_usd else USD_TO_KRW,
+    }
+    m = re.search(r"const SUM\s*=\s*\{.*?\};", c, re.DOTALL)
+    if not m:
+        warn("SUM 오브젝트를 찾지 못해 재계산 건너뜀")
+        return c
+    new_sum = "const SUM = " + json.dumps(sum_obj, ensure_ascii=False, separators=(',', ':')) + ";"
+    return c[:m.start()] + new_sum + c[m.end():]
 
 def _recompute_monthly_from_daily(c):
     """DAILY 배열을 월별로 집계해 MONTHLY 오브젝트 전체를 재생성"""
