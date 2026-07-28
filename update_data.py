@@ -445,10 +445,18 @@ def _update_product_report(dom_prod, ovs_prod, df_products, season_map, max_date
             daily_updates[pname]["do"].append(do_); daily_updates[pname]["oo"].append(oo_)
 
     # DAILY 배열에 새 데이터 추가
+    # 2026-07-28 버그 수정: 아래 re.sub는 DAILY에 해당 상품 키가 "이미 존재할 때"만
+    # 매치되어 값을 채워넣는다. 신규 출시 상품(그 주에 처음 판매된 상품)은 키 자체가
+    # 없어서 매치가 안 되고 re.sub가 조용히 아무 것도 안 한 채 넘어가 — 그 상품은
+    # DAILY에서 영원히 누락된다(26개 "26 HS 핫썸머" 상품에서 실제 발생, product_report.html
+    # 드릴다운에서 통째로 빠짐). 매치 실패 시 새 키를 직접 추가하도록 수정.
+    new_keys_added = []
     for pname, upd in daily_updates.items():
         escaped = re.escape(pname)
         pat = rf'("{escaped}"\s*:\s*\{{)(.*?)(\}}(?=,|\s*\}}))'
+        matched = [False]
         def inject_daily(m, upd=upd):
+            matched[0] = True
             inner = m.group(2)
             for key in ["d","dq","oq","dr","or","do","oo"]:
                 new_vals = json.dumps(upd[key], ensure_ascii=False)[1:-1]  # [x,y] → x,y
@@ -457,6 +465,15 @@ def _update_product_report(dom_prod, ovs_prod, df_products, season_map, max_date
                                inner, flags=re.DOTALL)
             return m.group(1)+inner+m.group(3)
         c = re.sub(pat, inject_daily, c, flags=re.DOTALL)
+        if not matched[0]:
+            # 신규 상품: DAILY 객체 맨 앞에 새 키로 직접 삽입
+            entry_json = json.dumps({k: upd[k] for k in ["d","dq","oq","dr","or","do","oo"]}, ensure_ascii=False)
+            m_daily_start = re.search(r'const DAILY\s*=\s*\{', c)
+            insert_at = m_daily_start.end()
+            c = c[:insert_at] + json.dumps(pname, ensure_ascii=False) + ":" + entry_json + "," + c[insert_at:]
+            new_keys_added.append(pname)
+    if new_keys_added:
+        ok(f"DAILY에 신규 상품 키 {len(new_keys_added)}개 추가: {', '.join(new_keys_added[:5])}{' 등' if len(new_keys_added)>5 else ''}")
 
     # MONTHS 배열 — 새 월 추가
     cur_month = max_date[:7]
