@@ -55,12 +55,23 @@ SEASON_26HS_NAMES = {
 }
 SEASON_26HS_NAMES_STRIP = {n.strip() for n in SEASON_26HS_NAMES}
 
+# 26 FW_1 시즌 상품명 목록 (2026-08-19 대표님 지정, 프리오더 신상 — Ships on Sep 10)
+SEASON_26FW1_NAMES = {
+    "Cocoa Check Pillow Bag","Sky Berry Check Pillow Bag",
+    "Hazy Leopard Charcoal Pillow Bag","Hazy Leopard Charcoal Dimsum Bag",
+    "Mini Hazy Leopard Charcoal Dimsum Bag",
+}
+SEASON_26FW1_NAMES_STRIP = {n.strip() for n in SEASON_26FW1_NAMES}
+
 def season_for_new_product(nm, season_map):
-    """기존 시즌맵에 없는 신규 상품의 시즌을 결정. 26HS 가이드에 있으면 26 HS 핫썸머, 아니면 기타."""
+    """기존 시즌맵에 없는 신규 상품의 시즌을 결정. 26HS/26FW_1 가이드에 있으면 해당 시즌, 아니면 기타."""
     se = season_map.get(nm)
     if se: return se
-    if str(nm).strip() in SEASON_26HS_NAMES_STRIP:
+    nms = str(nm).strip()
+    if nms in SEASON_26HS_NAMES_STRIP:
         return "26 HS 핫썸머"
+    if nms in SEASON_26FW1_NAMES_STRIP:
+        return "26 FW_1"
     return "기타"
 
 errors   = []
