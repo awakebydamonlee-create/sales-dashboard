@@ -206,7 +206,7 @@ table.rt tbody tr:hover{background:#fafbff}
   <div class="sum-item"><div class="sum-lbl">총 판매수량</div><div class="sum-val tot" id="s-qty">-</div><div class="sum-sub" id="s-sku">-</div></div>
   <div class="sum-item"><div class="sum-lbl">국내 판매</div><div class="sum-val dom" id="s-dqty">-</div><div class="sum-sub" id="s-dord">-</div></div>
   <div class="sum-item"><div class="sum-lbl">해외 판매</div><div class="sum-val ovs" id="s-oqty">-</div><div class="sum-sub" id="s-oord">-</div></div>
-  <div class="sum-item"><div class="sum-lbl">통합 총매출</div><div class="sum-val rev" id="s-rev">-</div><div class="sum-sub">원화환산 (25년 ₩1,450·26년 ₩1,500)</div></div>
+  <div class="sum-item"><div class="sum-lbl">통합 총매출</div><div class="sum-val rev" id="s-rev">-</div><div class="sum-sub">원화환산 (해외 25년 ₩1,450·26년 1~7/14 ₩1,500·7/15~8/18 ₩1,460·8/19~9/2 ₩1,390·9/3~ ₩1,340)</div></div>
   <div class="sum-item"><div class="sum-lbl">상품 종류</div><div class="sum-val tot" id="s-skuv">-</div><div class="sum-sub" id="s-skus">-</div></div>
 </div>
 
@@ -1356,7 +1356,7 @@ function renderRankTable(prods_in){
 
   document.getElementById('rank-cnt').textContent=`(${sorted.length}개 상품)`;
   const s=dk().replace('2026-','').replace('-','.'),e=ek().replace('2026-','').replace('-','.');
-  document.getElementById('rank-sub').textContent=`2026.${s} ~ 2026.${e} · 해외 25년 ₩1,450·26년 ₩1,500 환산`;
+  document.getElementById('rank-sub').textContent=`2026.${s} ~ 2026.${e} · 해외 25년 ₩1,450·26년 1~7/14 ₩1,500·7/15~8/18 ₩1,460·8/19~9/2 ₩1,390·9/3~ ₩1,340 환산`;
   const mq=sorted[0]?sorted[0].total_qty:1;
 
   document.getElementById('rankBody').innerHTML=sorted.length?sorted.map((p,i)=>{
