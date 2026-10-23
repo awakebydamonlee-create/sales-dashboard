@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-22",
+  "baseline": "10.20 close",
+  "data_source_note": "텍스트 추출 우회 파싱 (18MB xlsx, 10MB 다운로드 제한 초과)",
+  "urgent_count": 15,
+  "urgent_top": [
+    "Gummy Raglan Hoodie Blue Berry",
+    "Wood Check Hoodie Shirts Green",
+    "Hockey Jersey Blue"
+  ],
+  "refill_count": 14,
+  "refill_top": [
+    {
+      "product": "Dot Cozy Dumpling Bag Gray",
+      "days_left": 7.8
+    },
+    {
+      "product": "New School Hoodie Zip Navy",
+      "days_left": 10.2
+    },
+    {
+      "product": "Glaze Vanilla Dimsum Bag",
+      "days_left": 12.7
+    }
+  ],
+  "spike_count": 18,
+  "spike_top": [
+    {
+      "product": "Leopard Dimsum Bag Charcoal",
+      "ratio": 7.4
+    },
+    {
+      "product": "Hand Warmer Hairy Cozy Stripe L/S Brown",
+      "ratio": 4.7
+    }
+  ],
+  "incoming_planned_count": 5,
+  "yd_in_count": 2,
+  "yd_top_count": 15,
+  "zero_stock_count": 97
+}
