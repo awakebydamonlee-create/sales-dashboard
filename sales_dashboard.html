@@ -408,7 +408,7 @@
 <div class="top-header">
   <div class="top-left">
     <h1 class="top-title">📊 매출</h1>
-    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-10-26</p>
+    <p class="top-sub">국내자사몰 + 해외자사몰 통합 데이터 · 최근 업데이트 2026-10-28</p>
   </div>
   <div class="top-nav">
     <span class="top-btn active">📊 매출</span>
@@ -437,9 +437,9 @@
 <div class="filter-bar">
   <span class="filter-label">기간 설정</span>
   <div class="date-group">
-    <input type="date" class="date-input" id="startDate" value="2025-01-01" max="2026-10-26">
+    <input type="date" class="date-input" id="startDate" value="2025-01-01" max="2026-10-28">
     <span class="date-sep">~</span>
-    <input type="date" class="date-input" id="endDate" value="2026-10-26" max="2026-10-26">
+    <input type="date" class="date-input" id="endDate" value="2026-10-28" max="2026-10-28">
   </div>
   <div class="quick-btns">
     <button class="quick-btn active" onclick="setQuick('all',this)" title="전체 기간 (2025-01-01 ~ 최신)">전체</button>
@@ -1315,7 +1315,9 @@ const DOMESTIC = [
   { date: '2026-10-23', orders: 18, revenue: 2183311 },
   { date: '2026-10-24', orders: 14, revenue: 1734221 },
   { date: '2026-10-25', orders: 9, revenue: 1007660 },
-  { date: '2026-10-26', orders: 18, revenue: 1982933 },];
+  { date: '2026-10-26', orders: 18, revenue: 1982933 },
+  { date: '2026-10-27', orders: 10, revenue: 1000345 },
+  { date: '2026-10-28', orders: 14, revenue: 1576715 },];
 
 const OVERSEAS = [
 
@@ -1924,7 +1926,9 @@ const OVERSEAS = [
   { date: '2026-10-23', orders: 18, revenue_usd: 3029.16, revenue_krw: 4059074 },
   { date: '2026-10-24', orders: 20, revenue_usd: 3023.33, revenue_krw: 4051262 },
   { date: '2026-10-25', orders: 19, revenue_usd: 3025.2, revenue_krw: 4053768 },
-  { date: '2026-10-26', orders: 19, revenue_usd: 2650.42, revenue_krw: 3551563 },];
+  { date: '2026-10-26', orders: 19, revenue_usd: 2650.42, revenue_krw: 3551563 },
+  { date: '2026-10-27', orders: 16, revenue_usd: 2277.9, revenue_krw: 3052386 },
+  { date: '2026-10-28', orders: 9, revenue_usd: 1336.03, revenue_krw: 1790280 },];
 
 let lineChart = null;
 let donutChart = null;
